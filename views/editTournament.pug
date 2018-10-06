@@ -1,0 +1,81 @@
+extend layout
+
+block content
+  .container-fluid.bgHeader
+    .container.headerText
+      h1 #{tournament.tournament}
+      #tourId(style='display:none') #{tournament._id}
+  .container.bgMain
+    br
+    if(user)
+      if(user.username==tournament.username)
+        .container.text-right
+          .btn-group
+            button.btn.btn-info(data-target='.settings', data-role='expander' data-toggle='collapse') Edit settings
+            button.btn.btn-info(data-target='.newMatch', data-role='expander' data-toggle='collapse', title='Add match') 
+              i.oi.oi-plus
+        .collapse.container.settings
+          .smal
+            if(user)
+              if(user.username==tournament.username)
+                div Keep the same teamstrukture for the whole tournament:   
+                  input.form-control(type='checkbox', id='keepTeamId', name='keepTeamId', checked=tournament.settings.keepTeamId)
+              else
+                div #{tournament.settings.keepTeamId}
+            else
+              div #{tournament.settings.keepTeamId}
+            table.table.table-sm
+              thead.thead-light
+                tr
+                  th 
+                  th Points
+              tbody
+                tr
+                  td Killpoints
+                  if(user)
+                    if(user.username==tournament.username)
+                      td
+                        input.form-control(name='point', value=tournament.settings.killPoints, placement='killPoints' tournamentId=tournament._id)
+                    else
+                      td #{tournament.settings.killPoints}
+                  else
+                    td #{tournament.settings.killPoints}
+              thead.thead-light
+                tr
+                  th Placement
+                  th Points   
+              each point,j in tournament.settings.placementPoints
+                if(j>0)
+                  tr
+                    td #{j}
+                    if(user)
+                      if(user.username==tournament.username)
+                        td
+                          input.form-control(name='point', value=point, placement=j, tournamentId=tournament._id)
+                      else
+                        td #{point}
+                    else
+                      td #{point}
+        .collapse.container.newMatch
+          .form-inline Find matches based on ingame username:  
+            input.form-control(type='text', name='lu_usernamen', id='lu_username')
+          div#result 
+          table.table.table-striped
+            form(method='post', action='/tournaments/edit/'+tournament._id, enctype='multipart/form-data')
+              .form-inline
+                tr
+                  td
+                    input.form-control(id='matchId', name='matchId', type='text', placeholder='Enter matchId')
+                    textarea.form-control(name='teamNameList', type='textarea' ,placeholder='Add list of teamnames: \r\nteamId;teamName;teamId;teamName...etc')
+                  td.text-right
+                    button.btn.peach-gradient(type='submit', name='submit') Add
+    if(matches.length > 0)
+      h2 Leaderboard
+      .container#leaderboard Calculating leaderboard...
+      br
+      br
+      h2 Matches added to this leaderboard:  
+      .container#matches Retriving matches...
+      
+    else
+      div There are no matches added to this tournament.

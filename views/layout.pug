@@ -1,0 +1,50 @@
+doctype html
+html(lang = 'en')
+  head
+    title Welcome
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body(onload='loadFunction()')
+    .container
+      - var messages = getMessages()
+      if messages
+        each msg, type in messages
+          #flash.collapse.show(class=type)= msg
+  
+  
+    nav.navbar.navbar-expand-lg.navbar-light.bgNavBarCont
+      .container.bgNavBar
+        .navbar-header
+          a.navbar-brand(href='/') PUBG league
+          button.navbar-toggler(type='button', data-toggle='collapse', data-target='#collapsibleNavbar')
+            span.navbar-toggler-icon
+        .navbar-collapse.collapse#collapsibleNavbar
+          ul.navbar-nav
+            li.nav-item(class=(title == 'Register' ? 'active' : ''))
+              a.nav-link(href='/') Tournaments
+            if user
+              li.nav-item(class=(title == 'Tournament' ? 'active' : ''))
+                a.nav-link(href='/tournament') My tournaments
+            if !user
+              li.nav-item(class=(title == 'Register' ? 'active' : ''))
+                a.nav-link(href='/users/register') Register
+              li.nav-item(class=(title == 'Login' ? 'active' : ''))
+                a.nav-link(href='/users/login') Login
+          ul.navbar-nav
+            if user
+              li.nav-item
+                a.nav-link(href='/users/logout') Logout    
+    block content
+    .container-fluid.bgFooter
+      .container 
+      
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src='https://unpkg.com/popper.js/dist/umd/popper.min.js')
+    script(src='/javascripts/bootstrap.js')
+    script(src='/javascripts/script.js')
+    script(src='/javascripts/tournament.js')
+    script.
+      $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({html:true});   
+      });

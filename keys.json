@@ -1,8 +1,0 @@
-{
-  "mongoHost": "ds245532.mlab.com",
-  "mongoPort": "45532",
-  "mongoUser": "lirion",
-  "mongoPass": "Azurewrath5",
-  "mongoDbname": "pubg",
-  "apiKey": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjYjU1OGQyMC0xOTJiLTAxMzYtZTgzYi0wMzMxODI1NzdmN2YiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNTIyNzMyNDYyLCJwdWIiOiJibHVlaG9sZSIsInRpdGxlIjoicHViZyIsImFwcCI6ImN1c3RvbXNlcnZlcmluZm8iLCJzY29wZSI6ImNvbW11bml0eSIsImxpbWl0IjoxMH0.nwJ14akD9h9NrCIMEJk57qdkaYCB-hoGXMZnxlc3zNw"
-}

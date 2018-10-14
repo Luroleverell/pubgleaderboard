@@ -1,8 +1,7 @@
 'use strict';
-
 module.exports = class Match {
   constructor(match, teamList) {
-    this.teamConnectionList_ = [];
+    this.teamList_ = teamList;
     this.teamByRank_ = new Map();
     this.playerById_ = new Map();
     this.match_ = [];
@@ -39,16 +38,14 @@ module.exports = class Match {
           let player = this.playerById_.get(p.id);
           teamPlayers.push(player);
           kills = kills + player.kills;
-        }, this)
+        }, this);
         
-        let teamName='';
-        this.teamConnectionList_ = teamList.split(';');
-        for(let i = 0; i <= this.teamConnectionList_.length-1; i=i+2){
-          if (t.attributes.stats.teamId == this.teamConnectionList_[i]){
-            teamName = this.teamConnectionList_[i+1];
-            break;
+        let teamName = '';
+        this.teamList_.forEach(function(team){
+          if (t.attributes.stats.teamId == team.teamId){
+            teamName = team.teamName;
           }
-        }
+        }, this);
 
         let newTeam = {
           teamId: t.attributes.stats.teamId,

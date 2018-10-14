@@ -7,6 +7,7 @@ var LocalStrategy = require('passport-local').Strategy;
 
 var User = require('../models/user');
 var Tournament = require('../models/tournament');
+var Event = require('../models/event');
 var passport = require('passport');
 
 //var MatchS  = require('../models/tournament');
@@ -22,7 +23,7 @@ router.post('/add', [upload.fields([]), User.ensureAuthenticated], function(req,
     settings: {
       placementPoints: placementPoints,
       killPoints: killPoints,
-      useSameLobby: false
+      keepTeamId: false
     }
   });
   
@@ -36,11 +37,54 @@ router.post('/add', [upload.fields([]), User.ensureAuthenticated], function(req,
   res.redirect('/tournament');
 });
 
+router.post('/addEvent', [upload.fields([]), User.ensureAuthenticated], function(req, res, next) {
+  var newEvent = new Event({
+    username: req.user.username,
+    event: req.body.eventName,
+    public: false,
+    settings: {
+      placementPoints: [],
+      killPoints: 0,
+      keepTeamId: false
+    }
+  });
+  
+  Event.createEvent(newEvent, function(err, event){
+    if(err) throw err;
+  });
+  
+  req.flash('success', 'You have added a new event');
+  
+  res.location('/tournament');
+  res.redirect('/tournament');
+});
+
+router.post('/event/addTournaments/:eventId', [upload.fields([]), User.ensureAuthenticated], function(req, res){
+  tournaments = req.body.tournaments.split(',');
+  Event.addTournaments(req.params.eventId, tournaments).then(function(){
+    let p = [];
+    tournaments.forEach(function(tournament){
+      p.push(Tournament.changeEventStatus(tournament, true));
+    });
+    Promise.all(p).then(function(){
+      res.location('/tournament');
+      res.redirect('/tournament');
+    });
+  });
+});
+
+router.post('/event/remove/:eventId/:tournamentId', [upload.fields([]), User.ensureAuthenticated], function(req, res){
+  Event.removeTournament(req.params.eventId, req.params.tournamentId).then(function(){
+    res.location('/tournament/'+req.params.eventId);
+    res.redirect('/tournament/'+req.params.eventId);
+  });
+});
+
 router.get('/pubgAPI/:playername/:shard', User.ensureAuthenticated, function(req, res, next){
   Tournament.getMatchesByPlayername(req.params.playername, req.params.shard, function(result){
     res.json(result);
-  })
-})
+  });
+});
 
 router.get('/edit/:id', function(req, res, next) {
   Tournament.getTournamentById(req.params.id).then(function(tournament){
@@ -50,7 +94,19 @@ router.get('/edit/:id', function(req, res, next) {
         return new Date(a.matchDate) - new Date(b.matchDate);
       })
     }
-    res.render('editTournament', {tournament: tournament, matches: matchList || ''});
+    res.render('editTournament', {tournament: tournament, matches: matchList});
+  });
+});
+
+router.get('/edit/event/:id', function(req, res, next) {
+  Event.getTournamentById(req.params.id).then(function(event){
+    let tournamentList = event.tournaments || '';
+    if(!(tournamentList=='')){
+      /*tournamentList.sort(function(a,b){
+        return new Date(a.matchDate) - new Date(b.matchDate);
+      })*/
+    }
+    res.render('tournament', {event: event, tournaments: tournamentList|| ''});
   });
 });
 

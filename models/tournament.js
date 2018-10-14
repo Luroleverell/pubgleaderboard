@@ -4,7 +4,7 @@ var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 var https = require('https');
 var zlib = require('zlib');
 var request= require('request');
-var SHARD_PC_EU = "pc-eu";
+var SHARD_PC_EU = "pc-na";
 
 const http = require('http');
 const nconf = require('nconf');
@@ -44,14 +44,14 @@ var TournamentSchema = mongoose.Schema({
     killPoints: 0,
     public: false,
     teamList: [],
-    keepTeamId: false
+    keepTeamId: false,
+    eventStatus: false
   },
   matches: {}
 });
 
 
 var Tournament = module.exports = mongoose.model('Tournament', TournamentSchema);
-
 
 module.exports.createTournament = function(newTournament, callback){
   if (newTournament.tournament)
@@ -65,25 +65,24 @@ module.exports.getTournamentByUsername = function(username){
         if (err) return reject(err)
         else return resolve(doc)
       });
-    })
+    });
 }
 
-/*module.exports.getTournamentByUserId = function(id){
-  if(id)
-    User.getUserById(id, function(err, doc){
-      if (err) return reject(err)
-      else return Tournament.getTournamentByUsername(doc.username);
-    });
-}*/
-
 module.exports.getTournamentById = function(id){
-  if(id)
-    return new Promise(function(resolve, reject){
-      Tournament.findOne({_id: id}).exec(function(err, doc){
+  return new Promise(function(resolve, reject){
+    if(id){
+      Tournament.find({_id: {$in: id}}).exec(function(err, doc){
         if (err) return reject(err)
-        else return resolve(doc)
+        if(doc.length>1){
+          return resolve(doc)
+        }else{
+          return resolve(doc[0])
+        }
       });
-    })
+    }else{
+      return resolve([]);
+    }
+  });
 }
 
 module.exports.getPublicTournaments = function(){
@@ -100,16 +99,56 @@ module.exports.changePublic = function(tournamentId, newPublic){
     Tournament.updateOne({_id:tournamentId}, {$set: {'settings.public': newPublic}}).exec(function(err){
       if (err) return reject(err)
       else return resolve()
-    })
-  })
+    });
+  });
+}
+
+module.exports.changeEventStatus= function(tournamentId, newStatus){
+  return new Promise(function(resolve, reject){
+    Tournament.updateOne({_id:tournamentId}, {$set: {'settings.eventStatus': newStatus}}).exec(function(err){
+      if (err) return reject(err)
+      else return resolve()
+    });
+  });
 }
 
 module.exports.changeKeepTeamId = function(tournamentId, newValue){
   return new Promise(function(resolve, reject){
-    Tournament.updateOne({_id: tournamentId}, {$set: {'settings.keepTeamId': newValue}}).exec(function(err, doc){
-      if (err) return reject(err)
-      else return resolve(doc);
-    })
+    let index;
+    if(newValue){
+      Tournament.getTournamentById(tournamentId).then(function(tournament){
+        tournament.settings.keepTeamId = newValue;
+        tournament.matches.forEach(function(m){
+          m.team.forEach(function(t){
+            if(!(t.teamName == '')){
+              index = getIndexByProperty(tournament.settings.teamList, 'teamId', t.teamId)
+              if(index = -1){
+                tournament.settings.teamList.push({teamId: t.teamId, teamName: t.teamName});
+              }else{
+                tournament.settings.teamList[index].teamName = t.teamName;
+              }
+            }
+          });
+        });
+        tournament.matches.forEach(function(m){
+          m.team.forEach(function(t){
+            index = getIndexByProperty(tournament.settings.teamList, 'teamId', t.teamId);
+            t.teamName = tournament.settings.teamList[index].teamName;
+          })
+        })
+        Tournament.replaceOne({_id: tournamentId}, tournament, function(err, doc){
+          if(err) return reject(err);
+          else return resolve();
+        });
+      });
+    }else{
+      Tournament.updateOne({_id: tournamentId}, {$set: {'settings.keepTeamId': newValue}}).exec(function(err, doc){
+        if (err) return reject(err)
+        Tournament.updateSummary(tournamentId, function(){
+          return resolve();
+        });
+      });
+    }
   })
 }
 
@@ -142,26 +181,8 @@ module.exports.changeTeamName = function(tournamentId, matchId, teamIndex, newTe
         {$set: setter}
       ).exec(function(err){
         if (err) return reject(err)   
-        //else return resolve();
-        //setter['settings.teamList.'+teamIndex+'.teamName'] = newTeamName
         
         if(tournament.settings.keepTeamId){
-          /*
-          Tournament.update(
-            {_id: tournamentId, 'settings.teamList.teamId': teamId},
-            {$pull: {'settings.teamList': {teamId : teamId}}}
-            ).exec(function(err){
-              if(err) return reject(err)
-              Tournament.update(
-                {_id: tournamentId},
-                {$push: {'settings.teamList': {teamId: teamId, teamName: newTeamName}}}
-                ).exec(function(err){
-                  if(err) return reject(err)
-                  else return resolve()
-                }
-              );
-            }
-          );*/
           let index;
           tournament.matches.forEach(function(match){
             index = getIndexByProperty(match.team, 'teamId', teamId);
@@ -190,16 +211,21 @@ module.exports.changeTeamName = function(tournamentId, matchId, teamIndex, newTe
 
 module.exports.addMatch = function(tournamentId, matchId, teamNameList, callback){
   if(matchId && tournamentId){
-    getMatchById(matchId, teamNameList, function(match){
-      Tournament.findOne({_id:tournamentId , 'matches.matchId': matchId}).exec(function(err, doc){
-        if(doc){
-          callback(true);
-        }else{
-          Tournament.updateOne({_id:tournamentId}, {$push: {matches: match}}).exec(function(err){
-            if (err) throw err
-            else callback();
-          });
-        }
+    Tournament.getTournamentById(tournamentId).then(function(tournament){
+      if(tournament.settings.keepTeamId){
+        teamNameList = tournament.settings.teamList;
+      }
+      getMatchById(matchId, teamNameList, function(match){
+        Tournament.findOne({_id:tournamentId , 'matches.matchId': matchId}).exec(function(err, doc){
+          if(doc){
+            callback(true);
+          }else{
+            Tournament.updateOne({_id:tournamentId}, {$push: {matches: match}}).exec(function(err){
+              if (err) throw err
+              else callback();
+            });
+          }
+        });
       });
     });
   }
@@ -234,7 +260,7 @@ module.exports.getMatchesByPlayername = function(playername, shard, callback){
 }
 
 function updateSummary(tournamentId, callback){
-  Tournament.getTournamentById(tournamentId).then(function(tournament){
+  /*Tournament.getTournamentById(tournamentId).then(function(tournament){
     let teams = [];
     tournament.matches.forEach(function(match){
       match.team.forEach(function(t){
@@ -272,7 +298,7 @@ function updateSummary(tournamentId, callback){
       if (err) return err;
       else callback();
     })
-  });
+  });*/
 }
 
 function getMatchById(matchId, teamNameList, callback){

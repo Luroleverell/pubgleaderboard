@@ -255,8 +255,22 @@ class Tournament {
       but.setAttribute('type', 'button');
       but.setAttribute('data-toggle', 'collapse');
       but.setAttribute('data-role', 'expander');
+      but.setAttribute('data-target', '.map'+m.matchId);
+      let icon = document.createElement('span');
+      icon.classList.add('oi', 'oi-media-play');
+      but.appendChild(icon);
+      div.appendChild(but);
+      
+      but = document.createElement('button');
+      but.classList.add('btn', 'btn-info');
+      but.setAttribute('type', 'button');
+      but.setAttribute('data-toggle', 'collapse');
+      but.setAttribute('data-role', 'expander');
       but.setAttribute('data-target', '.row'+m.matchId);
-      but.innerHTML = 'More info';
+      //but.innerHTML = 'More info';
+      icon = document.createElement('span');
+      icon.classList.add('oi', 'oi-menu');
+      but.appendChild(icon);
       div.appendChild(but);
       
       but = document.createElement('button');
@@ -264,7 +278,7 @@ class Tournament {
       but.setAttribute('type', 'submit');
       but.setAttribute('name', 'submit');
       but.setAttribute('value', 'submit');
-      let icon = document.createElement('span');
+      icon = document.createElement('span');
       icon.classList.add('oi', 'oi-trash');
       but.appendChild(icon);
       

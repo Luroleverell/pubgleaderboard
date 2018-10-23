@@ -22,7 +22,7 @@ const dbname = nconf.get('mongoDbname');
 
 let uri = 'mongodb://'+mongoUser+':'+pass+'@'+host+':'+port+'/'+dbname;
 
-mongoose.connect(uri).catch(function(err){
+mongoose.connect(uri, { useNewUrlParser: true }).catch(function(err){
   if (err) throw err;
 });
 

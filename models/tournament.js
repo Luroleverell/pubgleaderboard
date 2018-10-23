@@ -144,9 +144,7 @@ module.exports.changeKeepTeamId = function(tournamentId, newValue){
     }else{
       Tournament.updateOne({_id: tournamentId}, {$set: {'settings.keepTeamId': newValue}}).exec(function(err, doc){
         if (err) return reject(err)
-        Tournament.updateSummary(tournamentId, function(){
-          return resolve();
-        });
+        else return resolve();
       });
     }
   })
@@ -209,11 +207,13 @@ module.exports.changeTeamName = function(tournamentId, matchId, teamIndex, newTe
   });
 }
 
-module.exports.addMatch = function(tournamentId, matchId, teamNameList, callback){
+module.exports.addMatch = function(tournamentId, matchId, teamList, callback){
   if(matchId && tournamentId){
     Tournament.getTournamentById(tournamentId).then(function(tournament){
       if(tournament.settings.keepTeamId){
         teamNameList = tournament.settings.teamList;
+      }else{
+        teamNameList = teamList.split(';');
       }
       getMatchById(matchId, teamNameList, function(match){
         Tournament.findOne({_id:tournamentId , 'matches.matchId': matchId}).exec(function(err, doc){
@@ -257,48 +257,6 @@ module.exports.getMatchesByPlayername = function(playername, shard, callback){
   fetchData(url, function(res){
     callback(res);
   });
-}
-
-function updateSummary(tournamentId, callback){
-  /*Tournament.getTournamentById(tournamentId).then(function(tournament){
-    let teams = [];
-    tournament.matches.forEach(function(match){
-      match.team.forEach(function(t){
-        let teamIndex = teams.findIndex(function(element){
-            return element.teamName == t.teamName;
-          });
-          
-        if(teamIndex > -1){
-          teams[teamIndex].teamPoints += t.teamPoints;
-          teams[teamIndex].teamKillPoints += t.teamKillPoints;
-          teams[teamIndex].teamRankPoints += t.teamRankPoints;
-          teams[teamIndex].teamKills += t.teamKills;
-          t.players.forEach(function(p){
-            let playerIndex = teams[teamIndex].players.findIndex(function(element){
-              return p.playerName == element.playerName;
-            })
-            if(playerIndex > -1){
-              teams[teamIndex].players[playerIndex].kills += p.kills;
-              teams[teamIndex].players[playerIndex].death += p.death;
-            }else{
-              teams[teamIndex].players.push(p);
-            }
-          })
-        }else{
-          teams.push(t);
-        }
-      })
-    })
-    
-    teams.sort(function(a,b){
-      return b.teamPoints-a.teamPoints;
-    })
-    
-    Tournament.updateOne({_id:tournamentId}, {$set: {summary: teams}}).exec(function(err){
-      if (err) return err;
-      else callback();
-    })
-  });*/
 }
 
 function getMatchById(matchId, teamNameList, callback){

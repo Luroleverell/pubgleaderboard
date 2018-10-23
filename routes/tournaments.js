@@ -23,7 +23,8 @@ router.post('/add', [upload.fields([]), User.ensureAuthenticated], function(req,
     settings: {
       placementPoints: placementPoints,
       killPoints: killPoints,
-      keepTeamId: false
+      keepTeamId: false,
+      eventStatus: false
     }
   });
   
@@ -154,11 +155,17 @@ router.post('/remove/:tourId/:matchId?', upload.fields([]), function(req, res, n
   });
 });
 
-router.post('/public/:id', [upload.fields([]), User.ensureAuthenticated], function(req, res, next){
+router.post('/public/:tournamentId/:eventId?', [upload.fields([]), User.ensureAuthenticated], function(req, res, next){
   var public = (req.body.public == 'on' ? true : false);
-  Tournament.changePublic(req.params.id, public).then(function(){
-    res.location('/tournament');
-    res.redirect('/tournament');
+  Tournament.changePublic(req.params.tournamentId, public).then(function(){
+    let url;
+    if(req.params.eventId){
+      url = '/tournament/'+req.params.eventId;
+    }else{
+      url = '/tournament';
+    }
+    res.location(url);
+    res.redirect(url);
   });
 });
 

@@ -51,7 +51,7 @@ function getMatches(playername, shard, parent){
     printList(res, parent);
   });*/
   
-  let shards = ['pc-eu', 'pc-na', 'pc-ru', 'pc-as'];
+  let shards = ['pc-eu', 'pc-na', 'pc-ru', 'pc-as', 'pc-krjp', 'pc-jp', 'pc-oc', 'pc-kakao', 'pc-sea', 'pc-sa'];
   let p = [];
 
   for(let i=0;i<=shards.length-1;i++){

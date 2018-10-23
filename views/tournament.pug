@@ -56,7 +56,7 @@ block content
               td(style='width:50%')
                 a(href='/tournaments/edit/'+tournament._id) #{tournament.tournament}
               td(style='width:30%')
-                form(method='post', action='/tournaments/public/'+tournament._id, enctype='multipart/form-data')
+                form(method='post', action='/tournaments/public/'+tournament._id+((eventId) ? '/'+eventId : ''), enctype='multipart/form-data')
                   input.form-control(name='public', type='checkbox', onclick="this.form.submit();", checked=tournament.settings.public)
               td(style='width:20%')
                 if(user.username==tournament.username)
@@ -71,7 +71,7 @@ block content
                         input(type='checkbox', name='tournament', value=tournament._id, autocomplete='off')
                         i.oi.oi-plus
                         i.oi.oi-minus
-                    input.btn(type='hidden')
+                      input.btn(type='hidden')
                   form.btn-group.inline(method='post', action='/tournaments/remove/'+tournament._id, enctype='multipart/form-data')
                     input.btn(type='hidden')
                     button.btn.btn-danger(type='submit', name='submit')

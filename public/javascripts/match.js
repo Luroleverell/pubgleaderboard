@@ -1,6 +1,7 @@
 'use strict';
 module.exports = class Match {
   constructor(match, teamList) {
+    console.log(teamList)
     this.teamList_ = teamList;
     this.teamByRank_ = new Map();
     this.playerById_ = new Map();

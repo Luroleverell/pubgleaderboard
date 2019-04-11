@@ -1,9 +1,5 @@
-var SHARD;
-
 function loadFunction(){
   let username = document.getElementById('lu_username');
-  let shard = document.getElementById('shard');
-  SHARD = (shard) ? shard.value : '';
   let result = document.getElementById('result');
   let pathArray = window.location.pathname.split('/');
   let tournamentId = pathArray[pathArray.length-1];
@@ -11,7 +7,7 @@ function loadFunction(){
   
   if(username){
     username.addEventListener('change', function(e){
-      getMatches(username.value, SHARD, result);
+      getMatches(username.value, result);
     })
   }
   
@@ -45,17 +41,11 @@ function loadFunction(){
   }
 }
 
-function getMatches(playername, shard, parent){
-  /*let url = '/tournaments/pubgAPI/'+playername+'/'+shard;
-  fetchData(url, function(res){
-    printList(res, parent);
-  });*/
-  
-  let shards = ['pc-eu', 'pc-na', 'pc-ru', 'pc-as', 'pc-krjp', 'pc-jp', 'pc-oc', 'pc-kakao', 'pc-sea', 'pc-sa'];
+function getMatches(playername, parent){  
+  let shards = ['steam']//['pc-eu', 'pc-na', 'pc-ru', 'pc-as', 'pc-krjp', 'pc-jp', 'pc-oc', 'pc-kakao', 'pc-sea', 'pc-sa'];
   let p = [];
 
   for(let i=0;i<=shards.length-1;i++){
-    //let url = 'https://api.pubg.com/shards/'+shards[i]+'/players?filter[playerNames]='+playerName;
     let url = '/tournaments/pubgAPI/'+playername+'/'+shards[i]
     p.push(new Promise(function(resolve, reject){
       fetchData(url, function(res){
@@ -101,8 +91,14 @@ function updateLeaderboard(tournamentId, teamOnly){
       fetchData(url, function(user){
         let tour = new Tournament(tournament, user.username);
         
+        
         leaderboard.innerHTML = '';
-        leaderboard.appendChild(tour.getTeams);
+        if(tournament.settings.leaderboardLevel == 'team'){
+          leaderboard.appendChild(tour.getTeams);
+        }else{
+          leaderboard.appendChild(tour.getPlayers);
+        }
+        
         if(!teamOnly){
           leaderboardMatches.innerHTML = '';
           leaderboardMatches.appendChild(tour.getMatches);
@@ -111,6 +107,12 @@ function updateLeaderboard(tournamentId, teamOnly){
     });
   }
 }
+function testGamer(){
+  let url = 'https://www.gamer.no/api/v1/teams/39403/players';
+  fetchData(url, function(res){
+    //console.log(res);
+  })
+}
 
 function fetchData(url, callback){
 
@@ -118,6 +120,7 @@ function fetchData(url, callback){
   let res = 0;
   http.open("GET", url, true);
   http.setRequestHeader('Accept','application/vnd.api+json');
+  http.setRequestHeader('Authorization','nj)HL/#nF(Nd7f&h7ysbf34nf+2inmjDF7fnBuvXpi35=890fmdWifn43n');
   http.onreadystatechange = function() {
     if (http.readyState == 4) {
       if (http.status == 200) {
@@ -254,4 +257,26 @@ function collectCheckboxes(eventId){
     request.send(formData);
   }
   return false;
+}
+
+
+function fetchDataGamer(){
+  let url = 'https://www.gamer.no/api/v1/teams/39403';
+  let test = {
+    credentials: 'include',
+    headers: {
+      'Authorization': 'nj)HL/#nF(Nd7f&h7ysbf34nf+2inmjDF7fnBuvXpi35=890fmdWifn43n',
+      'Accept': 'application/json'
+      //'Accept-Encoding': 'gzip, deflate'
+    },
+    mode: 'cors',
+    method: 'GET'
+  };
+  
+  fetch(url, test)
+  .then(function(res){
+    return res.json();
+  }).then(function(res){
+    console.log(res);
+  })
 }

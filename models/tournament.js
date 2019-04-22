@@ -48,6 +48,7 @@ var TournamentSchema = mongoose.Schema({
     teamList: [],
     keepTeamId: false,
     eventStatus: false,
+    leaderboardLevel: '',
     individualKills: false
   },
   matches: {}
@@ -155,6 +156,7 @@ module.exports.changeKeepTeamId = function(tournamentId, newValue){
 module.exports.changeLeaderboardLevel = function(tournamentId, newValue){
   return new Promise(function(resolve, reject){
     Tournament.updateOne({_id: tournamentId}, {$set: {'settings.leaderboardLevel': newValue}}).exec(function(err){
+      console.log('Finner db record');
       if (err) return reject(err)
       else return resolve();
     });

@@ -171,8 +171,14 @@ router.post('/public/:tournamentId/:eventId?', [upload.fields([]), User.ensureAu
   });
 });
 
-router.get('/changeTeamName/:tournamentId/:matchId/:teamIndex/:teamName/:teamId', [upload.fields([]), User.ensureAuthenticated], function(req, res, next){
-  Tournament.changeTeamName(req.params.tournamentId, req.params.matchId, req.params.teamIndex, req.params.teamName, req.params.teamId).then(function(){
+router.get('/changeTeamName/:tournamentId/:matchId/:teamIndex/:teamId/:teamName?', [upload.fields([]), User.ensureAuthenticated], function(req, res, next){
+  let teamName;
+  if(req.params.teamName){
+    teamName = req.params.teamName;
+  }else{
+    teamName = '';
+  }
+  Tournament.changeTeamName(req.params.tournamentId, req.params.matchId, req.params.teamIndex, teamName, req.params.teamId).then(function(){
     res.json('');
   });
 });
@@ -193,7 +199,6 @@ router.get('/changeKeepTeamId/:tournamentId/:newValue', function(req, res){
 router.get('/changeLeaderboardLevel/:tournamentId/:newValue', function(req, res){
   let newLeaderboardLevel = req.params.newValue;
   Tournament.changeLeaderboardLevel(req.params.tournamentId, newLeaderboardLevel).then(function(doc){
-    console.log(doc);
     res.json('');
   })
 })

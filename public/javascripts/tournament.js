@@ -3,95 +3,46 @@
 class Tournament {
   constructor(tournament, username){
     this.matches_ = [];
-    this.teams_ = [];
+    this.teams_ = new Map();
     this.players_ = new Map();
-    this.playerList_ = [];
     this.tournamentId = tournament._id;
-    
     this.isAdmin = (tournament.username == username);
 
+    let settingsRankScoreTable = tournament.settings.placementPoints;
+    let settingsKillScore = tournament.settings.killPoints;
+
+    console.log(tournament);
     tournament.matches.forEach(function(m){
       m.team.forEach(function(t){
+        let teamName = t.teamName || t.teamId;
+        if(!this.teams_.has(teamName)) this.teams_.set(teamName, new Team(t))
+        this.teams_.get(teamName).addMatch(m,t,settingsRankScoreTable,settingsKillScore);
+        t.teamPoints = t.teamKills * settingsKillScore + settingsRankScoreTable[t.rank];
         
-        t.teamKillPoints = t.teamKills * tournament.settings.killPoints;
-        t.teamRankPoints = tournament.settings.placementPoints[t.rank];
-        t.teamPoints = t.teamKillPoints + t.teamRankPoints;
-        
-        let t2 = {};
-        t2.rank = t.rank;
-        t2.teamKillPoints = t.teamKillPoints;
-        t2.teamRankPoints = t.teamRankPoints;
-        t2.teamPoints = t.teamPoints;
-        t2.teamKills = t.teamKills;
-        t2.teamName = t.teamName;
-        t2.teamId = t.teamId;
-        t2.players = [];
-        
-        let teamIndex = this.teams_.findIndex(function(element){
-          return t.teamName == element.teamName;
-        });
-        
-        let team = {};
-        if(teamIndex == -1){
-          this.teams_.push(t2);
-          team = t2;
-        }else{
-          team = this.teams_[teamIndex];
-          team.teamKillPoints += t2.teamKillPoints;
-          team.teamRankPoints += t2.teamRankPoints;
-          team.teamPoints += t2.teamPoints;
-          team.teamKills += t2.teamKills;
-        }
-          
-        /*if(!this.teams_.has(t.teamName)) this.teams_.set(t.teamName, t2);
-        let team = this.teams_.get(t2.teamName);*/
-        
-        t.players.forEach(function(p){
-          let playerIndex = team.players.findIndex(function(element){
-            return p.playerName == element.playerName;
-          })
-          
-          if(!this.players_.has(p.playerId)) this.players_.set(p.playerId,{
-            playerName:p.playerName,
-            playerKills:0, 
-            playerDeaths:0, 
-            playerKillPoints:0, 
-            playerTeamRankPoints:0, 
-            playerTeamKillPoints:0, 
-            playerTeamPoints:0})
-          this.players_.get(p.playerId).playerKills += p.kills;
-          this.players_.get(p.playerId).playerDeaths += p.death;
-          this.players_.get(p.playerId).playerKillPoints += p.kills * tournament.settings.killPoints;
-          this.players_.get(p.playerId).playerTeamKillPoints += t2.teamKillPoints;
-          this.players_.get(p.playerId).playerTeamRankPoints += t2.teamRankPoints;
-          this.players_.get(p.playerId).playerTeamPoints += t2.teamKillPoints + t2.teamRankPoints;
-        
-        
-          let p2 = {};
-          p2.death = p.death;
-          p2.kills = p.kills;
-          p2.playerId = p.playerId;
-          p2.playerName = p.playerName;
-          
-          if(playerIndex == -1) team.players.push(p2);
-          else{
-            team.players[playerIndex].kills += p2.kills;
-            team.players[playerIndex].death += p2.death;
-          }
+        t.players.forEach(function(p){  
+          let newPlayer = new Player(p)
+          if(!this.players_.has(p.playerId)) this.players_.set(p.playerId, newPlayer)
+          this.players_.get(p.playerId).addMatch(m,t,settingsRankScoreTable,settingsKillScore);
+          this.teams_.get(teamName).addPlayer(newPlayer);
         }, this)
       }, this)
-      this.matches_.push(m);
+      
+      let newMatch = {
+        mapName: m.mapName, 
+        matchDate: m.matchDate,
+        matchId: m.matchId,
+        teams: m.team
+        };
+      this.matches_.push(newMatch);
     }, this)
     
     console.log(this.matches_);
+    console.log(this.teams_);
     console.log(this.players_);
     
-    this.teams_.sort(function(a,b){
-      return b.teamPoints-a.teamPoints;
-    });
     
     this.matches_.forEach(function(match){
-      match.team.sort(function(a,b){
+      match.teams.sort(function(a,b){
         return b.teamPoints - a.teamPoints;
       })
     })
@@ -123,36 +74,38 @@ class Tournament {
     let tb = document.createElement('tbody');
     t.appendChild(tb);
     
-    this.teams_.forEach(function(team, j){
+    let j = 0;
+    teamList.forEach(function(team){
+      j += 1;
       r = tb.insertRow();
       r.classList.add('hand', 'clickable');
       r.setAttribute('data-toggle', 'collapse');
       r.setAttribute('data-role', 'expander');
-      r.setAttribute('data-target', '.row'+team.teamId);
-      r.setAttribute('id', 'row'+team.teamId);
+      r.setAttribute('data-target', '.row'+team[1].teamId);
+      r.setAttribute('id', 'row'+team[1].teamId);
       
       c = r.insertCell();
       c.className = 'text-center';
-      c.innerHTML = j+1;
+      c.innerHTML = j;
       
       c = r.insertCell();
-      c.innerHTML = team.teamName;
-      
-      c = r.insertCell();
-      c.className = 'text-center';
-      c.innerHTML = team.teamKills;
+      c.innerHTML = team[1].teamName;
       
       c = r.insertCell();
       c.className = 'text-center';
-      c.innerHTML = team.teamKillPoints;
+      c.innerHTML = team[1].teamKills;
       
       c = r.insertCell();
       c.className = 'text-center';
-      c.innerHTML = team.teamRankPoints;
+      c.innerHTML = team[1].killPoints;
       
       c = r.insertCell();
       c.className = 'text-center';
-      c.innerHTML = team.teamPoints;
+      c.innerHTML = team[1].rankPoints;
+      
+      c = r.insertCell();
+      c.className = 'text-center';
+      c.innerHTML = team[1].teamPoints;
       
       c = r.insertCell();
       c.className = 'text-right';
@@ -184,7 +137,7 @@ class Tournament {
       c.setAttribute('style', 'padding-top:0;padding-bottom:0;');
       
       let div = document.createElement('div');
-      div.classList.add('collapse', 'container', 'row'+team.teamId);
+      div.classList.add('collapse', 'container', 'row'+team[1].teamId);
       
         t2 = document.createElement('table');
         t2.className = 'table';
@@ -204,7 +157,7 @@ class Tournament {
         let tb2 = document.createElement('tbody');
         t2.appendChild(tb2);
         
-        team.players.forEach(function(player){
+        team[1].players.forEach(function(player){
           
           r2 = tb2.insertRow();
           c2 = r2.insertCell();
@@ -218,7 +171,7 @@ class Tournament {
           
           c2 = r2.insertCell();
           c2.className = 'text-center';
-          c2.innerHTML = player.death;
+          c2.innerHTML = player.deaths;
         });
       
       div.appendChild(t2);
@@ -230,7 +183,7 @@ class Tournament {
 
   get getPlayers(){
     let thPlayer = ['Rank', 'Player', 'Killpoints', 'Rankpoints', 'Total points', ''];
-    let thMatch = ['', 'Map', 'Kills','Team kills', 'Rank', 'Deaths'];
+    let thMatch = ['', 'Map', 'Team players','Kills', 'Match placement','',''];
     let t, h, r, c, t2, h2, r2, c2, t3, h3, r3, c3;
     
     t = document.createElement('table');
@@ -249,12 +202,11 @@ class Tournament {
     let tb = document.createElement('tbody');
     t.appendChild(tb);
     
-    this.playerList_ = Array.from(this.players_).sort(function(a,b){
-      return b[1].playerTeamPoints - a[1].playerTeamPoints;
+    let playerList = Array.from(this.players_).sort(function(a,b){
+      return b[1].points - a[1].points;
     })
-    console.log(this.playerList_)
     
-    this.playerList_.forEach(function(player, j){
+    playerList.forEach(function(player, j){
       r = tb.insertRow();
       r.classList.add('hand', 'clickable');
       r.setAttribute('data-toggle', 'collapse');
@@ -271,15 +223,15 @@ class Tournament {
       
       c = r.insertCell();
       c.className = 'text-center';
-      c.innerHTML = player[1].playerTeamKillPoints;
+      c.innerHTML = player[1].killPoints;
       
       c = r.insertCell();
       c.className = 'text-center';
-      c.innerHTML = player[1].playerTeamRankPoints;
+      c.innerHTML = player[1].rankPoints;
       
       c = r.insertCell();
       c.className = 'text-center';
-      c.innerHTML = player[1].playerTeamPoints;
+      c.innerHTML = player[1].points;
       
       r = t.insertRow();
       c = r.insertCell();
@@ -299,7 +251,7 @@ class Tournament {
         
         for(let i=0; i<=thMatch.length - 1 ; i++){
           c2 = document.createElement('th');
-          if(i != 1) c2.className = 'text-center';
+          if(i != 1 && i != 2) c2.className = 'text-center';
           c2.innerHTML = thMatch[i];
           r2.appendChild(c2);
         }
@@ -307,7 +259,43 @@ class Tournament {
         let tb2 = document.createElement('tbody');
         t2.appendChild(tb2);
         
+        let sortedTeams = player[1].teams.sort(function(a,b){
+          return new Date(a.matchDate) - new Date(b.matchDate);
+        });
         
+        sortedTeams.forEach(function(team){
+          let div2;
+          
+          r2 = tb2.insertRow();
+          c2 = r2.insertCell();
+          
+          c2 = r2.insertCell();
+          div2 = document.createElement('div');
+          div2.innerHTML = team.mapName;
+          c2.appendChild(div2);
+          div2 = document.createElement('div');
+          div2.innerHTML = team.matchDate;
+          c2.appendChild(div2);
+          
+          c2 = r2.insertCell();
+          team.players.forEach(function(p){
+            div2 = document.createElement('div');
+            div2.innerHTML = p.playerName;
+            c2.appendChild(div2);
+          });
+          
+          c2 = r2.insertCell();
+          c2.className = 'text-center';
+          team.players.forEach(function(p){
+            div2 = document.createElement('div');
+            div2.innerHTML = p.kills;
+            c2.appendChild(div2);
+          });
+          
+          c2 = r2.insertCell();
+          c2.className = 'text-center';
+          c2.innerText = team.rank;
+        });
         
         div.appendChild(t2);
         c.appendChild(div);
@@ -430,7 +418,7 @@ class Tournament {
       let tb2 = document.createElement('tbody');
       t2.appendChild(tb2);
       
-      m.team.forEach(function(t, j){
+      m.teams.forEach(function(t, j){
         r2 = tb2.insertRow();
         c2 = r2.insertCell();
         c2.innerHTML = j+1;

@@ -67,7 +67,7 @@ function getMatches(playername, parent){
 }
 
 function changeTeamName(tournamentId, matchId, teamIndex, teamName, teamId){
-  let url = '/tournaments/changeTeamName/'+tournamentId+'/'+matchId+'/'+teamIndex+'/'+teamName+'/'+teamId;
+  let url = '/tournaments/changeTeamName/'+tournamentId+'/'+matchId+'/'+teamIndex+'/'+teamId+'/'+teamName;
   fetchData(url, function(){
     updateLeaderboard(tournamentId, true);
   });
@@ -105,12 +105,13 @@ function updateLeaderboard(tournamentId, teamOnly){
       fetchData(url, function(user){
         let tour = new Tournament(tournament, user.username);
         
-        
         leaderboard.innerHTML = '';
         if(tournament.settings.leaderboardLevel == 'team'){
           leaderboard.appendChild(tour.getTeams);
+          console.log('team');
         }else{
           leaderboard.appendChild(tour.getPlayers);
+          console.log('player');
         }
         
         if(!teamOnly){

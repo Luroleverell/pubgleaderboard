@@ -5,7 +5,7 @@ html(lang = 'en')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
-  body(onload='loadFunction(), testGamer()')
+  body(onload='loadFunction()')
     .container
       - var messages = getMessages()
       if messages
@@ -44,6 +44,8 @@ html(lang = 'en')
     script(src='/javascripts/bootstrap.js')
     script(src='/javascripts/script.js')
     script(src='/javascripts/tournament.js')
+    script(src='/javascripts/player.js')
+    script(src='/javascripts/team.js')
     script.
       $(document).ready(function(){
         $('[data-toggle="popover"]').popover({html:true});   

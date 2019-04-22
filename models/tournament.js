@@ -48,7 +48,7 @@ var TournamentSchema = mongoose.Schema({
     teamList: [],
     keepTeamId: false,
     eventStatus: false,
-    leaderboardLevel: 'Team'
+    individualKills: false
   },
   matches: {}
 });
@@ -246,7 +246,6 @@ module.exports.addMatch = function(tournamentId, matchId, teamList, callback){
                   fs.writeFile(newUrl, JSON.stringify(res), {flag:'w+'}, function(err){
                     if (err) throw err;
                     else {
-                      console.log('file created???')
                       callback();
                     }
                   });

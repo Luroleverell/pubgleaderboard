@@ -13,7 +13,7 @@ var passport = require('passport');
 //var MatchS  = require('../models/tournament');
 
 var placementPoints = [0,400,330,280,240,210,180,150,120,100,80,60,40,30,20,10,0,0,0,0,0  ,0,0,0,0,0,0,0,0,0,0  ,0,0,0,0,0,0,0,0,0,0  ,0,0,0,0,0,0,0,0,0,0  ,0,0,0,0,0,0,0,0,0,0  ,0,0,0,0,0,0,0,0,0,0  ,0,0,0,0,0,0,0,0,0,0  ,0,0,0,0,0,0,0,0,0,0  ,0,0,0,0,0,0,0,0,0,0];
-var killPoints = 16;
+//var killPoints = 16;
 
 router.post('/add', [upload.fields([]), User.ensureAuthenticated], function(req, res, next) {
   var newTournament = new Tournament({
@@ -22,12 +22,14 @@ router.post('/add', [upload.fields([]), User.ensureAuthenticated], function(req,
     public: false,
     settings: {
       placementPoints: placementPoints,
-      killPoints: killPoints,
+      killPoints: 0,
       keepTeamId: false,
-      eventStatus: false
+      eventStatus: false,
+      leaderboardLevel: 'team',
+      individualKills: false
     }
   });
-  
+  //testupdate
   Tournament.createTournament(newTournament, function(err, tournament){
     if(err) throw err;
   });

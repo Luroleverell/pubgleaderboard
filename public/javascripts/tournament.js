@@ -4,6 +4,8 @@ class Tournament {
   constructor(tournament, username){
     this.matches_ = [];
     this.teams_ = [];
+    this.players_ = new Map();
+    this.playerList_ = [];
     this.tournamentId = tournament._id;
     
     this.isAdmin = (tournament.username == username);
@@ -49,6 +51,22 @@ class Tournament {
             return p.playerName == element.playerName;
           })
           
+          if(!this.players_.has(p.playerId)) this.players_.set(p.playerId,{
+            playerName:p.playerName,
+            playerKills:0, 
+            playerDeaths:0, 
+            playerKillPoints:0, 
+            playerTeamRankPoints:0, 
+            playerTeamKillPoints:0, 
+            playerTeamPoints:0})
+          this.players_.get(p.playerId).playerKills += p.kills;
+          this.players_.get(p.playerId).playerDeaths += p.death;
+          this.players_.get(p.playerId).playerKillPoints += p.kills * tournament.settings.killPoints;
+          this.players_.get(p.playerId).playerTeamKillPoints += t2.teamKillPoints;
+          this.players_.get(p.playerId).playerTeamRankPoints += t2.teamRankPoints;
+          this.players_.get(p.playerId).playerTeamPoints += t2.teamKillPoints + t2.teamRankPoints;
+        
+        
           let p2 = {};
           p2.death = p.death;
           p2.kills = p.kills;
@@ -64,6 +82,9 @@ class Tournament {
       }, this)
       this.matches_.push(m);
     }, this)
+    
+    console.log(this.matches_);
+    console.log(this.players_);
     
     this.teams_.sort(function(a,b){
       return b.teamPoints-a.teamPoints;
@@ -173,7 +194,7 @@ class Tournament {
         r2 = h2.insertRow();
         r2.className = 'thead-gold';
         
-        for(let i=0 ; i<=thPlayer.length-1 ; i++){
+        for(let i=0; i<=thPlayer.length - 1 ; i++){
           c2 = document.createElement('th');
           if(i != 1) c2.className = 'text-center';
           c2.innerHTML = thPlayer[i];
@@ -207,6 +228,94 @@ class Tournament {
     return t;
   }
 
+  get getPlayers(){
+    let thPlayer = ['Rank', 'Player', 'Killpoints', 'Rankpoints', 'Total points', ''];
+    let thMatch = ['', 'Map', 'Kills','Team kills', 'Rank', 'Deaths'];
+    let t, h, r, c, t2, h2, r2, c2, t3, h3, r3, c3;
+    
+    t = document.createElement('table');
+    t.classList.add('table');
+    h = t.createTHead();
+    r = h.insertRow();
+    r.className = 'thead-gold';
+    
+    for(let i=0 ; i<=thPlayer.length-1 ; i++){
+      c = document.createElement('th');
+      if(i != 1) c.className = 'text-center';
+      c.innerHTML = thPlayer[i];
+      r.appendChild(c);
+    }
+    
+    let tb = document.createElement('tbody');
+    t.appendChild(tb);
+    
+    this.playerList_ = Array.from(this.players_).sort(function(a,b){
+      return b[1].playerTeamPoints - a[1].playerTeamPoints;
+    })
+    console.log(this.playerList_)
+    
+    this.playerList_.forEach(function(player, j){
+      r = tb.insertRow();
+      r.classList.add('hand', 'clickable');
+      r.setAttribute('data-toggle', 'collapse');
+      r.setAttribute('data-role', 'expander');
+      r.setAttribute('data-target', '.row' + player[0].replace('.',''));
+      r.setAttribute('id', 'row' + player[0].replace('.',''));
+      
+      c = r.insertCell();
+      c.className = 'text-center';
+      c.innerHTML = j+1;
+      
+      c = r.insertCell();
+      c.innerHTML = player[1].playerName;
+      
+      c = r.insertCell();
+      c.className = 'text-center';
+      c.innerHTML = player[1].playerTeamKillPoints;
+      
+      c = r.insertCell();
+      c.className = 'text-center';
+      c.innerHTML = player[1].playerTeamRankPoints;
+      
+      c = r.insertCell();
+      c.className = 'text-center';
+      c.innerHTML = player[1].playerTeamPoints;
+      
+      r = t.insertRow();
+      c = r.insertCell();
+      c.setAttribute('colspan', '7');
+      c.setAttribute('style', 'padding-top:0;padding-bottom:0;');
+      
+      let div = document.createElement('div');
+      div.classList.add('collapse', 'container', 'row'+player[0].replace('.',''));
+      
+        t2 = document.createElement('table');
+        t2.className = 'table';
+        
+        h2 = t2.createTHead();
+        
+        r2 = h2.insertRow();
+        r2.className = 'thead-gold';
+        
+        for(let i=0; i<=thMatch.length - 1 ; i++){
+          c2 = document.createElement('th');
+          if(i != 1) c2.className = 'text-center';
+          c2.innerHTML = thMatch[i];
+          r2.appendChild(c2);
+        }
+        
+        let tb2 = document.createElement('tbody');
+        t2.appendChild(tb2);
+        
+        
+        
+        div.appendChild(t2);
+        c.appendChild(div);
+    });
+
+    return t;
+  }
+  
   get getMatches(){
     let thMatch = ['Time', 'Map', ''];
     let thTeam = ['Rank', 'Team', 'Placement', 'Player', 'Kills', 'Points'];
@@ -296,7 +405,6 @@ class Tournament {
       divMap.classList.add('collapse', 'container', 'map'+m.matchId);
       
       c.appendChild(divMap);
-      
       
       r = tb.insertRow();
       c = r.insertCell();

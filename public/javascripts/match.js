@@ -60,9 +60,9 @@ module.exports = class Match {
       mapName: match.data.attributes.mapName,
       matchDate: match.data.attributes.createdAt,
       telemetry: this.telemetry_,
-      team: this.team_
+      team: this.team_,
+      players: this.playerById_
     }
-
   }
 
   get pullMatch(){

@@ -47,7 +47,8 @@ var TournamentSchema = mongoose.Schema({
     public: false,
     teamList: [],
     keepTeamId: false,
-    eventStatus: false
+    eventStatus: false,
+    leaderboardLevel: 'Team'
   },
   matches: {}
 });

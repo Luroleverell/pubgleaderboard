@@ -124,11 +124,7 @@ function updateLeaderboard(tournamentId, teamOnly){
 function testGamer(){
   let url = 'https://www.gamer.no/api/v1/teams/39403/players';
   fetchData(url, function(res){
-<<<<<<< HEAD
-    console.log(res);
-=======
     //console.log(res);
->>>>>>> da377f1019d7b0b89c353efd0b0230a100c891b4
   })
 }
 
@@ -138,11 +134,7 @@ function fetchData(url, callback){
   let res = 0;
   http.open("GET", url, true);
   http.setRequestHeader('Accept','application/vnd.api+json');
-<<<<<<< HEAD
   //http.setRequestHeader('Authorization','nj)HL/#nF(Nd7f&h7ysbf34nf+2inmjDF7fnBuvXpi35=890fmdWifn43n');
-=======
-  http.setRequestHeader('Authorization','nj)HL/#nF(Nd7f&h7ysbf34nf+2inmjDF7fnBuvXpi35=890fmdWifn43n');
->>>>>>> da377f1019d7b0b89c353efd0b0230a100c891b4
   http.onreadystatechange = function() {
     if (http.readyState == 4) {
       if (http.status == 200) {

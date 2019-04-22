@@ -1,22 +1,12 @@
 'use strict';
 module.exports = class Match {
   constructor(match, teamList) {
-    console.log(teamList)
     this.teamList_ = teamList;
     this.teamByRank_ = new Map();
     this.playerById_ = new Map();
     this.match_ = [];
     this.team_ = [];
-      
-    this.tournament_ = {
-      tournamentName: 'Test',
-      settings: {
-        placementPoints: this.placementPoints,
-        killPoints: this.killPoints
-      },
-      matches: []
-    }
-
+    
     match.included.forEach(function(t){
       if(t['type'] == 'participant'){
           let newPlayer = {
@@ -55,8 +45,11 @@ module.exports = class Match {
           rank: t.attributes.stats.rank,
           players: teamPlayers
         }
-        //if(!this.teamByRank_.has(t.attributes.stats.rank)) this.teamByRank_.set(t.attributes.stats.rank, newTeam_);
+        
         this.team_.push(newTeam);
+      }
+      if(t['type'] == 'asset'){
+        this.telemetry_ = t.attributes['URL'];
       }
     }, this);
     
@@ -66,10 +59,10 @@ module.exports = class Match {
       matchId: match.data.id,
       mapName: match.data.attributes.mapName,
       matchDate: match.data.attributes.createdAt,
+      telemetry: this.telemetry_,
       team: this.team_
     }
 
-    this.tournament_.matches.push(this.match_);
   }
 
   get pullMatch(){

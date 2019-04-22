@@ -292,6 +292,17 @@ class Tournament {
       c.setAttribute('colspan', '7');
       c.setAttribute('style', 'padding-top:0;padding-bottom:0;');
       
+      let divMap = document.createElement('div');
+      divMap.classList.add('collapse', 'container', 'map'+m.matchId);
+      
+      c.appendChild(divMap);
+      
+      
+      r = tb.insertRow();
+      c = r.insertCell();
+      c.setAttribute('colspan', '7');
+      c.setAttribute('style', 'padding-top:0;padding-bottom:0;');
+      
       div = document.createElement('div');
       div.classList.add('collapse', 'container', 'row'+m.matchId);
       

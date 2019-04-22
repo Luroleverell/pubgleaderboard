@@ -4,12 +4,13 @@ var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 var https = require('https');
 var zlib = require('zlib');
 var request= require('request');
-var SHARD_PC_EU = "pc-na";
+var SHARD = "steam";
 
 const http = require('http');
 const nconf = require('nconf');
 
 var User = require('../models/user');
+//var Telemetry = require('../models/telemetry');
 
 nconf.argv().env().file('keys.json');
 
@@ -19,6 +20,7 @@ const host = nconf.get('mongoHost');
 const port = nconf.get('mongoPort');
 const API_KEY = nconf.get('apiKey');
 const dbname = nconf.get('mongoDbname');
+const fs = require('fs');
 
 let uri = 'mongodb://'+mongoUser+':'+pass+'@'+host+':'+port+'/'+dbname;
 
@@ -49,7 +51,6 @@ var TournamentSchema = mongoose.Schema({
   },
   matches: {}
 });
-
 
 var Tournament = module.exports = mongoose.model('Tournament', TournamentSchema);
 
@@ -150,6 +151,15 @@ module.exports.changeKeepTeamId = function(tournamentId, newValue){
   })
 }
 
+module.exports.changeLeaderboardLevel = function(tournamentId, newValue){
+  return new Promise(function(resolve, reject){
+    Tournament.updateOne({_id: tournamentId}, {$set: {'settings.leaderboardLevel': newValue}}).exec(function(err){
+      if (err) return reject(err)
+      else return resolve();
+    });
+  })
+}
+
 module.exports.changePoint = function(tournamentId, index, newPoint){
   return new Promise(function(resolve, reject){
     let setter = {};
@@ -222,7 +232,26 @@ module.exports.addMatch = function(tournamentId, matchId, teamList, callback){
           }else{
             Tournament.updateOne({_id:tournamentId}, {$push: {matches: match}}).exec(function(err){
               if (err) throw err
-              else callback();
+              fetchData(match.telemetry, function(res){
+                //Telemetry.add(match.telemetry, function(err){
+                  //if (err) return err;
+                  //else callback();
+                //});
+                
+                //fetchData(url, function(res){
+                  let urlArr = match.telemetry.split('/')
+                  let name = urlArr[urlArr.length-1];
+                  let newUrl = 'uploads/telemetry/'+name;
+                  fs.writeFile(newUrl, JSON.stringify(res), {flag:'w+'}, function(err){
+                    if (err) throw err;
+                    else {
+                      console.log('file created???')
+                      callback();
+                    }
+                  });
+                  
+                //});
+              });
             });
           }
         });
@@ -238,16 +267,14 @@ module.exports.removeTourMatch = function(tourId, matchId, callback){
           {_id: tourId}, 
           {$pull: {matches: {matchId: matchId}}}
         ).exec(function(err){
-          updateSummary(tourId, function(err){
-            callback(err);
-          })
-        })
+          callback(err);
+        });
     }else{
       Tournament.remove(
           {_id: tourId}
         ).exec(function(err){
             callback(err);
-        })
+        });
     }
   }
 }
@@ -260,7 +287,7 @@ module.exports.getMatchesByPlayername = function(playername, shard, callback){
 }
 
 function getMatchById(matchId, teamNameList, callback){
-  let url= 'https://api.playbattlegrounds.com/shards/'+SHARD_PC_EU+'/matches/'+matchId;
+  let url= 'https://api.playbattlegrounds.com/shards/'+SHARD+'/matches/'+matchId;
   fetchData(url, function(res){
     let match = new Match(res, teamNameList);
     callback(match.pullMatch);

@@ -188,4 +188,12 @@ router.get('/changeKeepTeamId/:tournamentId/:newValue', function(req, res){
   })
 })
 
+router.get('/changeLeaderboardLevel/:tournamentId/:newValue', function(req, res){
+  let newLeaderboardLevel = req.params.newValue;
+  Tournament.changeLeaderboardLevel(req.params.tournamentId, newLeaderboardLevel).then(function(doc){
+    console.log(doc);
+    res.json('');
+  })
+})
+
 module.exports = router;

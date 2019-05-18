@@ -55,6 +55,7 @@ function getPlayers(tournament, division, type){
       player.get(pubgName).damage += Math.round(parseFloat(stats.damage_dealt));
       player.get(pubgName).assists += parseInt(stats.assists);
       player.get(pubgName).deaths += parseInt(stats.deaths);
+      player.get(pubgName).kd = Math.round(player.get(pubgName).kills / player.get(pubgName).deaths*10)/10;
     });
   });
   
@@ -73,8 +74,8 @@ function getPlayers(tournament, division, type){
   }).slice(0,5);
 
   let topKD = [...player.entries()].sort(function(a, b){
-    return b[1].kills/b[1].deaths - a[1].damage/a[1].deaths;
-  });
+    return b[1].kd - a[1].kd;
+  }).slice(0,5);
   
   if(type=='kills') return {topList: topKills, text: 'Top 5 frags', type:'kills'};
   if(type=='assists') return {topList: topAssists, text: 'Top 5 assists', type:'assists'};

@@ -38,7 +38,6 @@ function fetchDataGamer(url, callback) {
 
 function getPlayers(tournament, division, type){
   let div = [...tournament.divisions_.entries()][division];
-  console.log(division)
   
   let round = 0;
   for(j = 0; j<= div[1].rounds_.length; j++){
@@ -65,7 +64,7 @@ function getPlayers(tournament, division, type){
   }).slice(0,5);
 
   let topAssists = [...player.entries()].sort(function(a, b){
-    return b[1].assist - a[1].assist;
+    return b[1].assists - a[1].assists;
   }).slice(0,5);
   
   
@@ -77,8 +76,8 @@ function getPlayers(tournament, division, type){
     return b[1].kills/b[1].deaths - a[1].damage/a[1].deaths;
   });
   
-  if(type=='kills') return {topList: topKills, text: 'Top 5 killers'};
-  if(type=='assists') return {topList: topAssists, text: 'Top 5 assists'};
-  if(type=='damage') return {topList: topDamage, text: 'Top 5 damage'};
-  if(type=='kd') return {topList: topKD, text: 'Topp 5 kill/death'};
+  if(type=='kills') return {topList: topKills, text: 'Top 5 frags', type:'kills'};
+  if(type=='assists') return {topList: topAssists, text: 'Top 5 assists', type:'assists'};
+  if(type=='damage') return {topList: topDamage, text: 'Top 5 damage', type:'damage'};
+  if(type=='kd') return {topList: topKD, text: 'Topp 5 kill/death', type:'kd'};
 }

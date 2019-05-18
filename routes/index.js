@@ -33,7 +33,6 @@ router.get('/tournament/:event?', User.ensureAuthenticated,  function(req, res, 
 router.get('/nbg/:div?/:type?',function(req, res, next){
   if(req.params.div && req.params.type){
     Gamer.divisionStats(5890, req.params.div, req.params.type).then(function(stats){
-      console.log(stats)
       res.render('nbg', {title: 'NBG', stats: stats});
     });
   }

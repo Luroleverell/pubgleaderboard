@@ -11,11 +11,11 @@ html(lang = 'en')
         .container.stats
           .row
             .col.header.text-center #{stats.text}
-          each val in stats.topList
+          each list in stats.topList
             .row
               .col.breakline 
             .row
-              .col.name #{val[0]}
-              .col-3.score #{val[1].kills}
+              .col.name #{list[0]}
+              .col-3.score.text-center #{list[1][stats.type]}
           .row
             .col.breakline 

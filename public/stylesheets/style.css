@@ -78,6 +78,10 @@ break line - rgb(71,56,30)
   width:50%;
 }
 
+.nbg .hide{
+  display:none;
+}
+
 .nbg .header{
   border:1pt solid black;
   background-color:rgb(169,137,51,var(--cell_opascity));

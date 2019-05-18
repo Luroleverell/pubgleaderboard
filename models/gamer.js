@@ -5,7 +5,7 @@ nconf.argv().env().file('keys.json');
 const gamerApiKey = nconf.get('gamerAPIKey');
 var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 
-module.exports.divisionStats = function(tournamentId, division, type){
+module.exports.divisionStats = function(tournamentId, division){
   let tournament = '';
   let url = 'https://www.gamer.no/api/v1/tournaments/'+tournamentId;
   return new Promise(function(rs,rj){
@@ -16,7 +16,7 @@ module.exports.divisionStats = function(tournamentId, division, type){
           resolve();
         });
       }).then(function(){
-        let topList = getPlayers(tournament, division, type)
+        let topList = getPlayers(tournament, division)
         rs(topList);
       });
     });
@@ -36,7 +36,7 @@ function fetchDataGamer(url, callback) {
   request.send();
 }
 
-function getPlayers(tournament, division, type){
+function getPlayers(tournament, division){
   let div = [...tournament.divisions_.entries()][division];
   
   let round = 0;
@@ -68,7 +68,6 @@ function getPlayers(tournament, division, type){
     return b[1].assists - a[1].assists;
   }).slice(0,5);
   
-  
   let topDamage = [...player.entries()].sort(function(a, b){
     return b[1].damage - a[1].damage;
   }).slice(0,5);
@@ -77,8 +76,14 @@ function getPlayers(tournament, division, type){
     return b[1].kd - a[1].kd;
   }).slice(0,5);
   
-  if(type=='kills') return {topList: topKills, text: 'Top 5 frags', type:'kills'};
+  /*if(type=='kills') return {topList: topKills, text: 'Top 5 frags', type:'kills'};
   if(type=='assists') return {topList: topAssists, text: 'Top 5 assists', type:'assists'};
   if(type=='damage') return {topList: topDamage, text: 'Top 5 damage', type:'damage'};
-  if(type=='kd') return {topList: topKD, text: 'Topp 5 kill/death', type:'kd'};
+  if(type=='kd') return {topList: topKD, text: 'Topp 5 kill/death', type:'kd'};*/
+  
+  return [
+    {topList: topKills, text: 'Top 5 frags', type:'kills'},
+    {topList: topAssists, text: 'Top 5 assists', type:'assists'},
+    {topList: topDamage, text: 'Top 5 damage', type:'damage'}
+  ];
 }

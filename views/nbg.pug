@@ -5,17 +5,19 @@ html(lang = 'en')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
-  body#bodyNBG()
+  body#bodyNBG(onload='runShow()')
     .container.nbg.h-100
-      .row.justify-content-center.align-items-center.h-100
-        .container.stats
-          .row
-            .col.header.text-center #{stats.text}
-          each list in stats.topList
+      each stats,i in lists
+        .row.justify-content-center.align-items-center.h-100.hide
+          .container.stats
             .row
-              .col.breakline 
+              .col.header.text-center #{stats.text}
+            each list in stats.topList
+              .row
+                .col.breakline 
+              .row
+                .col.name #{list[0]}
+                .col-3.score.text-center #{list[1][stats.type]}
             .row
-              .col.name #{list[0]}
-              .col-3.score.text-center #{list[1][stats.type]}
-          .row
-            .col.breakline 
+              .col.breakline
+    script(src='/javascripts/script.js')

@@ -274,13 +274,61 @@ function collectCheckboxes(eventId){
   return false;
 }
 
+function runShow(){
+  var inputLists = document.getElementsByClassName('hide');
+  var lists = [];
+  for (let i = 0; i<inputLists.length; i++){
+    lists.push(inputLists[i]);
+    lists[i].style.opacity = 0.05;
+    lists[i].classList.add('hide');
+  }
+
+  var k = 0;
+ 
+  setInterval(function(){
+    setTimeout(function(){
+      unfade(lists[k]);
+      setTimeout(function(){
+        fade(lists[k]);
+        k++;
+        if(k==lists.length) k=0;
+      },5000);
+    },6000);
+  },6500);
+}
+
+function fade(element) {
+  var op = 1;
+  var timer = setInterval(function () {
+    if (op <= 0.05){
+      clearInterval(timer);
+      element.classList.add('hide');
+    }
+    element.style.opacity = op;
+    element.style.filter = 'alpha(opacity=' + op * 50 + ")";
+    op -= op * 0.05;
+  }, 10);
+}
+
+function unfade(element) {
+  var op = 0.05;
+  element.classList.remove('hide');
+  var timer = setInterval(function () {
+    if (op >= 1){
+      clearInterval(timer);
+    }
+    element.style.opacity = op;
+    element.style.filter = 'alpha(opacity=' + op * 50 + ")";
+    op += op * 0.05;
+  }, 10);
+}
 
 /*function fetchDataGamer(){
   let url = 'https://www.gamer.no/api/v1/teams/39403';
   let test = {
     credentials: 'include',
     headers: {
-      'Authorization': 'nj)HL/#nF(Nd7f&h7ysbf34nf+2inmjDF7fnBuvXpi35=890fmdWifn43n',
+      'Authorization': '',
       'Accept': 'application/json'
       //'Accept-Encoding': 'gzip, deflate'
     },

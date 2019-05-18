@@ -1,3 +1,5 @@
+/*@import url('https://fonts.googleapis.com/css?family=exo');*/
+
 div.success {
   padding:15px;
   margin-bottom:20px;
@@ -23,11 +25,15 @@ div.alert, div.error {
   background-image: linear-gradient(to top right, #f69e78, #a76c52);
 }
 
+.mapIcon{
+  filter: hue-rotation(180deg);
+}
+
 .hand{
   cursor:pointer;
 }
 
-body{
+.body:not(#bodyNBG){
   background-image:
     linear-gradient(#bcbcbc 1px, transparent 1px),
     linear-gradient(90deg, #bcbcbc 1px, transparent 1px),
@@ -35,6 +41,71 @@ body{
   background-size: 5px 5px, 5px 5px, 100% 100%;
   background-position: -1px -1px, -1px -1px, -1px -1px;
 }
+
+
+/*
+header sand - rgb(169,137,51)
+light brown - rgb(151,116,62)
+dark brown - rgb(108,75,22)
+break line - rgb(71,56,30)
+*/
+
+:root{
+  --cell_opascity: 90%;
+}
+
+#bodyNBG{
+  height:100vh;
+  /*background-color: black;*/
+  /*background-image: transparent;*/
+}
+.nbg{
+  font-family:'Exo';
+  /*height:100vh;*/
+}
+.nbg .row{
+  /*width:350pt;*/
+  font-size:14pt;
+  margin-left:0;
+  margin-right:0;
+  /*background-image: url(../images/pubg_buggie.jpg);
+  background-attachment: fixed;
+  background-position:-20% -40%;*/
+
+  /*display: inline-block;*/
+}
+.nbg .stats{
+  width:50%;
+}
+
+.nbg .header{
+  border:1pt solid black;
+  background-color:rgb(169,137,51,var(--cell_opascity));
+  margin:0pt 0pt;
+  padding:6pt;
+  color:black;
+}
+.nbg .name{
+  border:1pt solid black;
+  background-color:rgb(151,116,62,var(--cell_opascity));
+  margin:0pt 0pt;
+  padding:5pt;
+  color:white;
+}
+.nbg .score{
+  border:1pt solid black;
+  background-color:rgb(108,75,22,var(--cell_opascity));
+  margin:0pt 0pt;
+  padding:5pt;
+  color:white;
+}
+.nbg .breakline{
+  background-color:rgb(71,56,30);
+  margin:0pt 3pt;
+  height:4pt;
+}
+
+
 
 .matchList{
   display:table;
@@ -235,6 +306,13 @@ body{
   /*background-image: linear-gradient(to top right, #4a706f,#55bab6 );*/
   border-color: #4a706f;
   /*box-shadow: 0 0 0 1rem rgba(23, 162, 184, 0.5);*/
+}
+
+.btn-secondary{
+  color: #fff;
+  background-color: #c4c4c4;
+  background-image: linear-gradient(to top right, #c4c4c4, #535150);
+  border-color: #a76c52;
 }
 
 .btn-primary.focus {

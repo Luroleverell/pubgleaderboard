@@ -1,0 +1,21 @@
+doctype html
+html(lang = 'en')
+  head
+    title Welcome
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body#bodyNBG()
+    .container.nbg.h-100
+      .row.justify-content-center.align-items-center.h-100
+        .container.stats
+          .row
+            .col.header.text-center #{stats.text}
+          each val in stats.topList
+            .row
+              .col.breakline 
+            .row
+              .col.name #{val[0]}
+              .col-3.score #{val[1].kills}
+          .row
+            .col.breakline 

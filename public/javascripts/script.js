@@ -122,12 +122,12 @@ function updateLeaderboard(tournamentId, teamOnly){
     });
   }
 }
-function testGamer(){
+/*function testGamer(){
   let url = 'https://www.gamer.no/api/v1/teams/39403/players';
   fetchData(url, function(res){
     //console.log(res);
   })
-}
+}*/
 
 function fetchData(url, callback){
 
@@ -275,7 +275,7 @@ function collectCheckboxes(eventId){
 }
 
 
-function fetchDataGamer(){
+/*function fetchDataGamer(){
   let url = 'https://www.gamer.no/api/v1/teams/39403';
   let test = {
     credentials: 'include',
@@ -294,4 +294,12 @@ function fetchDataGamer(){
   }).then(function(res){
     console.log(res);
   })
-}
+}*/
+
+/*function formatDateTime(inDate, type){
+  let date = new Date(inDate);
+  
+  if(type == 'time' || type == 1){
+    return date.getHours() +':'+ 
+  }
+}*/

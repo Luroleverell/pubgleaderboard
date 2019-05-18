@@ -265,13 +265,17 @@ class Tournament {
         
         sortedTeams.forEach(function(team){
           let div2;
+          let mapIcon;
           
           r2 = tb2.insertRow();
           c2 = r2.insertCell();
           
           c2 = r2.insertCell();
           div2 = document.createElement('div');
-          div2.innerHTML = team.mapName;
+          mapIcon = document.createElement('img');
+          mapIcon.src = 'https://github.com/pubg/api-assets/raw/master/Assets/Icons/Map/'+team.mapName+'.png';
+          mapIcon.className = 'mapIcon';
+          div2.appendChild(mapIcon);
           c2.appendChild(div2);
           div2 = document.createElement('div');
           div2.innerHTML = team.matchDate;
@@ -330,10 +334,16 @@ class Tournament {
       r = tb.insertRow();
       
       c = r.insertCell();
-      c.innerHTML = m.matchDate;
+      let div = document.createElement('span');
+      div.classList.add('border','rounded', 'btn-secondary', 'px-2', 'py-3');
+      let img = document.createElement('img');
+      img.src = 'https://github.com/pubg/api-assets/raw/master/Assets/Icons/Map/'+m.mapName+'.png';
+      img.style.filter = 'brightness(200%)';
+      div.appendChild(img);
+      c.appendChild(div);
       
       c = r.insertCell();
-      c.innerHTML = m.mapName;
+      c.innerHTML = m.matchDate;
       
       c = r.insertCell();
       c.className = 'text-right';
@@ -344,7 +354,7 @@ class Tournament {
       form.setAttribute('action', '/tournaments/remove/'+this.tournamentId+'/'+m.matchId);
       form.setAttribute('enctype', 'multipart/form-data');
       
-      let div = document.createElement('div');
+      div = document.createElement('div');
       div.className = 'btn-group';
       
       let but = document.createElement('button');

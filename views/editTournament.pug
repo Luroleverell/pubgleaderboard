@@ -26,8 +26,8 @@ block content
               input.form-control(type='checkbox', id='keepTeamId', name='keepTeamId', checked=tournament.settings.keepTeamId)
             div Which level should leaderboard show?  
               select(type='select', id='leaderboardLevel', name='leaderboardLevel')
-                option(value='team') Team
-                option(value='player') Player
+                option(value='team' selected=(tournament.settings.leaderboardLevel=='team')) Team
+                option(value='player' selected=(tournament.settings.leaderboardLevel=='player')) Player
           else
             div #{tournament.settings.keepTeamId}
         else

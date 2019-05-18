@@ -29,7 +29,7 @@ router.post('/add', [upload.fields([]), User.ensureAuthenticated], function(req,
       individualKills: false
     }
   });
-  //testupdate
+
   Tournament.createTournament(newTournament, function(err, tournament){
     if(err) throw err;
   });
@@ -114,8 +114,8 @@ router.get('/edit/event/:id', function(req, res, next) {
 });
 
 router.post('/edit/:id', [
-  upload.fields([]), 
-  User.ensureAuthenticated
+    upload.fields([]), 
+    User.ensureAuthenticated
   ], function(req, res, next){
   
   Tournament.addMatch(req.params.id, req.body.matchId, req.body.teamNameList, function(exists){

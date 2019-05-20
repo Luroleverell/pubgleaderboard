@@ -56,26 +56,28 @@ break line - rgb(71,56,30)
 
 #bodyNBG{
   height:100vh;
-  /*background-color: black;*/
-  /*background-image: transparent;*/
 }
 .nbg{
   font-family:'Exo';
-  /*height:100vh;*/
+
 }
 .nbg .row{
-  /*width:350pt;*/
   font-size:14pt;
   margin-left:0;
   margin-right:0;
-  /*background-image: url(../images/pubg_buggie.jpg);
-  background-attachment: fixed;
-  background-position:-20% -40%;*/
-
-  /*display: inline-block;*/
 }
 .nbg .stats{
   width:50%;
+}
+
+.nbg .leaderboard{
+  float:left;
+}
+
+.nbg .teamName{
+  float:left;
+  font-size:10pt;
+  vertical-align:center;
 }
 
 .nbg .hide{

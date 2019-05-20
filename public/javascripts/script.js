@@ -274,7 +274,7 @@ function collectCheckboxes(eventId){
   return false;
 }
 
-function runShow(){
+function runShow(type){
   var inputLists = document.getElementsByClassName('hide');
   var lists = [];
   for (let i = 0; i<inputLists.length; i++){
@@ -282,19 +282,27 @@ function runShow(){
     lists[i].style.opacity = 0.05;
     lists[i].classList.add('hide');
   }
-
-  var k = 0;
- 
-  setInterval(function(){
+  
+  unfade(lists[k]);
+  if(type=='all'){
+    var k = 0;
+    var showTime = 10000;
+    
     setTimeout(function(){
+      fade(lists[k]);
+      k++;
+      if(k==lists.length) k=0;
+    },showTime);
+    
+    setInterval(function(){
       unfade(lists[k]);
       setTimeout(function(){
         fade(lists[k]);
         k++;
         if(k==lists.length) k=0;
-      },5000);
-    },6000);
-  },6500);
+      },showTime);
+    },showTime + 1500);
+  }
 }
 
 function fade(element) {

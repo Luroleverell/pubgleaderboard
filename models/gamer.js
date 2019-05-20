@@ -46,6 +46,7 @@ function getPlayers(tournament, division){
       break;
     }
   }
+  
   let player = new Map();
   div[1].rounds_[round].matches_.forEach(function(match){
     match.stats_.forEach(function(stats){
@@ -56,9 +57,10 @@ function getPlayers(tournament, division){
       player.get(pubgName).assists += parseInt(stats.assists);
       player.get(pubgName).deaths += parseInt(stats.deaths);
       player.get(pubgName).kd = Math.round(player.get(pubgName).kills / player.get(pubgName).deaths*10)/10;
+      player.get(pubgName).team = stats.team_name;
+      player.get(pubgName).teamShort = stats.team_abbreviation;
     });
   });
-  
   
   let topKills = [...player.entries()].sort(function(a, b){
     return b[1].kills - a[1].kills;
@@ -76,12 +78,10 @@ function getPlayers(tournament, division){
     return b[1].kd - a[1].kd;
   }).slice(0,5);
   
-  /*if(type=='kills') return {topList: topKills, text: 'Top 5 frags', type:'kills'};
-  if(type=='assists') return {topList: topAssists, text: 'Top 5 assists', type:'assists'};
-  if(type=='damage') return {topList: topDamage, text: 'Top 5 damage', type:'damage'};
-  if(type=='kd') return {topList: topKD, text: 'Topp 5 kill/death', type:'kd'};*/
+  let leaderboard = div[1].rounds_[round].results_;
   
   return [
+    {topList: leaderboard, text: 'Leaderboard', type:'leaderboard'},
     {topList: topKills, text: 'Top 5 frags', type:'kills'},
     {topList: topAssists, text: 'Top 5 assists', type:'assists'},
     {topList: topDamage, text: 'Top 5 damage', type:'damage'}

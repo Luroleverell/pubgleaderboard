@@ -5,19 +5,42 @@ html(lang = 'en')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
-  body#bodyNBG(onload='runShow()')
+  body#bodyNBG(onload="runShow('"+type+"')")
     .container.nbg.h-100
       each stats,i in lists
-        .row.justify-content-center.align-items-center.h-100.hide
-          .container.stats
-            .row
-              .col.header.text-center #{stats.text}
-            each list in stats.topList
+        if stats.type == 'leaderboard'
+          .row.justify-content-center.align-items-center.h-100.hide
+            .container
               .row
-                .col.breakline 
+                each item,j in stats.topList
+                  if j == 0 || j == 8
+                    .leaderboard.col-6
+                      div(class='top'+(8+j)).container
+                        .row
+                          .col.header.text-center Leaderboard
+                        each rowItem,k in stats.topList
+                          if k>=j && k<8+j
+                            .row
+                              .col.breakline 
+                            .row
+                              .col.name #{rowItem.signup.name}
+                              .col-3.score.text-center #{rowItem.score}
+                        .row
+                          .col.breakline
+        else
+          .row.justify-content-center.align-items-center.h-100.hide
+            .container.stats
               .row
-                .col.name #{list[0]}
-                .col-3.score.text-center #{list[1][stats.type]}
-            .row
-              .col.breakline
+                .col.header.text-center #{stats.text}
+              each item in stats.topList
+                .row
+                  .col.breakline 
+                .row
+                  .col.name
+                    .row 
+                      .col #{item[0]}
+                      .col-3.teamName.text-right.my-auto #{item[1].teamShort}
+                  .col-3.score.text-center #{item[1][stats.type]}
+              .row
+                .col.breakline
     script(src='/javascripts/script.js')

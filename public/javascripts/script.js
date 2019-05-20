@@ -282,10 +282,9 @@ function runShow(type){
     lists[i].style.opacity = 0.05;
     lists[i].classList.add('hide');
   }
-  
+  var k = 0;
   unfade(lists[k]);
   if(type=='all'){
-    var k = 0;
     var showTime = 10000;
     
     setTimeout(function(){

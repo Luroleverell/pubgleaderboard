@@ -48,20 +48,29 @@ function getPlayers(tournament, division){
   }
   
   let player = new Map();
-  div[1].rounds_[round].matches_.forEach(function(match){
-    match.stats_.forEach(function(stats){
-      let pubgName = stats.pubg_account_name;
-      if(!player.has(pubgName)) player.set(pubgName,{kills:0,damage:0,assists:0,deaths:0,kd:0});
-      player.get(pubgName).kills += parseInt(stats.kills);
-      player.get(pubgName).damage += Math.round(parseFloat(stats.damage_dealt));
-      player.get(pubgName).assists += parseInt(stats.assists);
-      player.get(pubgName).deaths += parseInt(stats.deaths);
-      player.get(pubgName).kd = Math.round(player.get(pubgName).kills / player.get(pubgName).deaths*10)/10;
-      player.get(pubgName).team = stats.team_name;
-      player.get(pubgName).teamShort = stats.team_abbreviation;
-    });
-  });
+  let results = new Map();
   
+  for(j = 0; j<=round; j++){
+    div[1].rounds_[j].matches_.forEach(function(match){
+      match.stats_.forEach(function(stats){
+        let pubgName = stats.pubg_account_name;
+        if(!player.has(pubgName)) player.set(pubgName,{kills:0,damage:0,assists:0,deaths:0,kd:0});
+        player.get(pubgName).kills += parseInt(stats.kills);
+        player.get(pubgName).damage += Math.round(parseFloat(stats.damage_dealt));
+        player.get(pubgName).assists += parseInt(stats.assists);
+        player.get(pubgName).deaths += parseInt(stats.deaths);
+        player.get(pubgName).kd = Math.round(player.get(pubgName).kills / player.get(pubgName).deaths*10)/10;
+        player.get(pubgName).team = stats.team_name;
+        player.get(pubgName).teamShort = stats.team_abbreviation;
+      });
+    });
+    
+    div[1].rounds_[j].results_.forEach(function(r){
+      if(!results.has(r.signup.teamId)) results.set(r.signup.teamId,{name: r.signup.name, score: 0});
+      results.get(r.signup.teamId).score += r.score;
+    });
+  }
+
   let topKills = [...player.entries()].sort(function(a, b){
     return b[1].kills - a[1].kills;
   }).slice(0,5);
@@ -78,7 +87,10 @@ function getPlayers(tournament, division){
     return b[1].kd - a[1].kd;
   }).slice(0,5);
   
-  let leaderboard = div[1].rounds_[round].results_;
+  let leaderboard = [...results.entries()].sort(function(a, b){
+    return b[1].score - a[1].score;
+  });
+  
   
   return [
     {topList: leaderboard, text: 'Leaderboard', type:'leaderboard'},

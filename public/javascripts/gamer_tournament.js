@@ -46,11 +46,14 @@ module.exports = class Gamer_Tournament{
                       let m = new Gamer_Match(match);
                       r.addMatch(m);
                       m.addStats(match.stats);
-                      match.stats.forEach(function(player){
-                        let p = new Gamer_Player(player);
-                        if (!that.players_.has(p.pubgName)) that.players_.set(p.pubgName, p);
-                        that.players_.get(p.pubgName).addMatch(player);
-                      });
+                      
+                      if(match.stats){
+                        match.stats.forEach(function(player){
+                          let p = new Gamer_Player(player);
+                          if (!that.players_.has(p.pubgName)) that.players_.set(p.pubgName, p);
+                          that.players_.get(p.pubgName).addMatch(player);
+                        });
+                      }
                     }
                   });
                   reso();

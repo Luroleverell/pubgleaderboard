@@ -1,3 +1,4 @@
+
 function loadFunction(){
   let username = document.getElementById('lu_username');
   let result = document.getElementById('result');
@@ -97,6 +98,9 @@ function changeLeaderboardLevel(tournamentId, newValue){
 function updateLeaderboard(tournamentId, teamOnly){
   let leaderboard = document.getElementById('leaderboard');
   let leaderboardMatches = document.getElementById('matches');
+  let btnLeaderboard = document.getElementById('btnLeaderboard');
+  let btnMatches = document.getElementById('btnMatches');
+  let btnSettings = document.getElementById('btnSettings');
   
   if(leaderboard){
     let url = '/tournaments/getTournament/'+tournamentId;
@@ -105,41 +109,55 @@ function updateLeaderboard(tournamentId, teamOnly){
       fetchData(url, function(user){
         let tour = new Tournament(tournament, user.username);
         
-        leaderboard.innerHTML = '';
-        if(tournament.settings.leaderboardLevel == 'team'){
-          leaderboard.appendChild(tour.getTeams);
-          console.log('team');
-        }else{
-          leaderboard.appendChild(tour.getPlayers);
-          console.log('player');
-        }
+        btnLeaderboard.addEventListener('click', function(){
+          leaderboard.innerHTML = '';
+          if(tournament.settings.leaderboardLevel == 'team'){
+            leaderboard.appendChild(tour.getTeams);
+          }else{
+            leaderboard.appendChild(tour.getPlayers);
+          }
+        });
         
-        if(!teamOnly){
-          leaderboardMatches.innerHTML = '';
-          leaderboardMatches.appendChild(tour.getMatches);
-        }
-      })
+        btnMatches.addEventListener('click', function(){
+          leaderboard.innerHTML = '';
+          leaderboard.appendChild(tour.getMatches);
+        });
+        
+        btnSettings.addEventListener('click', function(){
+          leaderboard.innerHTML = '';
+          //leaderboard.appendChild('');
+        });
+        
+        btnLeaderboard.click();
+      });
     });
+   
+    
+    /*let url = '/tournaments/getLeaderboard/'+tournamentId;
+    fetchData(url, function(tournament){
+      let urlUser = '/users/getUser';
+      fetchData(urlUser, function(user){
+        leaderboard.innerHTML = tournament;
+      });
+    }, 'html');*/
   }
 }
-/*function testGamer(){
-  let url = 'https://www.gamer.no/api/v1/teams/39403/players';
-  fetchData(url, function(res){
-    //console.log(res);
-  })
-}*/
 
-function fetchData(url, callback){
+
+function fetchData(url, callback, type){
 
   let http = new XMLHttpRequest();
   let res = 0;
   http.open("GET", url, true);
   http.setRequestHeader('Accept','application/vnd.api+json');
-  //http.setRequestHeader('Authorization','nj)HL/#nF(Nd7f&h7ysbf34nf+2inmjDF7fnBuvXpi35=890fmdWifn43n');
   http.onreadystatechange = function() {
     if (http.readyState == 4) {
       if (http.status == 200) {
-        res = JSON.parse(http.responseText);
+        if (type == 'html'){
+          res = http.responseText;
+        }else{
+          res = JSON.parse(http.responseText);
+        }
         callback(res);
       }
     }

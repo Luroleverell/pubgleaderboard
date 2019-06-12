@@ -3,6 +3,7 @@ var router = express.Router();
 var multer = require('multer');
 var upload = multer(); 
 var nconf = require('nconf');
+var pug = require('pug');
 var LocalStrategy = require('passport-local').Strategy;
 
 var User = require('../models/user');
@@ -95,7 +96,7 @@ router.get('/edit/:id', function(req, res, next) {
     if(!(matchList=='')){
       matchList.sort(function(a,b){
         return new Date(a.matchDate) - new Date(b.matchDate);
-      })
+      });
     }
     res.render('editTournament', {tournament: tournament, matches: matchList});
   });
@@ -109,7 +110,7 @@ router.get('/edit/event/:id', function(req, res, next) {
         return new Date(a.matchDate) - new Date(b.matchDate);
       })*/
     }
-    res.render('tournament', {event: event, tournaments: tournamentList|| ''});
+    res.render('tournament', {event: event, tournaments: tournamentList || ''});
   });
 });
 
@@ -132,8 +133,15 @@ router.post('/edit/:id', [
 router.get('/getTournament/:tournamentId', function(req, res, next){
   Tournament.getTournamentById(req.params.tournamentId).then(function(tournament){
     res.json(tournament);
-  })
-})
+  });
+});
+
+router.get('/getLeaderboard/:tournamentId', function(req, res, next){
+  Tournament.getTournamentById(req.params.tournamentId).then(function(tournament){
+    let leaderboard = pug.compileFile('views/leaderboard.pug');
+    res.send(leaderboard({tournament: tournament}));
+  });
+});
 
 router.post('/remove/:tourId/:matchId?', upload.fields([]), function(req, res, next){
   Tournament.getTournamentById(req.params.tourId).then(function(doc){

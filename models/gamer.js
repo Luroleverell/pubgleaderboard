@@ -40,7 +40,7 @@ function getPlayers(tournament, division){
   let div = [...tournament.divisions_.entries()][division];
   
   let round = 0;
-  for(j = 0; j<= div[1].rounds_.length; j++){
+  for(j = 0; j<= div[1].rounds_.length-1; j++){
     if(div[1].rounds_[j].results_ == undefined){
       round = j-1;
       break;

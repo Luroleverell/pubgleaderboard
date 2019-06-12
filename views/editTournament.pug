@@ -78,12 +78,13 @@ block content
               td.text-right
                 button.btn.peach-gradient(type='submit', name='submit') Add
     if(matches.length > 0)
-      h2 Leaderboard
+      .container#menu
+        .btn-group
+          .button.btn.btn-info#btnLeaderboard Leaderboard
+          .button.btn.btn-info#btnMatches Matches
+          .button.btn.btn-info#btnSettings Settings
+      br
       .container#leaderboard Calculating leaderboard...
       br
-      br
-      h2 Matches added to this leaderboard:  
-      .container#matches Retriving matches...
-      
     else
       div There are no matches added to this tournament.

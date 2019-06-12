@@ -33,13 +33,14 @@ div.alert, div.error {
   cursor:pointer;
 }
 
-.body:not(#bodyNBG){
+body:not(#bodyNBG){
   background-image:
     linear-gradient(#bcbcbc 1px, transparent 1px),
     linear-gradient(90deg, #bcbcbc 1px, transparent 1px),
     linear-gradient(to right, #bcbcbc, #e4e4e4 20%, #e4e4e4 80%, #bcbcbc);
   background-size: 5px 5px, 5px 5px, 100% 100%;
   background-position: -1px -1px, -1px -1px, -1px -1px;
+  overflow-y:scroll;
 }
 
 
@@ -110,8 +111,6 @@ break line - rgb(71,56,30)
   margin:0pt 3pt;
   height:4pt;
 }
-
-
 
 .matchList{
   display:table;

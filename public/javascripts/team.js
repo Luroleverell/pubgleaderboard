@@ -11,7 +11,6 @@ class Team{
   }
   
   addMatch(match, team, rankScore, killScore){
-    console.log(team.teamKillPoints);
     this.matches_.push(match);
     this.teamKills_ += team.teamKills;
     this.killPoints_ += team.teamKills * killScore;

@@ -11,7 +11,6 @@ class Tournament {
     let settingsRankScoreTable = tournament.settings.placementPoints;
     let settingsKillScore = tournament.settings.killPoints;
 
-    console.log(tournament);
     tournament.matches.forEach(function(m){
       m.team.forEach(function(t){
         let teamName = t.teamName || t.teamId;
@@ -36,11 +35,6 @@ class Tournament {
       this.matches_.push(newMatch);
     }, this)
     
-    console.log(this.matches_);
-    console.log(this.teams_);
-    console.log(this.players_);
-    
-    
     this.matches_.forEach(function(match){
       match.teams.sort(function(a,b){
         return b.teamPoints - a.teamPoints;
@@ -56,6 +50,12 @@ class Tournament {
     let thTeam = ['Rank', 'Team', 'Total kills', 'Killpoints', 'Rankpoints', 'Total points', ''];
     let thPlayer = ['', 'Playername', 'Kills', 'Deaths'];
     let t, h, r, c, t2, h2, r2, c2, t3, h3, r3, c3;
+    
+    let divMain = document.createElement('div');
+    h = document.createElement('h2');
+    h.innerText = 'Leaderboard';
+    divMain.appendChild(h);
+    
     t = document.createElement('table');
     t.classList.add('table');
     
@@ -178,13 +178,19 @@ class Tournament {
       c.appendChild(div);
     });
 
-    return t;
+    divMain.appendChild(t);
+    return divMain;
   }
 
   get getPlayers(){
     let thPlayer = ['Rank', 'Player', 'Killpoints', 'Rankpoints', 'Total points', ''];
     let thMatch = ['', 'Map', 'Team players','Kills', 'Match placement','',''];
     let t, h, r, c, t2, h2, r2, c2, t3, h3, r3, c3;
+    
+    let divMain = document.createElement('div');
+    h = document.createElement('h2');
+    h.innerText = 'Leaderboard';
+    divMain.appendChild(h);
     
     t = document.createElement('table');
     t.classList.add('table');
@@ -305,13 +311,19 @@ class Tournament {
         c.appendChild(div);
     });
 
-    return t;
+    divMain.appendChild(t);
+    return divMain;
   }
   
   get getMatches(){
     let thMatch = ['Time', 'Map', ''];
     let thTeam = ['Rank', 'Team', 'Placement', 'Player', 'Kills', 'Points'];
     let t, h, r, c, t2, h2, r2, c2, t3, h3, r3, c3;
+    
+    let divMain = document.createElement('div');
+    h = document.createElement('h2');
+    h.innerText = 'Matches';
+    divMain.appendChild(h);
     
     t3 = document.createElement('table');
     t3.className = 'table';
@@ -335,10 +347,11 @@ class Tournament {
       
       c = r.insertCell();
       let div = document.createElement('span');
-      div.classList.add('border','rounded', 'btn-secondary', 'px-2', 'py-3');
+      //div.classList.add('1border','rounded', 'btn-secondary2', 'px-2', 'py-3');
+      div.classList.add('px-2', 'py-3');
       let img = document.createElement('img');
       img.src = 'https://github.com/pubg/api-assets/raw/master/Assets/Icons/Map/'+m.mapName+'.png';
-      img.style.filter = 'brightness(200%)';
+      //img.style.filter = 'brightness(200%)';
       div.appendChild(img);
       c.appendChild(div);
       
@@ -474,6 +487,7 @@ class Tournament {
       c.appendChild(div);
     }, this)
     
-    return t3;
+    divMain.appendChild(t3);
+    return divMain;
   }
 }

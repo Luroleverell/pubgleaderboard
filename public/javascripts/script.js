@@ -96,13 +96,13 @@ function changeLeaderboardLevel(tournamentId, newValue){
 }
 
 function updateLeaderboard(tournamentId, teamOnly){
-  let leaderboard = document.getElementById('leaderboard');
+  let leaderboardWrapper = document.getElementById('leaderboard');
   let leaderboardMatches = document.getElementById('matches');
   let btnLeaderboard = document.getElementById('btnLeaderboard');
   let btnMatches = document.getElementById('btnMatches');
   let btnSettings = document.getElementById('btnSettings');
   
-  if(leaderboard){
+  if(leaderboardWrapper){
     let url = '/tournaments/getTournament/'+tournamentId;
     fetchData(url, function(tournament){
       let url = '/users/getUser';
@@ -110,36 +110,31 @@ function updateLeaderboard(tournamentId, teamOnly){
         let tour = new Tournament(tournament, user.username);
         
         btnLeaderboard.addEventListener('click', function(){
-          leaderboard.innerHTML = '';
+          leaderboardWrapper.innerHTML = '';
           if(tournament.settings.leaderboardLevel == 'team'){
-            leaderboard.appendChild(tour.getTeams);
+            leaderboardWrapper.appendChild(tour.getTeams);
           }else{
-            leaderboard.appendChild(tour.getPlayers);
+            leaderboardWrapper.appendChild(tour.getPlayers);
           }
         });
         
         btnMatches.addEventListener('click', function(){
-          leaderboard.innerHTML = '';
-          leaderboard.appendChild(tour.getMatches);
+          leaderboardWrapper.innerHTML = '';
+          leaderboardWrapper.appendChild(tour.getMatches);
         });
         
         btnSettings.addEventListener('click', function(){
-          leaderboard.innerHTML = '';
-          //leaderboard.appendChild('');
+          leaderboardWrapper.innerHTML = '';
+          leaderboardWrapper.appendChild(tour.getSettings);
+          /*fetchData('/tournaments/getLeaderboard/'+tournamentId, function(leaderboard){
+            leaderboardWrapper.innerHTML = leaderboard;
+            console.log(leaderboard)
+          }, 'html');*/
         });
         
         btnLeaderboard.click();
       });
     });
-   
-    
-    /*let url = '/tournaments/getLeaderboard/'+tournamentId;
-    fetchData(url, function(tournament){
-      let urlUser = '/users/getUser';
-      fetchData(urlUser, function(user){
-        leaderboard.innerHTML = tournament;
-      });
-    }, 'html');*/
   }
 }
 

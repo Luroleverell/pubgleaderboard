@@ -20,7 +20,16 @@ const host = nconf.get('mongoHost');
 const port = nconf.get('mongoPort');
 const API_KEY = nconf.get('apiKey');
 const dbname = nconf.get('mongoDbname');
+
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage({
+  projectId: 'pubg-leaderboard-207106',
+  keyFilename: 'PUBG leaderboard-6d7d0557edcd.json'
+});
+const myBucket = storage.bucket('pubgleague');
+
 const fs = require('fs');
+
 
 let uri = 'mongodb://'+mongoUser+':'+pass+'@'+host+':'+port+'/'+dbname;
 
@@ -236,23 +245,16 @@ module.exports.addMatch = function(tournamentId, matchId, teamList, callback){
             Tournament.updateOne({_id:tournamentId}, {$push: {matches: match}}).exec(function(err){
               if (err) throw err
               fetchData(match.telemetry, function(res){
-                //Telemetry.add(match.telemetry, function(err){
-                  //if (err) return err;
-                  //else callback();
-                //});
-                
-                //fetchData(url, function(res){
-                  let urlArr = match.telemetry.split('/')
-                  let name = urlArr[urlArr.length-1];
-                  let newUrl = 'uploads/telemetry/'+name;
-                  fs.writeFile(newUrl, JSON.stringify(res), {flag:'w+'}, function(err){
-                    if (err) throw err;
-                    else {
-                      callback();
-                    }
-                  });
-                  
-                //});
+                let urlArr = match.telemetry.split('/')
+                let name = urlArr[urlArr.length-1];
+                //let newUrl = 'uploads/telemetry/'+name;
+                let newUrl = getPublicUrl(name);
+                fs.writeFile(newUrl, JSON.stringify(res), {flag:'w+'}, function(err){
+                  if (err) throw err;
+                  else {
+                    callback();
+                  }
+                });
               });
             });
           }
@@ -260,6 +262,10 @@ module.exports.addMatch = function(tournamentId, matchId, teamList, callback){
       });
     });
   }
+}
+
+function getPublicUrl(filename){
+  return 'https://storage.googleapis.com/pubgleague/'+filename;
 }
 
 module.exports.removeTourMatch = function(tourId, matchId, callback){
@@ -287,6 +293,14 @@ module.exports.getMatchesByPlayername = function(playername, shard, callback){
     callback(res);
   });
 }
+
+module.exports.testBucket = function(){
+  return new Promise(function(resolve, reject){
+    let image = getPublicUrl('flashpoint.png')
+    resolve(image);
+  });
+}
+
 
 function getMatchById(matchId, teamNameList, callback){
   let url= 'https://api.playbattlegrounds.com/shards/'+SHARD+'/matches/'+matchId;
@@ -329,3 +343,5 @@ function getIndexByProperty(data, key, value) {
   }
   return -1;
 }
+
+

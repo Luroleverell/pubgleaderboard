@@ -40,5 +40,11 @@ router.get('/nbg/:div?/:type?',function(req, res, next){
   }
 });
 
+router.get('/testBucket', function(req, res){
+  Tournament.testBucket().then(function(path){
+    res.send('<img src="'+path+'" width=100 height=100>');
+  })
+});
+
 module.exports = router;
 

@@ -30,6 +30,7 @@ var app = express();
 var sessionStore = new session.MemoryStore;
 
 nconf.argv().env().file('keys.json');
+//nconf.argv().env().file('custom','PUBG leaderboard-6d7d0557edcd.json');
 
 const user = nconf.get('mongoUser');
 const pass = nconf.get('mongoPass');

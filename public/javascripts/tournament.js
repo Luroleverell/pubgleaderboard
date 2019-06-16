@@ -8,20 +8,20 @@ class Tournament {
     this.tournamentId = tournament._id;
     this.isAdmin = (tournament.username == username);
 
-    let settingsRankScoreTable = tournament.settings.placementPoints;
-    let settingsKillScore = tournament.settings.killPoints;
+    this.settingsRankScoreTable_ = tournament.settings.placementPoints;
+    this.settingsKillScore_ = tournament.settings.killPoints;
 
     tournament.matches.forEach(function(m){
       m.team.forEach(function(t){
         let teamName = t.teamName || t.teamId;
         if(!this.teams_.has(teamName)) this.teams_.set(teamName, new Team(t))
-        this.teams_.get(teamName).addMatch(m,t,settingsRankScoreTable,settingsKillScore);
-        t.teamPoints = t.teamKills * settingsKillScore + settingsRankScoreTable[t.rank];
+        this.teams_.get(teamName).addMatch(m, t, this.settingsRankScoreTable_, this.settingsKillScore_);
+        t.teamPoints = t.teamKills * this.settingsKillScore_ + this.settingsRankScoreTable_[t.rank];
         
         t.players.forEach(function(p){  
           let newPlayer = new Player(p)
           if(!this.players_.has(p.playerId)) this.players_.set(p.playerId, newPlayer)
-          this.players_.get(p.playerId).addMatch(m,t,settingsRankScoreTable,settingsKillScore);
+          this.players_.get(p.playerId).addMatch(m, t, this.settingsRankScoreTable_, this.settingsKillScore_);
           this.teams_.get(teamName).addPlayer(newPlayer);
         }, this)
       }, this)
@@ -44,6 +44,10 @@ class Tournament {
     this.matches_.sort(function(a,b){
       return new Date(a.matchDate) - new Date(b.matchDate);
     })
+    
+    this.teamList_ = [...this.teams_].sort(function(a,b){
+      return b[1].teamPoints - a[1].teamPoints;
+    });
   }
   
   get getTeams(){
@@ -75,7 +79,7 @@ class Tournament {
     t.appendChild(tb);
     
     let j = 0;
-    teamList.forEach(function(team){
+    this.teamList_.forEach(function(team){
       j += 1;
       r = tb.insertRow();
       r.classList.add('hand', 'clickable');
@@ -488,6 +492,27 @@ class Tournament {
     }, this)
     
     divMain.appendChild(t3);
+    return divMain;
+  }
+  
+  get getSettings(){
+    
+    let divMain = document.createElement('div');
+    let h = document.createElement('h2');
+    h.innerText = 'Settings';
+    divMain.appendChild(h);
+    
+    let scoreWrapper = document.createElement('div');
+    this.settingsRankScoreTable_.forEach(function(score,i){
+      if(i>=1){
+        let divScore = document.createElement('div');
+        //divScore.classList.add('');
+        divScore.innerText = score;
+        scoreWrapper.appendChild(divScore);
+      }
+    }, this);
+    
+    divMain.appendChild(scoreWrapper);
     return divMain;
   }
 }

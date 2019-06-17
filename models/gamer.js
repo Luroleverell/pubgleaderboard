@@ -20,7 +20,7 @@ module.exports.divisionStats = function(tournamentId, division){
         rs(topList);
       });
     });
-  });
+  })
 }
 
 function fetchDataGamer(url, callback) {

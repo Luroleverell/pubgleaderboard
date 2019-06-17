@@ -31,7 +31,8 @@ html(lang = 'en')
           .row.justify-content-center.align-items-center.h-100.hide
             .container.stats
               .row
-                .col.header.text-center #{stats.text}
+                if stats.topList.length > 1
+                  .col.header.text-center #{stats.text}
               each item in stats.topList
                 .row
                   .col.breakline 
@@ -41,6 +42,7 @@ html(lang = 'en')
                       .col #{item[0]}
                       .col-4.teamName.text-right.my-auto #{item[1].teamShort}
                   .col-3.score.text-center #{item[1][stats.type]}
-              .row
-                .col.breakline
+              if stats.topList.length > 1
+                .row
+                  .col.breakline
     script(src='/javascripts/script.js')

@@ -5,6 +5,7 @@ html(lang = 'en')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/getJsonFromUrl.js')
   body(onload='loadFunction()')
     .container
       - var messages = getMessages()
@@ -46,6 +47,23 @@ html(lang = 'en')
     script(src='/javascripts/tournament.js')
     script(src='/javascripts/player.js')
     script(src='/javascripts/team.js')
+    script(src='/javascripts/addMatch.js')
+    
+    script(src='/javascripts/replay_action_map.js')
+    script(src='/javascripts/replay_character.js')
+    script(src='/javascripts/replay_equipment.js')
+    script(src='/javascripts/replay_game_state.js')
+    script(src='/javascripts/replay_infobox.js')
+    script(src='/javascripts/replay_item.js')
+    script(src='/javascripts/replay_location.js')
+    script(src='/javascripts/replay_match.js')
+    script(src='/javascripts/replay_matchinfo.js')
+    script(src='/javascripts/replay_player.js')
+    script(src='/javascripts/replay_scoreboard.js')
+    script(src='/javascripts/replay_slider.js')
+    script(src='/javascripts/replay_telemetry_event.js')
+    script(src='/javascripts/replay_weapon.js')
+    
     script.
       $(document).ready(function(){
         $('[data-toggle="popover"]').popover({html:true});   

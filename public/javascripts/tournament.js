@@ -6,11 +6,13 @@ class Tournament {
     this.teams_ = new Map();
     this.players_ = new Map();
     this.tournamentId = tournament._id;
-    this.isAdmin = (tournament.username == username);
+    this.isAdmin_ = (tournament.username == username);
 
     this.settingsRankScoreTable_ = tournament.settings.placementPoints;
     this.settingsKillScore_ = tournament.settings.killPoints;
-
+    
+    this.leaderboardLevel_ = tournament.settings.leaderboardLevel;
+    
     tournament.matches.forEach(function(m){
       m.team.forEach(function(t){
         let teamName = t.teamName || t.teamId;
@@ -30,7 +32,8 @@ class Tournament {
         mapName: m.mapName, 
         matchDate: m.matchDate,
         matchId: m.matchId,
-        teams: m.team
+        teams: m.team,
+        telemetry: m.telemetry
         };
       this.matches_.push(newMatch);
     }, this)
@@ -284,7 +287,7 @@ class Tournament {
           div2 = document.createElement('div');
           mapIcon = document.createElement('img');
           mapIcon.src = 'https://github.com/pubg/api-assets/raw/master/Assets/Icons/Map/'+team.mapName+'.png';
-          mapIcon.className = 'mapIcon';
+          mapIcon.style.filter = 'brightness(50%)';
           div2.appendChild(mapIcon);
           c2.appendChild(div2);
           div2 = document.createElement('div');
@@ -355,7 +358,7 @@ class Tournament {
       div.classList.add('px-2', 'py-3');
       let img = document.createElement('img');
       img.src = 'https://github.com/pubg/api-assets/raw/master/Assets/Icons/Map/'+m.mapName+'.png';
-      //img.style.filter = 'brightness(200%)';
+      img.style.filter = 'brightness(50%)';
       div.appendChild(img);
       c.appendChild(div);
       
@@ -366,13 +369,17 @@ class Tournament {
       c.className = 'text-right';
       c.innerHTML = '';
       
-      let form = document.createElement('form');
+      /*let form = document.createElement('form');
       form.setAttribute('method', 'post');
       form.setAttribute('action', '/tournaments/remove/'+this.tournamentId+'/'+m.matchId);
-      form.setAttribute('enctype', 'multipart/form-data');
+      form.setAttribute('enctype', 'multipart/form-data');*/
       
       div = document.createElement('div');
       div.className = 'btn-group';
+      
+      let divReplay = document.createElement('div');
+      divReplay.innerText = 'Loading match data... (this will take a few minutes)';
+      //divMap.appendChild(divReplay);
       
       let but = document.createElement('button');
       but.classList.add('btn', 'btn-info');
@@ -383,6 +390,10 @@ class Tournament {
       let icon = document.createElement('span');
       icon.classList.add('oi', 'oi-media-play');
       but.appendChild(icon);
+      but.addEventListener('click', function(){
+        let telemetry = m.telemetry.split('/');
+        getReplay(telemetry[telemetry.length-1].split('.')[0], divReplay);
+      }, {once:true});
       div.appendChild(but);
       
       but = document.createElement('button');
@@ -399,17 +410,22 @@ class Tournament {
       
       but = document.createElement('button');
       but.classList.add('btn', 'btn-danger');
-      but.setAttribute('type', 'submit');
+      /*but.setAttribute('type', 'submit');
       but.setAttribute('name', 'submit');
-      but.setAttribute('value', 'submit');
+      but.setAttribute('value', 'submit');*/
       icon = document.createElement('span');
       icon.classList.add('oi', 'oi-trash');
       but.appendChild(icon);
+      but.addEventListener('click', function(){
+        postData('/tournaments/remove/'+this.tournamentId+'/'+m.matchId, '',function(){
+          updateLeaderboard(this.tournamentId, 'matches');
+        }.bind(this));
+      }.bind(this));
       
       if(this.isAdmin) div.appendChild(but);
-      form.appendChild(div);
-      
-      c.appendChild(form);
+      //form.appendChild(div);
+      //c.appendChild(form);
+      c.appendChild(div);
       
       r = tb.insertRow();
       c = r.insertCell();
@@ -419,6 +435,9 @@ class Tournament {
       let divMap = document.createElement('div');
       divMap.classList.add('collapse', 'container', 'map'+m.matchId);
       
+      //let divReplay = document.createElement('div');
+      //divReplay.innerText = 'Loading match data... (this will take a few minutes)';
+      divMap.appendChild(divReplay);
       c.appendChild(divMap);
       
       r = tb.insertRow();
@@ -497,22 +516,100 @@ class Tournament {
   
   get getSettings(){
     
-    let divMain = document.createElement('div');
-    let h = document.createElement('h2');
+    let divMain = ce('div');
+    let h = ce('h2');
     h.innerText = 'Settings';
     divMain.appendChild(h);
     
-    let scoreWrapper = document.createElement('div');
-    this.settingsRankScoreTable_.forEach(function(score,i){
-      if(i>=1){
-        let divScore = document.createElement('div');
-        //divScore.classList.add('');
-        divScore.innerText = score;
-        scoreWrapper.appendChild(divScore);
+    let scoreWrapper = ce('div', 'container');
+    
+    //-----LeaderboardLevel
+    let leaderboardLevelRow = ce('div','row');
+    let leaderboardLevelHeader = ce('div', 'col-3');
+    leaderboardLevelHeader.innerText = 'Show leaderboard for team or individual players'
+    
+    let leaderboardLevel = ce('div','col-2');
+    if(this.isAdmin){
+      let inputLeaderboardLevel = ce('select','form-control');
+      let o = ce('option');
+      o.innerText = 'player';
+      inputLeaderboardLevel.options.add(o,1);
+      o = ce('option');
+      o.innerText = 'team';
+      inputLeaderboardLevel.options.add(o,2);
+      inputLeaderboardLevel.name = 'leaderboardLevel';
+      inputLeaderboardLevel.value = this.leaderboardLevel_;
+    
+      leaderboardLevel.appendChild(inputLeaderboardLevel);
+    }else{
+      leaderboardLevel.innerText = this.leaderboardLevel_;
+    }
+    leaderboardLevelRow.appendChild(leaderboardLevelHeader);
+    leaderboardLevelRow.appendChild(leaderboardLevel);
+    scoreWrapper.appendChild(leaderboardLevelRow);
+    
+    //-----KillScore
+    let killScoreRow = ce('div','row');
+    let killScoreHeader = ce('div','col-3');
+    killScoreHeader.innerText = 'Killpoints'
+    killScoreRow.appendChild(killScoreHeader)
+    
+    let killScore = ce('div', 'col-2');
+    if(this.isAdmin){
+      let inputKill = ce('input', 'form-control');
+      inputKill.value = this.settingsKillScore_;
+      inputKill.name = 'killPoints';
+      
+      killScore.appendChild(inputKill);
+    }else{
+      killScore.innerText = this.settingsKillScore_;
+    }
+    killScoreRow.appendChild(killScore);
+    scoreWrapper.appendChild(killScoreRow);
+    
+    //-----PlacementScore
+    let placementScoreHeader = ce('div');
+    placementScoreHeader.innerText = 'Placementpoints for each placement:';
+    scoreWrapper.appendChild(placementScoreHeader);
+
+    for(let i = 1; i<=20; i++){
+      let scoreRow = ce('div','row');
+      
+      for(let j = 1; j<=5; j++){
+        let p = i + 20 * (j - 1);
+        let score = this.settingsRankScoreTable_[p]
+
+        let divRowHeader = ce('div', ['col-1','text-right']);
+        divRowHeader.innerText = p;
+        
+        let divScore = '';
+        if(this.isAdmin){
+          divScore = ce('div', 'col-1');
+          
+          let inputScore = ce('input','form-control')
+          inputScore.name = 'point';
+          inputScore.value = score;
+          inputScore.setAttribute('placement', p);
+          inputScore.setAttribute('tournamentId', this.tournamentId);
+          inputScore.tabIndex = p;
+          
+          divScore.appendChild(inputScore);
+        }else{
+          divScore = ce('div','col-1');
+          divScore.innerText = score;
+        }
+        
+        scoreRow.appendChild(divRowHeader);
+        scoreRow.appendChild(divScore);
       }
-    }, this);
+      scoreWrapper.appendChild(scoreRow);
+    };
     
     divMain.appendChild(scoreWrapper);
     return divMain;
+  }
+  
+  get isAdmin(){
+    return this.isAdmin_;
   }
 }

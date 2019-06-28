@@ -229,13 +229,13 @@ module.exports.changeTeamName = function(tournamentId, matchId, teamIndex, newTe
   });
 }
 
-module.exports.addMatch = function(tournamentId, matchId, teamList, callback){
+module.exports.addMatch = function(tournamentId, matchId, callback){
   if(matchId && tournamentId){
     Tournament.getTournamentById(tournamentId).then(function(tournament){
       if(tournament.settings.keepTeamId){
         teamNameList = tournament.settings.teamList;
       }else{
-        teamNameList = teamList.split(';');
+        teamNameList = [''];
       }
       getMatchById(matchId, teamNameList, function(match){
         Tournament.findOne({_id:tournamentId , 'matches.matchId': matchId}).exec(function(err, doc){
@@ -247,8 +247,8 @@ module.exports.addMatch = function(tournamentId, matchId, teamList, callback){
               fetchData(match.telemetry, function(res){
                 let urlArr = match.telemetry.split('/')
                 let name = urlArr[urlArr.length-1];
-                //let newUrl = 'uploads/telemetry/'+name;
-                let newUrl = getPublicUrl(name);
+                let newUrl = 'uploads/telemetry/'+name;
+                //let newUrl = getPublicUrl(name);
                 fs.writeFile(newUrl, JSON.stringify(res), {flag:'w+'}, function(err){
                   if (err) throw err;
                   else {
@@ -264,19 +264,42 @@ module.exports.addMatch = function(tournamentId, matchId, teamList, callback){
   }
 }
 
+module.exports.getTelemetry = function(telemetryUrl, callback){
+  let url = './uploads/telemetry/'+telemetryUrl+'.json';
+  fs.readFile(url, function(err, data){
+    if(err) throw err;
+    callback(JSON.parse(data));
+  });
+}
+
+
+
 function getPublicUrl(filename){
   return 'https://storage.googleapis.com/pubgleague/'+filename;
 }
 
-module.exports.removeTourMatch = function(tourId, matchId, callback){
-  if(tourId){
+module.exports.removeTourMatch = function(tournamentId, matchId, callback){
+  if(tournamentId){
     if(matchId){
-      Tournament.update(
-          {_id: tourId}, 
-          {$pull: {matches: {matchId: matchId}}}
-        ).exec(function(err){
-          callback(err);
-        });
+      Tournament.getTournamentById(tournamentId).then(function(tournament){
+        if (Array.isArray(tournament.matches)){
+          tournament.matches.forEach(function(m){
+            if(m.matchId == matchId){
+              let urlArr = m.telemetry.split('/');
+              let name = urlArr[urlArr.length-1];
+              let jsonUrl = 'uploads/telemetry/'+name;
+              fs.unlink(jsonUrl, function() {
+                Tournament.update(
+                    {_id: tournamentId}, 
+                    {$pull: {matches: {matchId: matchId}}}
+                  ).exec(function(err){
+                    callback(err);
+                  });
+              });
+            }
+          });
+        }          
+      });
     }else{
       Tournament.remove(
           {_id: tourId}

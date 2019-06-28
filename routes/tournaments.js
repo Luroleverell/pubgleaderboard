@@ -119,14 +119,13 @@ router.post('/edit/:id', [
     User.ensureAuthenticated
   ], function(req, res, next){
   
-  Tournament.addMatch(req.params.id, req.body.matchId, req.body.teamNameList, function(exists){
+  Tournament.addMatch(req.params.id, req.body.matchId, function(exists){
     if(exists){
-      req.flash('alert', 'Match allredy added to the tournament');
+      //req.flash('alert', 'Match allredy added to the tournament');
     }else{
-      req.flash('success', 'You have added a new match');
+      //req.flash('success', 'You have added a new match');
+      res.send('done');
     }
-    res.location('/tournaments/edit/'+req.params.id);
-    res.redirect('/tournaments/edit/'+req.params.id);
   });
 });
 
@@ -151,9 +150,10 @@ router.post('/remove/:tourId/:matchId?', upload.fields([]), function(req, res, n
         Tournament.removeTourMatch(req.params.tourId, req.params.matchId, function(err){
           if (err) throw err;
           if(req.params.matchId){
-            req.flash('success', 'You have successfully removed the match');
-            res.location('/tournaments/edit/'+req.params.tourId);
-            res.redirect('/tournaments/edit/'+req.params.tourId);
+            //req.flash('success', 'You have successfully removed the match');
+            //res.location('/tournaments/edit/'+req.params.tourId);
+            //res.redirect('/tournaments/edit/'+req.params.tourId);
+            res.send('done')
           }else{
             req.flash('success', 'You have successfully removed the tournament');
             res.location('/tournament');

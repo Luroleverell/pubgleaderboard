@@ -30,10 +30,10 @@ router.get('/tournament/:event?', User.ensureAuthenticated,  function(req, res, 
   });  
 });
 
-router.get('/:nbg/:div?/:type?',function(req, res, next){
+router.get('/score/:nbg/:div?/:type?',function(req, res, next){
   if(req.params.div && req.params.nbg){
     let type = req.params.type || 'all';
-      
+    console.log('Kjører her:')  
     Gamer.divisionStats(req.params.nbg, req.params.div).then(function(lists){
       res.render('nbg', {title: 'NBG', lists: lists, type: type});
     });
@@ -46,6 +46,12 @@ router.get('/testBucket', function(req, res){
   Tournament.testBucket().then(function(path){
     res.send('<img src="'+path+'" width=100 height=100>');
   })
+});
+
+router.get('/telemetry/:telemetryId', function(req, res){
+  Tournament.getTelemetry(req.params.telemetryId, function(telemetryData){
+    res.json(telemetryData);
+  });
 });
 
 module.exports = router;

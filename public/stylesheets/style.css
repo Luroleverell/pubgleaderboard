@@ -276,19 +276,300 @@ break line - rgb(71,56,30)
   border-color: #a76c52;
 */
 
+/*--- Action map ---*/
 
-/*---Update bootstrap --*/
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #55bab6;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #55bab6;
+  cursor: pointer;
+}
+
+input {
+  width:80%;
+}
+
+#inputPath, #username{
+  width:50%;
+  float:left;
+}
+
+.fl{
+  float:left;
+}
+.fr{
+  float:right;
+}
+.w50{
+  width:50%;
+}
+
+#actionmap {
+  width: 800px;
+  height: 800px;
+  float:left;
+}
+
+#info-box {
+  float:left;
+}
+
+#actionmap svg {
+  width: 100%;
+  height: 100%;
+}
+
+.playerrect rect{
+  fill: #2299dd;
+  width: 100px;
+  height: 30px;
+}
+.playerrect text{
+  fill: #fff;
+  font-size: 100px;
+  y:100px;
+  text-anchor: middle;
+  alignment-baseline: middle;
+  transform: translate(0, 50);
+}
+
+.mapCard:hover{
+  background-color:#c5c5c5;
+  border:1px solid #c5c5c5;
+}
+
+.btnClear{
+  background-color:transparent;
+  border:none;
+  cursor:pointer;
+  text-decoration:none;
+  font-weight:bold;
+}
+.btnClear:focus{
+  outline:none;
+}
+
+
+.mapIcon{
+  filter: invert(1) brightness(0);
+}
+
+/*.Desert_Main{
+  filter:sepia() saturate(10000%) hue-rotate(300deg);
+}
+
+.Erangel_Main{
+  filter:sepia() saturate(10000%) brightness(40%) hue-rotate(90deg);
+}
+
+.Savage_Main{
+  filter:sepia() saturate(10000%) hue-rotate(70deg);
+}
+
+.DihorOtok_Main{
+  filter:sepia() saturate(10000%) brightness(40%) hue-rotate(350deg);
+}*/
+
+.playerTag{
+  cursor:pointer;
+}
+
+.base{
+  fill:darkgrey;
+  stroke:red;
+  stroke-width:4;
+  r:13;
+}
+.playerNameGroup{
+  display:none;
+}
+.health{
+  transform: rotate(-90deg);
+  fill: none;
+  stroke:lightgreen;
+  stroke-dasharray: 82;
+  stroke-width: 4;
+  r: 13;
+}
+.name{
+  fill: #fff;
+}
+.teamId{
+  fill: #fff;
+}
+.dead{
+  opacity:0.5;
+}
+.dead .name{
+  fill:gray;
+}
+.deadNone{
+  display:none;
+}
+.hidden{
+  display:none;
+}
+.hiddenS{
+  display:none;
+}
+.selected .base{
+  fill:#f79330;
+}
+.selectedTeam .base{
+  fill:#ffed5b;
+}
+
+/*.selected circle{
+  fill: #f79330;
+  r: 14000px;
+  z-index:3;
+}
+.selected text {
+  fill: #fff;
+  font-size: 20000px;
+  text-anchor: middle;
+  alignment-baseline: middle;
+  transform: translate(0, 2400px);
+
+}
+
+.selectedTeam circle{
+  fill: #aaab1c;
+  r: 14000px;
+  z-index:2;
+}
+.selectedTeam text {
+  fill: #fff;
+  font-size: 20000px;
+  text-anchor: middle;
+  alignment-baseline: middle;
+  transform: translate(0, 2400px);
+}*/
+
+/*.dead circle{
+  fill: red;
+  r: 10000px;
+}
+
+.dead text{
+  fill: white;
+}*/
+
+.playerTrail{
+  fill: none;
+  stroke: white;
+}
+
+.redZone{
+  stroke:red;
+  fill:none;
+}
+
+.whiteZone{
+  stroke:white;
+  fill:none;
+}
+
+.blueZone{
+  stroke:blue;
+  fill:none;
+}
+
+.scoreboardRow{
+  height:60pt;
+  border:1pt solid black;
+  text-align:center;
+}
+
+.teamId{
+  float:left;
+  height:60pt;
+  line-height:60pt;
+  width:50pt;
+}
+
+.rank{
+  float:left;
+  height:60pt;
+  line-height:60pt;
+  width:50pt;
+}
+
+
+.playerName{
+  width:150pt;
+  text-align:left;
+}
+.player{
+  width:100%;
+  height:15pt;
+}
+.player div{
+  float:left;
+}
+.playerStats{
+  width:50pt;
+}
+
+.squad {
+  float:left;
+  height:60pt;
+}
+
+.playerSummary:hover{
+  box-shadow:1px 1px 5px 3px #888;
+}
+
+.playerSummary{
+  box-shadow:1px 1px 5px 1px;
+}
+
+.activeButton{
+  background-color:lightgray;
+}
+
+.weaponStats{
+  border:1px solid black;
+}
+
+/*-------------------*/
+
+/*--- Update bootstrap ---*/
 .btn-info{
-  color: #fff;
-  background-color: #80c4c2;
-  background-image: linear-gradient(to top right, #55bab6, #4a706f);
+  color: #000;
+  background-color: #bbb;/*#80c4c2;*/
+  /*background-image: linear-gradient(to top, #55bab6, #4a706f);*/
   border-color: #4a706f;
 }
 
 .btn-info:hover{
   color: #fff;
   background-color: #80c4c2;
-  /*background-image: linear-gradient(to top right, #4a706f,#55bab6 );*/
+  background-image: linear-gradient(to top, #4a706f, #55bab6);
   border-color: #4a706f;
   /*box-shadow: 0 0 0 1rem rgba(23, 162, 184, 0.5);*/
 }
@@ -301,22 +582,22 @@ break line - rgb(71,56,30)
 .btn-primary{
   color: #fff;
   background-color: #f69e78;
-  background-image: linear-gradient(to top right, #f69e78, #a76c52);
+  background-image: linear-gradient(to top, #f69e78, #a76c52);
   border-color: #a76c52;
 }
 
 .btn-primary:hover{
   color: #fff;
   background-color: #f69e78;
-  /*background-image: linear-gradient(to top right, #4a706f,#55bab6 );*/
-  border-color: #4a706f;
+  background-image: linear-gradient(to top, #a76c52, #f69e78);
+  border-color: #a76c52;
   /*box-shadow: 0 0 0 1rem rgba(23, 162, 184, 0.5);*/
 }
 
 .btn-secondary{
   color: #fff;
   background-color: #c4c4c4;
-  background-image: linear-gradient(to top right, #c4c4c4, #535150);
+  /*background-image: linear-gradient(to top right, #c4c4c4, #535150);*/
   border-color: #a76c52;
 }
 
@@ -326,8 +607,8 @@ break line - rgb(71,56,30)
 
 .btn-danger {
   color: #fff;
-  background-color: #ec838d;
-  background-image: linear-gradient(to top right, #ec838d, #8e5056);
+  background-color: #c39b9f;
+  /*background-image: linear-gradient(to top right, #ec838d, #8e5056);*/
   border-color: #8e5056;
 }
 
@@ -342,7 +623,7 @@ break line - rgb(71,56,30)
   border-top: 1px solid #dee2e6;
 }
 
-.container h1{
+.headerText h1{
   color:#fff;
 }
 
@@ -360,3 +641,4 @@ break line - rgb(71,56,30)
 }
 
 /*-------------------*/
+

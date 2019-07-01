@@ -3,8 +3,8 @@ var Match = require('../public/javascripts/match.js');
 var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 var https = require('https');
 var zlib = require('zlib');
-var request= require('request');
-var SHARD = "steam";
+var request = require('request');
+var SHARD = 'steam';
 
 const http = require('http');
 const nconf = require('nconf');
@@ -244,17 +244,20 @@ module.exports.addMatch = function(tournamentId, matchId, callback){
           }else{
             Tournament.updateOne({_id:tournamentId}, {$push: {matches: match}}).exec(function(err){
               if (err) throw err
-              fetchData(match.telemetry, function(res){
+              fetchDataApi(match.telemetry, {gzip: true}, function(res){
                 let urlArr = match.telemetry.split('/')
                 let name = urlArr[urlArr.length-1];
-                let newUrl = 'uploads/telemetry/'+name;
-                //let newUrl = getPublicUrl(name);
-                fs.writeFile(newUrl, JSON.stringify(res), {flag:'w+'}, function(err){
+                let newUrl = 'uploads/telemetry/'+name+'.gz';
+                let wStream = fs.createWriteStream(newUrl);
+                
+                res.pipe(wStream);
+                callback();
+                /*fs.writeFile(newUrl, JSON.stringify(res), {flag:'w+'}, function(err){
                   if (err) throw err;
                   else {
                     callback();
                   }
-                });
+                });*/
               });
             });
           }
@@ -265,10 +268,15 @@ module.exports.addMatch = function(tournamentId, matchId, callback){
 }
 
 module.exports.getTelemetry = function(telemetryUrl, callback){
-  let url = './uploads/telemetry/'+telemetryUrl+'.json';
+  let url = './uploads/telemetry/'+telemetryUrl+'.json.gz';
   fs.readFile(url, function(err, data){
     if(err) throw err;
-    callback(JSON.parse(data));
+    zlib.gunzip(data, function(err, dezipped){
+      let json_string = dezipped.toString('utf-8');
+      let json = JSON.parse(json_string);
+      callback(json);
+    });
+    //callback(JSON.parse(data));
   });
 }
 
@@ -287,7 +295,7 @@ module.exports.removeTourMatch = function(tournamentId, matchId, callback){
             if(m.matchId == matchId){
               let urlArr = m.telemetry.split('/');
               let name = urlArr[urlArr.length-1];
-              let jsonUrl = 'uploads/telemetry/'+name;
+              let jsonUrl = 'uploads/telemetry/'+name+'gz';
               fs.unlink(jsonUrl, function() {
                 Tournament.update(
                     {_id: tournamentId}, 
@@ -312,7 +320,7 @@ module.exports.removeTourMatch = function(tournamentId, matchId, callback){
 
 module.exports.getMatchesByPlayername = function(playername, shard, callback){
   let url = 'https://api.playbattlegrounds.com/shards/'+shard+'/players?filter[playerNames]='+playername;
-  fetchData(url, function(res){
+  fetchDataApi(url,{gzip: false}, function(res){
     callback(res);
   });
 }
@@ -327,13 +335,13 @@ module.exports.testBucket = function(){
 
 function getMatchById(matchId, teamNameList, callback){
   let url= 'https://api.playbattlegrounds.com/shards/'+SHARD+'/matches/'+matchId;
-  fetchData(url, function(res){
+  fetchDataApi(url, {gzip: false}, function(res){
     let match = new Match(res, teamNameList);
     callback(match.pullMatch);
   });
 }
 
-function fetchData(url, callback){
+function fetchDataApi(url, inputOptions, callback){
   let options = {
     url: url,
     headers: {
@@ -344,18 +352,26 @@ function fetchData(url, callback){
     encoding: null
   };
   
-  request.get(options, function(err, res, body){
-    if(!err && res.statusCode == 200){
-      let encoding = res.headers['content-encoding']
-      if(encoding && encoding.indexOf('gzip')>=0){
-        zlib.gunzip(body, function(err, dezipped){
-          let json_string = dezipped.toString('utf-8');
-          let json = JSON.parse(json_string);
-          callback(json);
-        });
+  if(inputOptions.gzip == true){
+    callback(
+      request.get(options, function(err, res, body){
+        
+      })
+    );
+  }else{
+    request.get(options, function(err, res, body){
+      if(!err && res.statusCode == 200){
+        let encoding = res.headers['content-encoding']
+        if(encoding && encoding.indexOf('gzip')>=0){
+          zlib.gunzip(body, function(err, dezipped){
+            let json_string = dezipped.toString('utf-8');
+            let json = JSON.parse(json_string);
+            callback(json);
+          });
+        }
       }
-    }
-  }); 
+    });
+  }
 }
 
 function getIndexByProperty(data, key, value) {

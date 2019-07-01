@@ -234,8 +234,8 @@ class ActionMap {
 
     let base = document.createElementNS(SVG_NS, 'circle');
     base.classList.add('base');
-    //let c = hslToRgb(player.teamId/this.numberOfTeams, 1, 0.5);
-    //base.style.fill = 'rgb('+c[0]+','+c[1]+','+c[2]+')';
+    let c = hslToRgb(player.teamId/this.numberOfTeams, 1, 0.5);
+    base.style.fill = 'rgb('+c[0]+','+c[1]+','+c[2]+')';
 
     let health = document.createElementNS(SVG_NS, 'circle');
     health.classList.add('health');
@@ -300,7 +300,13 @@ class ActionMap {
 
     let newViewbox = this.viewbox;
     newViewbox.x = newViewbox.x - (e.pageX - this.lastX_) * newViewbox.width / this.svg_.clientWidth;
+    newViewbox.x = Math.max(newViewbox.x, 0);
+    newViewbox.x = Math.min(newViewbox.x, this.mapSize - newViewbox.width);
+
     newViewbox.y = newViewbox.y - (e.pageY - this.lastY_) * newViewbox.height / this.svg_.clientHeight;
+    newViewbox.y = Math.max(newViewbox.y, 0);
+    newViewbox.y = Math.min(newViewbox.y, this.mapSize - newViewbox.height);
+    
     this.viewbox = newViewbox;
 
     this.lastX_ = e.pageX;
@@ -309,27 +315,43 @@ class ActionMap {
 
   onMouseWheel_(e) {
     e.preventDefault();
-    if (e.deltaY == 0) {
-      return;
-    }
     
-    let newViewbox = this.viewbox;
-    if (e.deltaY < 0) {
-      newViewbox.width /= 2;
-      newViewbox.height /= 2;
-    } else {
-      newViewbox.width *= 2;
-      newViewbox.height *= 2;
-    }
+    let limitWidth = this.viewbox.width;
+    
+    let zoom = setInterval(function(){
+      if (e.deltaY == 0) {
+        return;
+      }
+      
+      let newViewbox = this.viewbox;
+      if (e.deltaY < 0) {    
+        newViewbox.width /= 1.1;
+        newViewbox.height /= 1.1;
+        if(newViewbox.width <= limitWidth / 2){
+          clearInterval(zoom);
+        }
+      } else {
+        if (newViewbox.width >= this.mapSize){
+          clearInterval(zoom);
+        }else{
+          newViewbox.width *= 1.1;
+          newViewbox.height *= 1.1;
+          if(newViewbox.width >= limitWidth * 2){ 
+            clearInterval(zoom);
+          }
+        }
+      }
 
-    let clickOnScreenX = e.offsetX / this.svg_.clientWidth;
-    let clickOnScreenY = e.offsetY / this.svg_.clientHeight;
-    let clickX = this.viewbox.x + this.viewbox.width * clickOnScreenX;
-    let clickY = this.viewbox.y + this.viewbox.height * clickOnScreenY;
-    newViewbox.x = clickX - newViewbox.width * clickOnScreenX;
-    newViewbox.y = clickY - newViewbox.height * clickOnScreenY;
+      let clickOnScreenX = e.offsetX / this.svg_.clientWidth;
+      let clickOnScreenY = e.offsetY / this.svg_.clientHeight;
+      let clickX = this.viewbox.x + this.viewbox.width * clickOnScreenX;
+      let clickY = this.viewbox.y + this.viewbox.height * clickOnScreenY;
+      newViewbox.x = Math.min(Math.max(clickX - newViewbox.width * clickOnScreenX, 0), this.mapSize - newViewbox.width);
+      newViewbox.y = Math.min(Math.max(clickY - newViewbox.height * clickOnScreenY, 0), this.mapSize - newViewbox.height);
 
-    this.viewbox = newViewbox;
+      this.viewbox = newViewbox;
+    }.bind(this),50);
+    
     return false;
   }
 

@@ -144,7 +144,9 @@ class ActionMap {
     viewbox.width = this.mapSize;
     viewbox.height = this.mapSize;
     this.viewbox = viewbox;
-
+    this.zoom;
+    
+    
     slider.addListener(this.onUpdate_.bind(this));
     this.svg_.addEventListener('wheel', this.onMouseWheel_.bind(this));
     this.svg_.addEventListener('mousedown', this.onMouseDown_.bind(this));
@@ -316,9 +318,10 @@ class ActionMap {
   onMouseWheel_(e) {
     e.preventDefault();
     
+    clearInterval(this.zoom);
     let limitWidth = this.viewbox.width;
     
-    let zoom = setInterval(function(){
+    this.zoom = setInterval(function(){
       if (e.deltaY == 0) {
         return;
       }
@@ -328,16 +331,16 @@ class ActionMap {
         newViewbox.width /= 1.1;
         newViewbox.height /= 1.1;
         if(newViewbox.width <= limitWidth / 2){
-          clearInterval(zoom);
+          clearInterval(this.zoom);
         }
       } else {
         if (newViewbox.width >= this.mapSize){
-          clearInterval(zoom);
+          clearInterval(this.zoom);
         }else{
           newViewbox.width *= 1.1;
           newViewbox.height *= 1.1;
           if(newViewbox.width >= limitWidth * 2){ 
-            clearInterval(zoom);
+            clearInterval(this.zoom);
           }
         }
       }
@@ -393,23 +396,23 @@ class ActionMap {
     switch (mapName) {
       case 'Erangel_Main':
         mapSize = MAPSIZE_BIG;
-        mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/Erangel_Main_Low_Res.png';
+        mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/Erangel_Main_High_Res.png';
         break;
       case 'Desert_Main':
         mapSize = MAPSIZE_BIG;
-        mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/Miramar_Main_Low_Res.png';
+        mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/Miramar_Main_High_Res.png';
         break;
       case 'Savage_Main':
         mapSize = MAPSIZE_SMAL;
-        mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/Sanhok_Main_Low_Res.png';
+        mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/Sanhok_Main_High_Res.png';
         break;
       case 'Range_Main':
         mapSize = MAPSIZE_MINI;
-        mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/Camp_Jackal_Main_Low_Res.png';
+        mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/Camp_Jackal_Main_High_Res.png';
         break;
       case 'DihorOtok_Main':
         mapSize = MAPSIZE_MEDIUM;
-        mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/Vikendi_Main_Low_Res.png';
+        mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/Vikendi_Main_High_Res.png';
         break;
     }
     //mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/' +mapName+ '_Low_Res.png';

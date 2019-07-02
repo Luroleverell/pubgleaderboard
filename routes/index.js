@@ -54,5 +54,9 @@ router.get('/telemetry/:telemetryId', function(req, res){
   });
 });
 
+router.get('/findMatch', function(req, res){
+  res.render('findMatch', {title : 'Find match'})
+});
+
 module.exports = router;
 

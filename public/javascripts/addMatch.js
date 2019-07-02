@@ -20,27 +20,40 @@ function addNewMatch(tournamentId){
   div.appendChild(btnGroup);
    
   let btnAdd = ce('button', ['btn','btn-info','float-right']);
-  btnAdd.innerText = 'Add selected matches';  
-  btnAdd.addEventListener('click', function(){
-    let matches = document.getElementsByName('apiMatches');
-    let promises = [];
-    matches.forEach(function(match){
-      if(match.classList.contains('activeButton')){
-        
-        let p = new Promise(function(resolve, reject){
-          postData('/tournaments/edit/'+tournamentId, 'matchId='+match.getAttribute('matchId'), function(res){
-            resolve();
+  
+  if(tournamentId){
+    btnAdd.innerText = 'Add selected matches';  
+    btnAdd.addEventListener('click', function(){
+      let matches = document.getElementsByName('apiMatches');
+      let promises = [];
+      matches.forEach(function(match){
+        if(match.classList.contains('activeButton')){
+          
+          let p = new Promise(function(resolve, reject){
+            postData('/tournaments/edit/'+tournamentId, 'matchId='+match.getAttribute('matchId'), function(res){
+              resolve();
+            });
           });
-        });
-        
-        promises.push(p)
-      }
+          
+          promises.push(p)
+        }
+      });
+      
+      Promise.all(promises).then(function(){
+        updateLeaderboard(tournamentId, 'matches');
+      });
     });
-    
-    Promise.all(promises).then(function(){
-      updateLeaderboard(tournamentId, 'matches');
+  }else{
+    btnAdd.innerText = 'Get replay data';
+    btnAdd.addEventListener('click', function(){
+      let matches = document.getElementsByName('apiMatches');
+      matches.forEach(function(match){
+        if(match.classList.contains('activeButton')){
+          getReplay(match.childNodes[7].innerText, divResult);
+        }
+      });
     });
-  });
+  }
 
   div.appendChild(btnAdd);
   div.appendChild(divResult);

@@ -200,6 +200,10 @@ class Replay_Match {
   teamById(id){
     return this.teamById_.get(id);
   }
+  
+  get teamSize(){
+    return this.start_.data_.teamSize;
+  }
 
   scoreboard(parent){
     //this.scoreboard_.render(parent);

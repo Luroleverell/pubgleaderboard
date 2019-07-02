@@ -344,9 +344,9 @@ input {
 }
 
 .playerrect rect{
-  fill: #2299dd;
+  /*fill: #2299dd;*/
   width: 100px;
-  height: 30px;
+  height: 30px;  
 }
 .playerrect text{
   fill: #fff;
@@ -403,6 +403,9 @@ input {
   stroke:red;
   stroke-width:4;
   r:13;
+}
+.pattern{
+  r:11;
 }
 .playerNameGroup{
   display:none;

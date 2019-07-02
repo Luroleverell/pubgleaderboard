@@ -392,7 +392,8 @@ class Tournament {
       but.appendChild(icon);
       but.addEventListener('click', function(){
         let telemetry = m.telemetry.split('/');
-        getReplay(telemetry[telemetry.length-1].split('.')[0], divReplay);
+        let url = '/telemetry/'+telemetry[telemetry.length-1].split('.')[0];
+        getReplay(url, divReplay);
       }, {once:true});
       div.appendChild(but);
       

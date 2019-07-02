@@ -27,6 +27,8 @@ html(lang = 'en')
             if user
               li.nav-item(class=(title == 'Tournament' ? 'active' : ''))
                 a.nav-link(href='/tournament') My tournaments
+            li.nav-item
+              a.nav-link(href='/findMatch') Find match
             if !user
               li.nav-item(class=(title == 'Register' ? 'active' : ''))
                 a.nav-link(href='/users/register') Register

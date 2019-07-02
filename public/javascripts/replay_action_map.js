@@ -11,6 +11,7 @@ const ZONEBORDER = 2.000;
 
 class ActionMap {
   constructor(slider, match, infoBox) {
+    console.log(match)
     this.slider_ = slider;
     this.match_ = match;
     this.boundMouseDrag_ = this.onMouseDrag_.bind(this);
@@ -21,6 +22,18 @@ class ActionMap {
     this.element_ = document.createElement('div');
     this.element_.id = 'actionmap';
     this.svg_ = document.createElementNS(SVG_NS, 'svg');
+    
+    let pattern = document.createElementNS(SVG_NS, 'pattern');
+    pattern.id = 'pattern1';
+    pattern.setAttribute('width', '4');
+    pattern.setAttribute('height', '13');
+    pattern.setAttribute('patternUnits','userSpaceOnUse');
+    let rect = document.createElementNS(SVG_NS, 'rect');
+    rect.setAttribute('x', '1');
+    rect.setAttribute('width', '2');
+    rect.setAttribute('height', '13');
+    pattern.appendChild(rect);
+    this.svg_.appendChild(pattern);
     
     this.map = document.createElementNS(SVG_NS, 'image');
     this.mapSize = 0;
@@ -203,7 +216,7 @@ class ActionMap {
       let pos = player.locationAtTime(time);
       let health = player.healthAtTime(time);
       let circle = this.playerCircles_[index];
-      circle.childNodes[1].style.strokeDashoffset = (1-health/100) * 82;
+      circle.childNodes[2].style.strokeDashoffset = (1-health/100) * 82;
       if(!pos == 0) circle.setAttribute('transform', 'translate(' + pos.x / 1000 + ' ' + pos.y / 1000 + ') scale(' + scale + ')');
 
       let deadClass='deadNone';
@@ -213,11 +226,11 @@ class ActionMap {
 
       if (!player.isAlive(time)){
         circle.classList.add(deadClass);
-        circle.childNodes[2].setAttribute('href', 'https://raw.githubusercontent.com/pubg/api-assets/master/Assets/Icons/Killfeed/Death.png');
+        circle.childNodes[3].setAttribute('href', 'https://raw.githubusercontent.com/pubg/api-assets/master/Assets/Icons/Killfeed/Death.png');
       }else if (player.isGroggy(time)){
-        circle.childNodes[2].setAttribute('href', 'https://raw.githubusercontent.com/pubg/api-assets/master/Assets/Icons/Killfeed/Groggy.png');
+        circle.childNodes[3].setAttribute('href', 'https://raw.githubusercontent.com/pubg/api-assets/master/Assets/Icons/Killfeed/Groggy.png');
       }else{
-        circle.childNodes[2].setAttribute('href', '');
+        circle.childNodes[3].setAttribute('href', '');
       }
 
       //this.infoBox_.setNew(this.markedPlayerName);
@@ -236,8 +249,20 @@ class ActionMap {
 
     let base = document.createElementNS(SVG_NS, 'circle');
     base.classList.add('base');
-    let c = hslToRgb(player.teamId/this.numberOfTeams, 1, 0.5);
-    base.style.fill = 'rgb('+c[0]+','+c[1]+','+c[2]+')';
+    
+    let pattern = document.createElementNS(SVG_NS, 'circle');
+    pattern.classList.add('pattern');
+    pattern.setAttribute('fill', 'url(#pattern1)');
+    //let c = hslToRgb(player.teamId/this.numberOfTeams, 1, 0.5);
+    let index = 0;
+    if (player.teamId - 25 <= 0 || this.match_.teamSize == 1) {
+      index = player.teamId;
+      pattern.setAttribute('fill-opacity', '0');
+    }else{ 
+      index = player.teamId - 25;
+      pattern.setAttribute('fill-opacity', '0.5');
+    }
+    if(this.match_.teamSize > 1) base.style.fill = pubgColor[index - 1];
 
     let health = document.createElementNS(SVG_NS, 'circle');
     health.classList.add('health');
@@ -254,6 +279,7 @@ class ActionMap {
     imgStatus.setAttribute('transform', 'translate(-13 -13)');
 
     group.appendChild(base);
+    group.appendChild(pattern);
     group.appendChild(health);
     group.appendChild(imgStatus);
     group.appendChild(name);
@@ -353,7 +379,7 @@ class ActionMap {
       newViewbox.y = Math.min(Math.max(clickY - newViewbox.height * clickOnScreenY, 0), this.mapSize - newViewbox.height);
 
       this.viewbox = newViewbox;
-    }.bind(this),50);
+    }.bind(this),10);
     
     return false;
   }

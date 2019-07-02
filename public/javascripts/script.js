@@ -2,7 +2,9 @@ var damageCauserList = new getJsonFromUrl('https://raw.githubusercontent.com/pub
 var itemNameList = new getJsonFromUrl('https://raw.githubusercontent.com/pubg/api-assets/master/dictionaries/telemetry/item/itemId.json');
 var damageReasonList = new getJsonFromUrl('https://raw.githubusercontent.com/pubg/api-assets/master/enums/telemetry/damageReason.json');
 var speed = 100;
-
+var pubgColor = ['#0042a1', '#15931a', '#e16209', '#2096d1', '#4a148c', '#9f2b14', '#486a00', '#c51a56', '#9c6622', '#820045', 
+                  '#d5b115', '#4ab3af', '#6b828d', '#f39700', '#37474f', '#e0648e', '#00736d', '#8a4803', '#7fb017', '#854ba1', 
+                  '#38b27e', '#88abda', '#e58b65', '#2c276c', '#988e09'];
 
 
 function loadFunction(){
@@ -12,6 +14,7 @@ function loadFunction(){
   let tournamentId = pathArray[pathArray.length-1];
   let keepTeamId = document.getElementById('keepTeamId');
   let leaderboardLevel = document.getElementById('leaderboardLevel');
+  let lookupMatch = document.getElementById('lookupMatch');
   
   if(username){
     username.addEventListener('change', function(e){
@@ -47,8 +50,12 @@ function loadFunction(){
   }
   
   if(leaderboardLevel){
-    console.log('change detected')
-    
+    console.log('change detected') 
+  }
+  
+  if(lookupMatch){
+    let content = addNewMatch();
+    lookupMatch.appendChild(content);
   }
   
   updateLeaderboard(tournamentId);
@@ -245,13 +252,14 @@ function fetchData(url, callback, type){
   })
 }*/
 
-function getReplay(telemetryId, parent){
-  let url = '/telemetry/'+telemetryId;
+function getReplay(url, parent){
+  
   //let url = '../../uploads/telemetry/'+telemetryId+'.json';
   fetchData(url, function(res) {
     
     let match = new Replay_Match(res);
     let mainContent = document.createElement('div');
+    mainContent.classList.add('row');
     
     let slider = new Slider(match.start, match.end);
     let infobox = new InfoBox(slider, match);

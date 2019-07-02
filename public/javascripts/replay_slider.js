@@ -11,7 +11,8 @@ class Slider {
     this.slider_.oninput = this.onupdate.bind(this);
     this.slider_.step = 0.1;
 
-    this.time_ = document.createElement('div')
+    this.time_ = document.createElement('div');
+    this.time_.classList.add('container');
   }
 
   render(parent) {

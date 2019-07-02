@@ -84,7 +84,7 @@ router.post('/event/remove/:eventId/:tournamentId', [upload.fields([]), User.ens
   });
 });
 
-router.get('/pubgAPI/:playername/:shard', User.ensureAuthenticated, function(req, res, next){
+router.get('/pubgAPI/:playername/:shard', function(req, res, next){
   Tournament.getMatchesByPlayername(req.params.playername, req.params.shard, function(result){
     res.json(result);
   });

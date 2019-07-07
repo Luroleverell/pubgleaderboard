@@ -230,7 +230,7 @@ class ActionMap {
       }else if (player.isGroggy(time)){
         circle.childNodes[3].setAttribute('href', 'https://raw.githubusercontent.com/pubg/api-assets/master/Assets/Icons/Killfeed/Groggy.png');
       }else if(player.inParachute(time)){
-        circle.childNodes[3].setAttribute('href', '../images/parachute.png');
+        circle.childNodes[3].setAttribute('href', '../../images/parachute.png');
       }else{
         circle.childNodes[3].setAttribute('href', '');
       }

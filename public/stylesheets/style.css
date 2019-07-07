@@ -43,6 +43,10 @@ body:not(#bodyNBG){
   overflow-y:scroll;
 }
 
+#searchResult{
+  margin-top:20px;
+}
+
 
 /*
 header sand - rgb(169,137,51)
@@ -149,7 +153,7 @@ break line - rgb(71,56,30)
  
 .navbar-nav > li > a:hover, .navbar-nav > li > a:focus {
   color: #fff;
-  background-image: linear-gradient(to top right, #c4c4c4, #535150);
+  /*background-image: linear-gradient(to top right, #c4c4c4, #535150);*/
 }
  
 .bgHeader{
@@ -368,6 +372,7 @@ input {
   cursor:pointer;
   text-decoration:none;
   font-weight:bold;
+  margin-right:10px;
 }
 .btnClear:focus{
   outline:none;
@@ -439,11 +444,18 @@ input {
 .hiddenS{
   display:none;
 }
-.selected .base{
-  fill:#f79330;
+.select{
+  r:15;
+  stroke-width:4;
+  stroke:#3fd6ff;
 }
-.selectedTeam .base{
-  fill:#ffed5b;
+.selected .name{
+  fill:#3fd6ff;
+  font-weight:bold;
+}
+.selectedTeam .name{
+  fill:#3fd6ff;
+  font-weight:bold;
 }
 
 /*.selected circle{

@@ -24,7 +24,7 @@ const dbname = nconf.get('mongoDbname');
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage({
   projectId: 'pubg-leaderboard-207106',
-  keyFilename: 'PUBG leaderboard-6d7d0557edcd.json'
+  keyFilename: 'pubgleagueKey.json'
 });
 const myBucket = storage.bucket('pubgleague');
 
@@ -248,6 +248,8 @@ module.exports.addMatch = function(tournamentId, matchId, callback){
                 let urlArr = match.telemetry.split('/')
                 let name = urlArr[urlArr.length-1];
                 let newUrl = 'uploads/telemetry/'+name+'.gz';
+                //let newUrl = getPublicUrl('telemetry/'+name+'.gz');
+                //let file = myBucket.file('telemetry/'+name+'.gz');
                 let wStream = fs.createWriteStream(newUrl);
                 
                 res.pipe(wStream);
@@ -296,6 +298,7 @@ module.exports.removeTourMatch = function(tournamentId, matchId, callback){
               let urlArr = m.telemetry.split('/');
               let name = urlArr[urlArr.length-1];
               let jsonUrl = 'uploads/telemetry/'+name+'gz';
+              //let jsonUrl = 'telemetry/'+name+'gz';
               fs.unlink(jsonUrl, function() {
                 Tournament.update(
                     {_id: tournamentId}, 
@@ -326,9 +329,13 @@ module.exports.getMatchesByPlayername = function(playername, shard, callback){
 }
 
 module.exports.testBucket = function(){
-  return new Promise(function(resolve, reject){
-    let image = getPublicUrl('flashpoint.png')
+  /*return new Promise(function(resolve, reject){
+    let image = getPublicUrl('matchpoint.png')
     resolve(image);
+  });*/
+  
+  return new Promise(function(res, rej){
+    res(myBucket);
   });
 }
 

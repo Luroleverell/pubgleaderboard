@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="200"
+   height="200"
+   viewBox="0 0 52.916666 52.916666"
+   version="1.1"
+   id="svg821"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="parachute.svg"
+   inkscape:export-filename="C:\Users\perbi\OneDrive\pubgleaderboard\public\images\parachute.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+  <defs
+     id="defs815" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.6"
+     inkscape:cx="35.998498"
+     inkscape:cy="115.2033"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:snap-global="true"
+     inkscape:window-width="2560"
+     inkscape:window-height="1377"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata818">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-244.08334)"
+     style="display:inline">
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.21309289px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 37.351441,262.90131 -11.253485,27.18086 13.143615,-26.76726 c 2.390084,-1.90126 4.666015,-0.42239 4.924303,1.05795 l -18.067918,25.70931 c 0,0 16.333468,-20.60845 20.111318,-25.5852 0.112857,-10.93476 -11.068386,-14.48343 -19.80167,-14.38481 -8.1056,-0.10265 -20.2104303,2.87743 -20.1650359,14.43046 3.7778499,4.97676 19.8553879,25.53955 19.8553879,25.53955 L 8.0402746,264.05463 c 0.3876551,-2.43697 4.0545604,-2.5855 5.0527634,-0.95466 l 13.004918,26.9822 -11.069523,-27.41741 c 1.445741,-2.40507 4.053061,-2.14382 5.268763,-0.46405 l 5.80076,27.88146 4.616317,-27.68974 c 1.688356,-2.7149 5.763625,-1.75181 6.637168,0.50888 z m -8.387404,-0.8267 -2.866081,28.00756 -3.877536,-28.20921 c 1.45056,-2.5538 5.585012,-2.74145 6.743617,0.20165 z"
+       id="path1385"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccccccccccccccc"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+  </g>
+</svg>

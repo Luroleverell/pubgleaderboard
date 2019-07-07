@@ -54,6 +54,15 @@ class CharacterEvent extends TelemetryEvent {
   get character() {
     return this.character_;
   }
+  
+  get isGame(){
+    return this.data.common.isGame;
+  }
+  
+  get inVehicle(){
+    if(this.data.vehicle)
+      return true;
+  }
 }
 
 class ItemPickupEvent extends CharacterEvent {

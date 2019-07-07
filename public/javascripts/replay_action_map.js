@@ -229,6 +229,8 @@ class ActionMap {
         circle.childNodes[3].setAttribute('href', 'https://raw.githubusercontent.com/pubg/api-assets/master/Assets/Icons/Killfeed/Death.png');
       }else if (player.isGroggy(time)){
         circle.childNodes[3].setAttribute('href', 'https://raw.githubusercontent.com/pubg/api-assets/master/Assets/Icons/Killfeed/Groggy.png');
+      }else if(player.inParachute(time)){
+        circle.childNodes[3].setAttribute('href', '../images/parachute.png');
       }else{
         circle.childNodes[3].setAttribute('href', '');
       }
@@ -249,6 +251,9 @@ class ActionMap {
 
     let base = document.createElementNS(SVG_NS, 'circle');
     base.classList.add('base');
+    
+    let selected = document.createElementNS(SVG_NS, 'circle');
+    selected.classList.add('select','hidden');
     
     let pattern = document.createElementNS(SVG_NS, 'circle');
     pattern.classList.add('pattern');
@@ -271,13 +276,14 @@ class ActionMap {
     name.classList.add('name');
     name.textContent = String(player.name);
     name.style.fontSize = 16;
-    name.setAttribute('transform', 'translate(' + 20 / MAPSIZE_BIG * this.mapSize + ', ' + 5 / MAPSIZE_BIG * this.mapSize + ')');
+    name.setAttribute('transform', 'translate(20, 5)');
     
     let imgStatus = document.createElementNS(SVG_NS, 'image');
     imgStatus.setAttributeNS(null, 'width', 26);
     imgStatus.setAttributeNS(null, 'height', 26);
     imgStatus.setAttribute('transform', 'translate(-13 -13)');
 
+    //group.appendChild(selected);
     group.appendChild(base);
     group.appendChild(pattern);
     group.appendChild(health);
@@ -379,7 +385,7 @@ class ActionMap {
       newViewbox.y = Math.min(Math.max(clickY - newViewbox.height * clickOnScreenY, 0), this.mapSize - newViewbox.height);
 
       this.viewbox = newViewbox;
-    }.bind(this),10);
+    }.bind(this),5);
     
     return false;
   }

@@ -16,11 +16,15 @@ class Replay_Player {
     this.dropEvents_ = [];
     this.equipmentEvents_ = [];
     this.healthEvents_ = [];
+    this.landingEvent_;
+    this.leaveVehicleEvents_ = [];
+    this.rideVehicleEvents_ = [];
     this.character_ = createEvent.character;
     this.characterEvents_ = [];
     this.kills_ = 0;
     this.dead_ = 0;
     this.rank_ = 0;
+    this.leavePlane_;
     this.weapons_ = new Map();
     this.equipment_ = new Map();
     this.hitZone_ = new Map();
@@ -102,6 +106,19 @@ class Replay_Player {
   
   addHealthEvent(event){
     this.healthEvents_.push(event);
+  }
+  
+  addLandingEvent(event){
+    this.landingEvent_ = event;
+  }
+  
+  addLeaveVehicleEvent(event){
+    this.leaveVehicleEvents_.push(event);
+    if(event.data.vehicle.vehicleType == 'TransportAircraft') this.leavePlane_ = event;
+  }
+  
+  addRideVehicleEvent(event){
+    this.rideVehicleEvents_.push(event);
   }
 
   addDealDamageEvent(event){
@@ -338,46 +355,55 @@ class Replay_Player {
   }*/
 
   renderWeaponStats(parent){
-    let wrapper = document.createElement('div');
-    wrapper.classList.add('container')
-
-    let playerName = document.createElement('h3');
-    playerName.innerText = this.name;
-
-    let iWrapper = document.createElement('div');
-    iWrapper.classList.add('row', 'weaponStats')
-
     let filteredEvents = [];
     let weapons = [];
     let victims = [];
+    
+    let wrapper = ce('div','container')
 
-    let divHitZones = document.createElement('div');
-    divHitZones.classList.add('fl', 'col');
+    let playerName = ce('h3');
+    playerName.innerText = this.name;
+
+    let iWrapper = ce('div', ['row', 'weaponStats']);
+
+    let divHitZones = ce('div',['fl', 'col']);
     divHitZones.innerText = 'Hit zones';
-
-    let divWeapons = document.createElement('div');
-    divWeapons.innerText = 'Filter weapon'
+    
+    let divWeapons = ce('div',['fl','col']);
+    let headerRowWeapon = ce('div','row');
+    
+    let headerWeapons = ce('div', 'col');
+    headerWeapons.innerText = 'Weapons used';
+    headerRowWeapon.appendChild(headerWeapons);
 
     let weaponLabels = [];
-    let btnSelectAllWeapons = document.createElement('button');
+    let btnSelectAllWeapons = ce('div', ['col-1','btnClear']);
     btnSelectAllWeapons.innerText='+';
-    btnSelectAllWeapons.classList.add('fr','btnClear');
     btnSelectAllWeapons.addEventListener('click', function(){
       selectAll(weaponLabels);
       this.sumHits(divHitZones);
     }.bind(this));
-    divWeapons.appendChild(btnSelectAllWeapons);
+    headerRowWeapon.appendChild(btnSelectAllWeapons);
+    
+    let knocksHeader = ce('div','col-2');
+    knocksHeader.innerText = 'KD';
+    headerRowWeapon.appendChild(knocksHeader);
+    let killsHeader = ce('div','col-2');
+    killsHeader.innerText = 'Kills';
+    headerRowWeapon.appendChild(killsHeader);
+    
+    divWeapons.appendChild(headerRowWeapon);
+    
+    this.weapons_.forEach(function(value, key){
+      //if(value.damage > 0){
+        let divWeapon = ce('div', 'row');
+        
+        let divWeaponBtn = ce('div',['btn-group-toggle', 'col']);
 
-    this.weapons_.forEach(function(weapon, key){
-      if(weapon.damage > 0){
-        let divWeapon = document.createElement('div');
-        divWeapon.classList.add('btn-group-toggle');
-
-        let lbWeapon = document.createElement('label');
-        lbWeapon.classList.add('btn','btn-sm','activeButton','btn-block');
+        let lbWeapon = ce('label',['btn','btn-sm','activeButton','btn-block']);
         weaponLabels.push(lbWeapon);
         
-        let weapon = document.createElement('input');
+        let weapon = ce('input');
         weapon.type = 'checkbox';
         weapon.name = 'weapons' + this.name;
         weapon.autocomplete = 'off';
@@ -389,40 +415,69 @@ class Replay_Player {
 
         lbWeapon.innerText = key;
         lbWeapon.appendChild(weapon);
-
-        divWeapon.appendChild(lbWeapon);
+        divWeaponBtn.appendChild(lbWeapon);
+        divWeapon.appendChild(divWeaponBtn);
+        
+        let knockouts = 0;
+        this.knockoutEvents_.forEach(function(e){
+          if(damageCauserList.list[e.data.damageCauserName] == key){
+            knockouts += 1;
+          }
+        });
+        
+        let kills = 0;
+        this.killEvents_.forEach(function(e){
+          if(damageCauserList.list[e.data.damageCauserName] == key){
+            kills += 1;
+          }
+        });
+        
+        let divKnocks = ce('div', 'col-2');
+        divKnocks.innerText = knockouts;
+        divWeapon.appendChild(divKnocks);
+        
+        let divKills = ce('div', 'col-2');
+        divKills.innerText = kills;
+        divWeapon.appendChild(divKills);
+        
         divWeapons.appendChild(divWeapon);
-      }
-      /*if(weapon.damage > 0){
-        let divWeapon = document.createElement('div');
-        divWeapon.innerText = key;
-        divWeapons.appendChild(divWeapon);
-      }*/
+      //}
     }, this);
-    divWeapons.classList.add('fl','col');
     
-    let divVictims = document.createElement('div');
-    divVictims.innerText = 'Filter victims';
-
+    let divVictims = ce('div', ['fl', 'col']);
+    let headerRowVictim = ce('div', 'row');
+    
+    let headerVictims = ce('div', 'col');
+    headerVictims.innerText = 'Victims';
+    headerRowVictim.appendChild(headerVictims);
+    
     let victimLabels = [];
-    let btnSelectAll = document.createElement('button');
-    btnSelectAll.innerText='+';
-    btnSelectAll.classList.add('fr','btnClear');
+    let btnSelectAll = ce('div', ['col-1','btnClear']);
+    btnSelectAll.innerText = '+';
     btnSelectAll.addEventListener('click', function(){
       selectAll(victimLabels);
       this.sumHits(divHitZones);
     }.bind(this));
-    divVictims.appendChild(btnSelectAll);
+    headerRowVictim.appendChild(btnSelectAll);
+    
+    let knocksHeaderVictim = ce('div','col-2');
+    knocksHeaderVictim.innerText = 'KD';
+    headerRowVictim.appendChild(knocksHeaderVictim);
+    let killsHeaderVictim = ce('div','col-2');
+    killsHeaderVictim.innerText = 'Kills';
+    headerRowVictim.appendChild(killsHeaderVictim);
+  
+    divVictims.appendChild(headerRowVictim);
 
     this.victims_.forEach(function(value, key){
-      let divVictim = document.createElement('div');
-      divVictim.classList.add('btn-group-toggle');
+      let divVictim = ce('div','row');
+      
+      let divVictimBtn = ce('div',['btn-group-toggle','col']);
 
-      let lbVictim = document.createElement('label');
-      lbVictim.classList.add('btn','btn-sm','activeButton','btn-block');
+      let lbVictim = ce('label',['btn','btn-sm','activeButton','btn-block']);
       victimLabels.push(lbVictim);
-
-      let victim = document.createElement('input');
+      
+      let victim = ce('input');
       victim.type = 'checkbox';
       victim.name = 'victims' + this.name;
       victim.autocomplete = 'off';
@@ -434,12 +489,33 @@ class Replay_Player {
 
       lbVictim.innerText = key;
       lbVictim.appendChild(victim);
+      divVictimBtn.appendChild(lbVictim);
+      divVictim.appendChild(divVictimBtn);
       
-      divVictim.appendChild(lbVictim);
+      let knockouts = 0;
+      this.knockoutEvents_.forEach(function(e){
+        if(e.data.victim.name == key){
+          knockouts += 1;
+        }
+      });
+      
+      let kills = 0;
+      this.killEvents_.forEach(function(e){
+        if(e.data.victim.name == key){
+          kills += 1;
+        }
+      });
+      
+      let divKnocks = ce('div', 'col-2');
+      divKnocks.innerText = knockouts;
+      divVictim.appendChild(divKnocks);
+      
+      let divKills = ce('div', 'col-2');
+      divKills.innerText = kills;
+      divVictim.appendChild(divKills);
+      
       divVictims.appendChild(divVictim);
     }, this);
-
-    divVictims.classList.add('fl', 'col', 'btn-group-toggle');
 
     
     iWrapper.appendChild(divVictims);
@@ -612,6 +688,36 @@ class Replay_Player {
       return health;
     }else{
       return 0;
+    }
+  }
+  
+  inParachute(time){  
+    //console.log(this.landingEvent_);
+    if(this.landingEvent_){
+      /*if(this.landingEvent_.timestamp < time){
+        return false
+      }else{
+        if(this.characterEvents_[0]){
+          let n = this.characterEvents_.length - 1;
+          for (let i = 1; i< n; i++){
+            if(this.characterEvents_[i].timestamp > time){
+              if(this.characterEvents_[i].isGame > 0 && this.characterEvents_[i].inVehicle){
+                return true;
+              }else{
+                return false;
+              }
+            }else{
+              return false;
+            }
+          }
+        }
+      }*/
+      
+      if(this.leavePlane_.timestamp < time && this.landingEvent_.timestamp >= time){
+        return true;
+      }else{
+        return false;
+      }
     }
   }
 

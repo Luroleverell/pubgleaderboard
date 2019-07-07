@@ -80,7 +80,6 @@ class Replay_Match {
           }
           if(event.data.victim){
             this.playerByName_.get(event.data.victim.name).addTakeDamageEvent(event);
-            //this.playerByName_.get(event.data.victim.name).addCharacterEvent(event);
           }
           if (!this.weapon.has(event.data.damageCauserName)) this.weapon.set(event.data_.damageCauserName, [])
           this.weapon.get(event.data.damageCauserName).push(event);
@@ -101,7 +100,19 @@ class Replay_Match {
           break;
         case 'LogHeal':
           if(this.playerByName_.has(event.character.name)) 
-              this.playerByName_.get(event.character.name).addHealthEvent(event);
+            this.playerByName_.get(event.character.name).addHealthEvent(event);
+          break;
+        case 'LogParachuteLanding':
+          if(this.playerByName_.has(event.character.name)) 
+            this.playerByName_.get(event.character.name).addLandingEvent(event);
+          break;
+        case 'LogVehicleRide':
+          if(this.playerByName_.has(event.character.name)) 
+            this.playerByName_.get(event.character.name).addRideVehicleEvent(event);
+          break;
+        case 'LogVehicleLeave':
+          if(this.playerByName_.has(event.character.name))
+            this.playerByName_.get(event.character.name).addLeaveVehicleEvent(event);
           break;
         default:
           if (!unknownTypes.has(event.type)) unknownTypes.set(event.type, []);

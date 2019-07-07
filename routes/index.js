@@ -43,8 +43,9 @@ router.get('/score/:nbg/:div?/:type?',function(req, res, next){
 });
 
 router.get('/testBucket', function(req, res){
-  Tournament.testBucket().then(function(path){
-    res.send('<img src="'+path+'" width=100 height=100>');
+  Tournament.testBucket().then(function(bucket){
+    //res.send('<img src="'+path+'" width=100 height=100>');
+    res.send(bucket.getFiles());
   })
 });
 

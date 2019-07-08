@@ -247,19 +247,12 @@ module.exports.addMatch = function(tournamentId, matchId, callback){
               fetchDataApi(match.telemetry, {gzip: true}, function(res){
                 let urlArr = match.telemetry.split('/')
                 let name = urlArr[urlArr.length-1];
-                let newUrl = 'uploads/telemetry/'+name+'.gz';
-                //let newUrl = getPublicUrl('telemetry/'+name+'.gz');
-                //let file = myBucket.file('telemetry/'+name+'.gz');
-                let wStream = fs.createWriteStream(newUrl);
-                
-                res.pipe(wStream);
-                callback();
-                /*fs.writeFile(newUrl, JSON.stringify(res), {flag:'w+'}, function(err){
-                  if (err) throw err;
-                  else {
+                let file = myBucket.file('telemetry/' + name + '.gz');
+
+                res.pipe(file.createWriteStream())
+                  .on('finish', function(){
                     callback();
-                  }
-                });*/
+                  });
               });
             });
           }
@@ -270,16 +263,20 @@ module.exports.addMatch = function(tournamentId, matchId, callback){
 }
 
 module.exports.getTelemetry = function(telemetryUrl, callback){
-  let url = './uploads/telemetry/'+telemetryUrl+'.json.gz';
-  fs.readFile(url, function(err, data){
-    if(err) throw err;
-    zlib.gunzip(data, function(err, dezipped){
-      let json_string = dezipped.toString('utf-8');
+  let url = 'telemetry/'+telemetryUrl+'.json.gz';
+  let file = myBucket.file(url);
+  let data = '';
+  
+  file.createReadStream()
+    .pipe(zlib.createGunzip())
+    .on('data', function(chunk){
+      data += chunk;
+    })
+    .on('end', function(){
+      let json_string = data.toString('utf-8');
       let json = JSON.parse(json_string);
       callback(json);
     });
-    //callback(JSON.parse(data));
-  });
 }
 
 
@@ -297,9 +294,9 @@ module.exports.removeTourMatch = function(tournamentId, matchId, callback){
             if(m.matchId == matchId){
               let urlArr = m.telemetry.split('/');
               let name = urlArr[urlArr.length-1];
-              let jsonUrl = 'uploads/telemetry/'+name+'gz';
-              //let jsonUrl = 'telemetry/'+name+'gz';
-              fs.unlink(jsonUrl, function() {
+              let file =  myBucket.file('telemetry/' + name + '.gz');
+              
+              file.delete(function(err, apiResponse) {
                 Tournament.update(
                     {_id: tournamentId}, 
                     {$pull: {matches: {matchId: matchId}}}
@@ -333,10 +330,26 @@ module.exports.testBucket = function(){
     let image = getPublicUrl('matchpoint.png')
     resolve(image);
   });*/
-  
-  return new Promise(function(res, rej){
-    res(myBucket);
+  myBucket.getFiles({
+    versions: true
+  }, function(err, files) {
+    files.forEach(function(file){
+      console.log(file.metadata.name);
+    });
   });
+  
+  const file = myBucket.file('my-file');
+  const contents = 'This is the contents of the file.';
+
+  file.save(contents, function(err) {
+    if (!err) {
+      console.log('success!');
+    }
+  });
+    
+  /*return new Promise(function(res, rej){
+    res(myBucket);
+  });*/
 }
 
 

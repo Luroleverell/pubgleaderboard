@@ -24,7 +24,7 @@ const dbname = nconf.get('mongoDbname');
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage({
   projectId: 'pubg-leaderboard-207106',
-  credentials: nconf.get('GCS_KEYFILE')
+  credentials: JSON.parse(nconf.get('GCS_KEYFILE'))
 });
 const myBucket = storage.bucket('pubgleague');
 

@@ -66,7 +66,7 @@ function getMatches(playername, callback){
   let p = [];
 
   for(let i=0;i<=shards.length-1;i++){
-    let url = '/tournaments/pubgAPI/'+playername+'/'+shards[i]
+    let url = '/tournaments/pubgAPI/'+playername;
     p.push(new Promise(function(resolve, reject){
       fetchData(url, function(res){
         resolve(res);
@@ -90,23 +90,23 @@ function printList(res, parent){
 
   res.forEach(function(result){
     result.data[0].relationships.matches.data.forEach(function(el){
-      let match = document.createElement('div');
+      let matchDiv = document.createElement('div');
 
-      match.setAttribute('name', 'apiMatches');
-      match.setAttribute('matchId', el.id);
-      match.innerText = 'Loading match...';
-      match.classList.add('row','border','rounded','py-2','pl-2','my-1', 'mapCard');
-      match.style.boxShadow = '1px 1px 5px 1px #888';
-      match.style.margin = '10px';
-      match.addEventListener('click', function(){
+      matchDiv.setAttribute('name', 'apiMatches');
+      matchDiv.setAttribute('matchId', el.id);
+      matchDiv.innerText = 'Loading match...';
+      matchDiv.classList.add('row','border','rounded','py-2','pl-2','my-1', 'mapCard');
+      matchDiv.style.boxShadow = '1px 1px 5px 1px #888';
+      matchDiv.style.margin = '10px';
+      matchDiv.addEventListener('click', function(){
         toggle(this, 'activeButton');
       });
-      let url = 'https://api.pubg.com/shards/steam/matches/'+el.id;    
-      
+      //let url = 'https://api.pubg.com/shards/steam/matches/'+el.id;    
+      let url = '/tournaments/pubgAPI/match/'+el.id;
       fetchData(url, function(res){
-        makeList(res, match, playerId);
+        makeList(res, matchDiv, playerId);
       });
-      wrapper.appendChild(match);
+      wrapper.appendChild(matchDiv);
     });
   }); 
 }
@@ -114,14 +114,12 @@ function printList(res, parent){
 function makeList(match, parent, playerId){
   let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
   parent.innerText = '';
-  //parent.classList.add('align-middle');
   
   let matchInfo = new MatchInfo(match, playerId);
-  //console.log(matchInfo);
 
   let mapIcon = document.createElement('img');
   mapIcon.src = 'https://raw.githubusercontent.com/pubg/api-assets/master/Assets/Icons/Map/' + match.data.attributes.mapName + '.png'
-  mapIcon.classList.add('mapIcon');//match.data.attributes.mapName);
+  mapIcon.classList.add('mapIcon');
   let c =document.createElement('div');
   c.classList.add('col--auto','p-3');
   c.appendChild(mapIcon);

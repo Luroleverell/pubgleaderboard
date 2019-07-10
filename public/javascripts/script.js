@@ -68,24 +68,6 @@ function loadFunction(){
   }
 }
 
-/*function getMatches(playername, parent){  
-  let shards = ['steam'];
-  let p = [];
-
-  for(let i=0;i<=shards.length-1;i++){
-    let url = '/tournaments/pubgAPI/'+playername+'/'+shards[i]
-    p.push(new Promise(function(resolve, reject){
-      fetchData(url, function(res){
-        resolve(res);
-      });
-    }));
-  }
-  
-  Promise.all(p).then(function(res){
-    printList(res, parent);
-  })
-}*/
-
 function changeTeamName(tournamentId, matchId, teamIndex, teamName, teamId){
   let url = '/tournaments/changeTeamName/'+tournamentId+'/'+matchId+'/'+teamIndex+'/'+teamId+'/'+teamName;
   fetchData(url, function(){
@@ -191,67 +173,6 @@ function fetchData(url, callback, type){
   http.send();
 }
 
-/*function printList(res, parent){
-  
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
-  }
-    
-  let div = document.createElement('div');
-  div.innerText = 'Choose a match from the list below:';
- 
-  let table = document.createElement('table');
-  let thead = document.createElement('thead');
-  let trhead = document.createElement('tr');
-  let date = document.createElement('th'); 
-  let mode = document.createElement('th'); 
-  let map = document.createElement('th');  
-  
-  date.innerText = 'Date'
-  trhead.appendChild(date);
-  
-  mode.innerText = 'Mode'
-  trhead.appendChild(mode);
-  
-  map.innerText = 'Map'
-  trhead.appendChild(map);
-  thead.appendChild(trhead);
-  
-  thead.className = 'thead-light';
-  table.className = 'table';
-  table.classList.add('table-sm');
-  table.appendChild(thead);
-  
-  parent.appendChild(div);
-  parent.appendChild(table);
-  //var tempArray = res.data[0].relationships.matches.data;
-  
-  res.forEach(function(result){
-    let tr = document.createElement('tr');
-    let td = document.createElement('td');
-    td.innerText = result.data[0].attributes.shardId;
-    tr.appendChild(td);
-    table.appendChild(tr);
-    
-    result.data[0].relationships.matches.data.forEach(function(el){ 
-      let match = document.createElement('tr');
-      let matchId = document.createElement('td');
-
-      match.id = el.id;
-      match.addEventListener('click', function(){
-        document.getElementById('matchId').value = el.id;
-      });
-      
-      let td = match.insertCell();
-      td.id = el.id;
-      td.innerText = 'Loading...';
-      
-      table.appendChild(match);
-      getMatchType(match);
-    });
-  })
-}*/
-
 function getReplay(url, parent){
   
   //let url = '../../uploads/telemetry/'+telemetryId+'.json';
@@ -279,31 +200,6 @@ function getReplay(url, parent){
 
 function getMatchType(match){
   let url= 'https://api.playbattlegrounds.com/shards/steam/matches/'+match.id;
-  
-  /*fetch(url, {
-    mode: 'cors'
-  }).then(function(res){
-    return res.json();
-  }).then(function(res){
-    if(res.data.attributes.isCustomMatch){
-      match.removeChild(match.childNodes[0]);
-      let matchDate = document.createElement('td');
-      matchDate.innerText = res.data.attributes.createdAt;
-      match.appendChild(matchDate);
-      
-      let gameMode = document.createElement('td');
-      gameMode.innerText = res.data.attributes.gameMode;
-      match.appendChild(gameMode);
-
-      let map = document.createElement('td');
-      map.innerText = res.data.attributes.mapName;
-      match.appendChild(map);
-    }else{
-      match.parentNode.removeChild(match);
-    }
-  }).catch(function(error){
-    console.error('Error:', error);
-  });*/
   
   fetchData(url, function(res){
     if(res.data.attributes.isCustomMatch){
@@ -403,52 +299,12 @@ function unfade(element) {
 
 //-----------------------------
 
-
-/*function loadFunction(){
-  let username = document.getElementById('username');
-  makeRequest(username.value, function(res){
-    printList(res);  
-  });
-}*/
-
 function dailySummary(){
   let username = document.getElementById('username');
   makeRequest(username.value, function(res){
     handleRequestDailySummary(res);  
   });
 }
-
-/*function fetchData(url, callback) {
-  let xhr = new XMLHttpRequest();
-  xhr.open("GET", url);
-  xhr.responseType = "json";
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState == 4) {
-      callback(xhr.response);
-    }
-  }
-  xhr.send();
-}*/
-
-
-/*function loadMatchData(response) {
-  let match = new Match(response);
-  let mainContent = document.getElementById('mainContent');
-  let matchList = document.getElementById('listOfMatches');
-
-  matchList.innerHTML = '';
-  let slider = new Slider(match.start, match.end);
-  let infobox = new InfoBox(slider, match);
-  let map = new ActionMap(slider, match, infobox);
-
-
-  slider.render(mainContent);
-  map.render(mainContent);
-  infobox.render(mainContent);
-  match.scoreboard(mainContent);
-
-  fnkStartStopp(slider);
-}*/
 
 function loadTelemetry(path){
   fetchData(path, function(data){
@@ -463,14 +319,13 @@ function makeRequest(playerName, callback){
   for(let i=0;i<=shards.length-1;i++){
     let url = 'https://api.pubg.com/shards/'+shards[i]+'/players?filter[playerNames]='+playerName;
     p1.push(new Promise(function(resolve, reject){
-      fetchData2(url, function(res){
+      fetchData(url, function(res){
         resolve(res);
       });
     }))
   }
 
   Promise.all(p1).then(function(res){
-    //printList(res);
     callback(res);
   })
 }
@@ -481,7 +336,6 @@ function makeList(match, parent, playerId){
   parent.classList.add('align-middle');
   
   let matchInfo = new MatchInfo(match, playerId);
-  //console.log(matchInfo);
 
   let mapIcon = document.createElement('img');
   mapIcon.src = 'https://raw.githubusercontent.com/pubg/api-assets/master/Assets/Icons/Map/' + match.data.attributes.mapName + '.png'
@@ -583,7 +437,6 @@ function printList(res){
   mainContent.appendChild(wrapper);
 
   let playerId = res[0].data[0].id;
-  //console.log(res);
 
   res.forEach(function(result){
     result.data[0].relationships.matches.data.forEach(function(el){
@@ -624,7 +477,6 @@ function handleRequestDailySummary(res){
       });
     });
   });
-  console.log(summary)
 }
 
 function getTimeFromDate(date){

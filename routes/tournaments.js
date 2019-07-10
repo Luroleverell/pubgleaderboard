@@ -84,11 +84,23 @@ router.post('/event/remove/:eventId/:tournamentId', [upload.fields([]), User.ens
   });
 });
 
-router.get('/pubgAPI/:playername/:shard', function(req, res, next){
-  Tournament.getMatchesByPlayername(req.params.playername, req.params.shard, function(result){
+router.get('/pubgAPI/:playername', function(req, res, next){
+  Tournament.getMatchesByPlayername(req.params.playername, function(result){
     res.json(result);
   });
 });
+
+router.get('/pubgAPI/match/:matchId', function(req, res, next){
+  Tournament.getMatch(req.params.matchId, function(result){
+    res.json(result);
+  });
+});
+
+/*router.get('/pubgAPI/:playername/:shard', function(req, res, next){
+  Tournament.getMatchesByPlayername(req.params.playername, req.params.shard, function(result){
+    res.json(result);
+  });
+});*/
 
 router.get('/edit/:id', function(req, res, next) {
   Tournament.getTournamentById(req.params.id).then(function(tournament){

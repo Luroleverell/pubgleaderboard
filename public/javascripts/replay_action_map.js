@@ -11,7 +11,6 @@ const ZONEBORDER = 2.000;
 
 class ActionMap {
   constructor(slider, match, infoBox) {
-    console.log(match)
     this.slider_ = slider;
     this.match_ = match;
     this.boundMouseDrag_ = this.onMouseDrag_.bind(this);
@@ -57,7 +56,7 @@ class ActionMap {
     }, this);
 
     match.players().forEach(function(player) {
-      let circle = this.createRectForPlayer_(player);
+      let circle = this.createPlayer_(player);
       circle.addEventListener('click', this.onPlayerClick.bind(this));
 
       this.playerCircles_.push(circle);
@@ -243,7 +242,7 @@ class ActionMap {
     }, this);
   }
 
-  createRectForPlayer_(player) {
+  createPlayer_(player) {
     let group = document.createElementNS(SVG_NS, 'g');
     group.classList.add('playerTag');
     group.id = player.name;

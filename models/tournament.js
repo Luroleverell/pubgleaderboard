@@ -165,7 +165,6 @@ module.exports.changeKeepTeamId = function(tournamentId, newValue){
 module.exports.changeLeaderboardLevel = function(tournamentId, newValue){
   return new Promise(function(resolve, reject){
     Tournament.updateOne({_id: tournamentId}, {$set: {'settings.leaderboardLevel': newValue}}).exec(function(err){
-      console.log('Finner db record');
       if (err) return reject(err)
       else return resolve();
     });
@@ -237,7 +236,7 @@ module.exports.addMatch = function(tournamentId, matchId, callback){
       }else{
         teamNameList = [''];
       }
-      getMatchById(matchId, teamNameList, function(match){
+      getMatchById(matchId, {teamNameList: teamNameList}, function(match){
         Tournament.findOne({_id:tournamentId , 'matches.matchId': matchId}).exec(function(err, doc){
           if(doc){
             callback(true);
@@ -318,10 +317,16 @@ module.exports.removeTourMatch = function(tournamentId, matchId, callback){
   }
 }
 
-module.exports.getMatchesByPlayername = function(playername, shard, callback){
-  let url = 'https://api.playbattlegrounds.com/shards/'+shard+'/players?filter[playerNames]='+playername;
+module.exports.getMatchesByPlayername = function(playername, callback){
+  let url = 'https://api.playbattlegrounds.com/shards/steam/players?filter[playerNames]='+playername;
   fetchDataApi(url,{gzip: false}, function(res){
     callback(res);
+  });
+}
+
+module.exports.getMatch = function(matchId, callback){
+  getMatchById(matchId, {pure: true}, function(match){
+    callback(match);
   });
 }
 
@@ -352,12 +357,15 @@ module.exports.testBucket = function(){
   });*/
 }
 
-
-function getMatchById(matchId, teamNameList, callback){
-  let url= 'https://api.playbattlegrounds.com/shards/'+SHARD+'/matches/'+matchId;
+function getMatchById(matchId, options, callback){
+  let url= 'https://api.playbattlegrounds.com/shards/steam/matches/'+matchId;
   fetchDataApi(url, {gzip: false}, function(res){
-    let match = new Match(res, teamNameList);
-    callback(match.pullMatch);
+    if(options.pure == true){
+      callback(res);
+    }else{
+      let match = new Match(res, options.teamNameList);
+      callback(match.pullMatch);
+    }
   });
 }
 
@@ -366,7 +374,7 @@ function fetchDataApi(url, inputOptions, callback){
     url: url,
     headers: {
       'Authorization': API_KEY,
-      'Accept': 'application/json',
+      'Accept': 'application/vnd.api+json',
       'Accept-Encoding': 'gzip, deflate'
     },
     encoding: null

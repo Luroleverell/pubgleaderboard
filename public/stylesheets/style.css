@@ -514,7 +514,7 @@ break line - rgb(71,56,30)
   opacity: 0.7;
   -webkit-transition: .2s;
   transition: opacity .2s;
-  transform: rotate(270deg) translateY(-50%);
+  /*transform: rotate(270deg) translateY(-50%);*/
 }
 .slider:hover {
   opacity: 1;
@@ -537,7 +537,7 @@ break line - rgb(71,56,30)
   -webkit-appearance: none;
   background-color: var(--tableBg);
   color: #444;
-  height: 20px;
+  height: 25px;
   width: 400px;
 }
 
@@ -590,13 +590,15 @@ input {
 }
 
 .mapCard{
-  border:2px solid #c5c5c5;
-  border-radius:5px;
+  border: 2px solid #c5c5c5;
+  border-radius: 5px;
+  transition: transform 0.5s;
 }
 
 .mapCard:hover{
   background-color:#c5c5c5;
   /*background-image:none;*/
+  transform: scale(1.02);
 }
 
 .mapCard .header{

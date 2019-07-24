@@ -1,7 +1,7 @@
 extend layout
 
 block content
-  .container-fluid.bgHeader
+  .container.bgHeader.pattern
     .container.headerText
       h1 #{tournament.tournament}
       #tourId(style='display:none') #{tournament._id}
@@ -10,12 +10,12 @@ block content
     if(matches.length > 0)
       .container#menu
         .btn-group
-          .button.btn.btn-info#btnLeaderboard Leaderboard
-          .button.btn.btn-info#btnMatches Matches
-          .button.btn.btn-info#btnSettings Settings
+          .btn.btn-info#btnLeaderboard Leaderboard
+          .btn.btn-info#btnMatches Matches
+          .btn.btn-info#btnSettings Settings
           if(user)
             if(user.username==tournament.username)
-              .button.btn.btn-info#btnAddMatch(title='Add match') 
+              .btn.btn-info#btnAddMatch(title='Add match') 
                 i.oi.oi-plus
       br
       .container#leaderboard Calculating leaderboard...

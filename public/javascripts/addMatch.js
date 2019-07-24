@@ -1,7 +1,7 @@
 function addNewMatch(tournamentId){
   
   let div = ce('div', 'container');
-  let divResult = ce('div', 'container');
+  let divResult = ce('div', ['container','tableDiv']);
   divResult.id = 'searchResult';
   
   let btnGroup = ce('div', 'btn-group')
@@ -39,7 +39,8 @@ function addNewMatch(tournamentId){
         }
       });
       
-      Promise.all(promises).then(function(){
+      Promise.all(promises).then(function(res){
+        console.log(res);
         updateLeaderboard(tournamentId, 'matches');
       });
     });
@@ -62,19 +63,15 @@ function addNewMatch(tournamentId){
 }
 
 function getMatches(playername, callback){  
-  let shards = ['steam'];
-  let p = [];
 
-  for(let i=0;i<=shards.length-1;i++){
-    let url = '/tournaments/pubgAPI/'+playername;
-    p.push(new Promise(function(resolve, reject){
-      fetchData(url, function(res){
-        resolve(res);
-      });
-    }));
-  }
+  let url = '/tournaments/pubgAPI/'+playername;
+  let p = new Promise(function(resolve, reject){
+    fetchData(url, function(res){
+      resolve(res);
+    });
+  });
   
-  Promise.all(p).then(function(res){
+  p.then(function(res){
     callback(res);
   });
 }
@@ -83,115 +80,135 @@ function printList(res, parent){
   let platform_region_shard = 'steam';
   let wrapper = document.createElement('div');
   wrapper.id = 'listOfMatches';
-
-  let playerId = res[0].data[0].id;
+  
+  let playerId = res.data[0].id;
   parent.innerHTML = '';
   parent.appendChild(wrapper);
 
-  res.forEach(function(result){
-    result.data[0].relationships.matches.data.forEach(function(el){
-      let matchDiv = document.createElement('div');
+  //res.forEach(function(result){
+  res.data[0].relationships.matches.data.forEach(function(el){
+    let matchDiv = document.createElement('div');
 
-      matchDiv.setAttribute('name', 'apiMatches');
-      matchDiv.setAttribute('matchId', el.id);
-      matchDiv.innerText = 'Loading match...';
-      matchDiv.classList.add('row','border','rounded','py-2','pl-2','my-1', 'mapCard');
-      matchDiv.style.boxShadow = '1px 1px 5px 1px #888';
-      matchDiv.style.margin = '10px';
-      matchDiv.addEventListener('click', function(){
-        toggle(this, 'activeButton');
-      });
-      //let url = 'https://api.pubg.com/shards/steam/matches/'+el.id;    
-      let url = '/tournaments/pubgAPI/match/'+el.id;
-      fetchData(url, function(res){
-        makeList(res, matchDiv, playerId);
-      });
-      wrapper.appendChild(matchDiv);
+    matchDiv.setAttribute('name', 'apiMatches');
+    matchDiv.setAttribute('matchId', el.id);
+    matchDiv.innerText = 'Loading match...';
+    matchDiv.classList.add('row','py-2','pl-2','my-1','mapCard');
+    //matchDiv.style.boxShadow = '1px 1px 5px 1px #888';
+    matchDiv.style.margin = '10px';
+    matchDiv.addEventListener('click', function(){
+      toggle(this, 'activeButton');
     });
-  }); 
+
+    let url = '/tournaments/pubgAPI/match/'+el.id;
+    fetchData(url, function(res){
+      listItem(res, matchDiv, playerId);
+    });
+    wrapper.appendChild(matchDiv);
+  });
+  //}); 
 }
 
-function makeList(match, parent, playerId){
+function listItem(match, parent, playerId){
   let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
   parent.innerText = '';
   
   let matchInfo = new MatchInfo(match, playerId);
-
-  let mapIcon = document.createElement('img');
+  
+  if(matchInfo.rank == 1){
+    parent.classList.add('firstPlace');
+  }else if(matchInfo.rank <= 10){
+    parent.classList.add('topTen');
+  }
+  
+  let c2, c3;
+  
+  //===MAP ICON=====
+  let mapIcon = ce('img', 'mapIcon');
   mapIcon.src = 'https://raw.githubusercontent.com/pubg/api-assets/master/Assets/Icons/Map/' + match.data.attributes.mapName + '.png'
-  mapIcon.classList.add('mapIcon');
-  let c =document.createElement('div');
-  c.classList.add('col--auto','p-3');
+  let c = ce('div', ['col--auto','my-auto','p-3']);
   c.appendChild(mapIcon);
   parent.appendChild(c);
 
-  c =document.createElement('div');
-  c.classList.add('col--auto','px-3', 'my-auto');
+  //===GAMEDATE=====
+  c = ce('div',['col--auto','px-3', 'my-auto']);
     let date = new Date(match.data.attributes.createdAt)
-    let c2 = document.createElement('div');
+    c2 = ce('div');
     c2.innerHTML = date.getDate() + '. ' + months[date.getMonth()] + ' ' + date.getFullYear();
     c.appendChild(c2);
     
-    c2 = document.createElement('div');
+    c2 = ce('div');
     c2.innerHTML = getTimeFromDate(date);
     c.appendChild(c2);
   parent.appendChild(c);
 
-  c =document.createElement('div');
-  c.classList.add('col', 'my-auto');
+  c = ce('div', ['col', 'my-auto']);
   c.innerHTML = match.data.attributes.gameMode;
   parent.appendChild(c);
-
-  c =document.createElement('div');
-  c.classList.add('col', 'my-auto');
-    c2 = document.createElement('div');
+  
+  //===PLAYER=====
+  c = ce('div', 'col');
+    c2 = ce('div', 'header');
     c2.innerHTML = 'Player';
     c.appendChild(c2);
-
+    
+    c2 = ce('div', 'my-auto');
     matchInfo.team.forEach(function(mi){
-      c2 = document.createElement('div');
-      c2.innerHTML = mi.playerName;
-      c.appendChild(c2);
+      c3 = ce('div');
+      c3.innerHTML = mi.playerName;
+      c2.appendChild(c3);
     });
+    c.appendChild(c2);
   parent.appendChild(c);
 
-  c =document.createElement('div');
-  c.classList.add('col', 'my-auto');
-    c2 = document.createElement('div');
-    c2.classList.add('text-center');
+  //===KILLS=====
+  c = ce('div','col');
+    c2 = ce('div', ['header', 'text-center']);
     c2.innerHTML = 'Kills';
     c.appendChild(c2);
-
+    
+    c2 = ce('div', 'my-auto');
     matchInfo.team.forEach(function(mi){
-      c2 = document.createElement('div');
-      c2.classList.add('text-center');
-      c2.innerHTML = mi.kills;
-      c.appendChild(c2);
+      c3 = ce('div','text-center');
+      c3.innerHTML = mi.kills;
+      c2.appendChild(c3);
     });
+    c.appendChild(c2);
   parent.appendChild(c);
 
-  c =document.createElement('div');
-  c.classList.add('col', 'my-auto');
-    c2 = document.createElement('div');
-    c2.classList.add('text-right');
+  //===DAMAGE=====
+  c = ce('div', 'col');
+    c2 = ce('div', ['header', 'text-right']);
     c2.innerHTML = 'Damage';
     c.appendChild(c2);
 
+    c2 = ce('div', 'my-auto');
     matchInfo.team.forEach(function(mi){
-      c2 = document.createElement('div');
-      c2.classList.add('text-right');
-      c2.innerHTML = mi.damage;
-      c.appendChild(c2);
+      c3 = ce('div', 'text-right');
+      c3.innerHTML = mi.damage;
+      c2.appendChild(c3);
     });
+    c.appendChild(c2);
   parent.appendChild(c);
   
-  c =document.createElement('div');
-  c.classList.add('col', 'my-auto','text-right');
-  c.innerHTML = matchInfo.rank;
+  //===PLACEMENT=====
+  c = ce('div', ['col', 'my-auto', 'text-right']);
+  /*c2 = ce('div', ['header', 'text-right']);
+  c2.innerHTML = 'Placement';
+  c.appendChild(c2);*/
+  
+  c2 = ce('div', 'my-auto')
+    c3 = ce('div', 'text-right');
+      let span1 = ce('span', 'placement');
+      span1.innerText = matchInfo.rank;
+      let span2 = ce('span');
+      span2.innerText = ' of ' + matchInfo.playerCount;
+    c3.appendChild(span1);
+    c3.appendChild(span2);
+    c2.appendChild(c3);
+  c.appendChild(c2)
   parent.appendChild(c);
 
-  c =document .createElement('div');
-  c.classList.add('col', 'my-auto');
+  c = ce('div',['col', 'my-auto']);
   c.style.display = 'none';
   getTelemetry(match, function(res){
     c.innerHTML = res;

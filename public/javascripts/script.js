@@ -5,6 +5,10 @@ var speed = 100;
 var pubgColor = ['#0042a1', '#15931a', '#e16209', '#2096d1', '#4a148c', '#9f2b14', '#486a00', '#c51a56', '#9c6622', '#820045', 
                   '#d5b115', '#4ab3af', '#6b828d', '#f39700', '#37474f', '#e0648e', '#00736d', '#8a4803', '#7fb017', '#854ba1', 
                   '#38b27e', '#88abda', '#e58b65', '#2c276c', '#988e09'];
+var xmlns = "http://www.w3.org/2000/svg";
+var ligthVector = {x:0, y:1, z:1};
+var mainColor;
+var mainCOlorLight;
 
 
 function loadFunction(){
@@ -15,6 +19,9 @@ function loadFunction(){
   let keepTeamId = document.getElementById('keepTeamId');
   let leaderboardLevel = document.getElementById('leaderboardLevel');
   let lookupMatch = document.getElementById('lookupMatch');
+  
+  mainColor = getComputedStyle(document.documentElement).getPropertyValue('--mainColor');
+  mainColorLight = getComputedStyle(document.documentElement).getPropertyValue('--mainColorLight');
   
   if(username){
     username.addEventListener('change', function(e){
@@ -66,6 +73,36 @@ function loadFunction(){
       flash.classList.remove('show');
     }, 3000);
   }
+  
+  let nodes = document.getElementsByClassName('pattern');
+  Array.prototype.forEach.call(nodes, function(node){
+    generate(node);
+  });
+  
+  let buttons = document.getElementsByClassName('line');
+  Array.prototype.forEach.call(buttons, function(button, i){
+  	button.style.zIndex = buttons.length - i;
+    let main = button.parentNode.parentNode;
+    let svg = button.parentNode;
+    let text = button.parentNode.parentNode.childNodes[1];
+    let elementArray = [main, button, text];
+    
+    if(!main.classList.contains('active')){
+      elementArray.forEach(function(element){
+        element.addEventListener('mouseover', function(){
+          main.style.transform = 'scale(1.1)';
+          text.style.color = mainColor;
+          button.style.fill = mainColorLight;
+        });
+        
+        element.addEventListener('mouseout', function(){
+          main.style.transform = 'scale(1.0)';
+          text.style.color = mainColorLight;
+          button.style.fill = mainColor;
+        });
+      });
+    }
+  });
 }
 
 function changeTeamName(tournamentId, matchId, teamIndex, teamName, teamId){
@@ -606,6 +643,234 @@ function ce(element, classes){
 }
 
 
+function generate(node){
+	/*let main = document.getElementById('div')
+  main.style.position = 'relative';
+  main.style.height = '175px'*/
+  //main.style.background = '#55bab6';
+  node.style.position = 'relative';
+  node.style.height = '150px';
+  let targetWidth = 1400;
+  let targetHeight = node.offsetHeight;
+  
+  let div = document.createElement('div');
+  div.style.position = 'absolute';
+  div.style.top = 0;
+  div.style.left = 0;
+  div.style.width = '100%';
+  div.style.height = '100%';
+  
+  div.style.display = 'flex';
+  div.style.backgroundImage = 'linear-gradient(to right, transparent -50%, '+ mainColor +' 100%)';
+  
+  let text = document.createElement('div');
+  text.innerText = 'PUBG League';
+  text.style.color = 'white';
+  text.style.fontSize = '32px';
+  text.style.padding = '15px 0px 15px 30px';
+  text.style.margin = '15px';
+  text.style.width = '100%';
+  text.style.background = '#4c4b50';//'#55bab6';
+  text.style.alignSelf = 'center';
+  //text.style.border = '1px solid linear-gradient(to right, black 0%, transparent 100%)'
+  //text.style.boxShadow = '0px 0px 25px 2px black';
+  //text.style.borderRadius = '10px';
+  
+  //div.appendChild(text);
+  
+  let svg = document.createElementNS(xmlns,'svg');
+  //svg.setAttribute('shape-rendering','crispEdges');
+  svg.style.position = 'absolute';
+  svg.style.top = 0;
+  svg.style.left = 0;
+  svg.classList.add('svgPattern');
+  svg.style.width = '100%';
+  svg.style.height = '100%';
+  
+  let defs = document.createElementNS(xmlns, 'defs');
+  let gradient = document.createElementNS(xmlns, 'linearGradient')
+  gradient.id = 'gradient';
+  let stop1 = document.createElementNS(xmlns, 'stop');
+  stop1.setAttribute('offset', '-50%');
+  stop1.classList.add('gradientStop1');
+  let stop2 = document.createElementNS(xmlns, 'stop');
+  stop2.setAttribute('offset', '100%');
+  stop2.classList.add('gradientStop2');
+  gradient.appendChild(stop1);
+  gradient.appendChild(stop2);
+  defs.appendChild(gradient);
+  
+  let clip = document.createElementNS(xmlns, 'clipPath');
+  clip.id = 'clipXL';
+  let path = document.createElementNS(xmlns, 'path');
+  path.setAttribute('d','M-10 -10 75 75, -10 160, 1055 160, 1140 75, 1055 0Z');
+  clip.appendChild(path);
+  defs.appendChild(clip);
+  
+  clip = document.createElementNS(xmlns, 'clipPath');
+  clip.id = 'clipL';
+  path = document.createElementNS(xmlns, 'path');
+  path.setAttribute('d','M-10 -10 75 75, -10 160, 875 160, 960 75, 875 0Z');
+  clip.appendChild(path);
+  //defs.appendChild(clip);
+  
+  clip = document.createElementNS(xmlns, 'clipPath');
+  clip.id = 'clipM';
+  path = document.createElementNS(xmlns, 'path');
+  path.setAttribute('d','M-10 -10 75 75, -10 160, 645 160, 720 75, 645 0Z');
+  clip.appendChild(path);
+  //defs.appendChild(clip);
+  
+  clip = document.createElementNS(xmlns, 'clipPath');
+  clip.id = 'clipS';
+  path = document.createElementNS(xmlns, 'path');
+  path.setAttribute('d','M-10 -10 75 75, -10 160, 455 160, 540 75, 455 0Z');
+  clip.appendChild(path);
+  //defs.appendChild(clip);  
+  
+  svg.appendChild(defs);
+  
+  let baseSize = 50;
+  let depth = 40;
+  let minSize = baseSize / 3;
+  let points = [];
+  
+  let numRows = 100;
+  let p;
+  let cols=0, rows=0;
+  
+  do{
+    p = {x:0,y:0,z:0}
+    points[rows] = [];
+    p.x = -10;
+    if(rows==0) p.y = -10;
+    else p.y = points[rows-1][0].y + Math.floor(Math.random() * baseSize) + baseSize / 2;
+    p.z = Math.floor(Math.random() * depth) - depth/2;
+    points[rows].push(p);
+    rows++;
+  }while(p.y < targetHeight + baseSize * 2)
+  
+  do{
+    if(!cols==0){
+      p = {x:0,y:0,z:0}
+      p.x = points[0][cols-1].x + Math.floor(Math.random() * baseSize) + baseSize / 2;
+      p.y = -10;
+      p.z = Math.floor(Math.random() * depth) - depth/2;
+      points[0].push(p);
+    }
+    cols++;
+  }while(p.x < targetWidth + baseSize * 2)
+  console.log(targetWidth);
+
+  for(let i = 1; i <= rows-2; i++){
+    for(let j = 1; j <= cols-2; j++){
+      p = {x:0,y:0,z:0}
+      let lowX = (points[0][j].x - points[0][j-1].x) / 2;
+      let highX = (points[0][j+1].x - points[0][j].x) / 2;
+      p.x = Math.floor(Math.random() * Math.min(Math.max(lowX + highX, baseSize / 4), baseSize)) + lowX + points[0][j-1].x;
+      
+      let lowY = (points[i][0].y - points[i-1][0].y) / 2;
+      let highY = (points[i+1][0].y - points[1][0].y) / 2;
+      p.y = Math.floor(Math.random() * Math.min(Math.max((lowY + highY) , baseSize / 4), baseSize)) + lowY + points[i-1][0].y;
+      
+      p.z = Math.floor(Math.random() * baseSize/2) - baseSize/4;
+      
+      points[i].push(p);
+    
+      createFromSquare(points[i-1][j-1],points[i-1][j],points[i][j-1],points[i][j],svg);
+    }
+	}
+  
+  let rect = document.createElementNS(xmlns, 'rect');
+  rect.setAttribute('width',targetWidth);
+  rect.setAttribute('height',targetHeight);
+  rect.style.fill = 'url(#gradient)';
+  rect.classList.add('polygon');
+  
+  svg.appendChild(rect);
+  node.appendChild(svg);
+  //node.appendChild(div);
+}
+
+function normal(p1, p2, p3){
+  let u = {x:0,y:0,z:0};
+  let v = {x:0,y:0,z:0};
+  let n = {x:0,y:0,z:0};
+  
+  u.x = p2.x-p1.x;
+  u.y = p2.y-p1.y;
+  u.z = p2.z-p1.z;
+  
+  v.x = p3.x-p1.x;
+  v.y = p3.y-p1.y;
+  v.z = p3.z-p1.z;
+  
+  n.x = u.y*v.z - u.z*v.y;
+  n.y = u.z*v.x - u.x*v.z;
+  n.z = u.x*v.y - u.y*v.x;
+  
+  return n;
+}
+
+function angleBetween(p1, p2){
+  let len1 = vectorLength(p1);
+  let len2 = vectorLength(p2);
+  
+  let dotProduct = p1.x*p2.x + p1.y*p2.y + p1.z*p2.z;
+  
+  return Math.acos(dotProduct/len1/len2) * 180 / Math.PI;
+}
+
+function vectorLength(p){
+  return Math.sqrt(p.x*p.x + p.y*p.y + p.z*p.z);
+}
+
+function createFromSquare(p1, p2, p3, p4, svg){
+  let m1 = vectorDiff(p1,p4);
+  let m2 = vectorDiff(p2,p3);
+  let triangle1, triangle2;
+  
+  if(vectorLength(m2) <= vectorLength(m1)){  
+    triangle1 = createPolygon(p1,p2,p3);
+    triangle2 = createPolygon(p2,p4,p3);
+  }else{
+    triangle1 = createPolygon(p1,p2,p4);
+    triangle2 = createPolygon(p1,p4,p3);
+  }
+  
+  svg.appendChild(triangle1);
+  svg.appendChild(triangle2);
+}
+
+function createPolygon(p1,p2,p3){
+  let pol = document.createElementNS(xmlns,'polygon');
+  let n = normal(p1,p2,p3);
+  let angle = angleBetween(n, ligthVector);
+  
+  let val = 0
+  val = 255 - angle / 180 * 255;
+  let greyColor = 'rgb('+val+','+val+','+val+')';
+  
+  pol.style.fill = greyColor;
+  pol.style.stroke = greyColor;
+  pol.setAttribute('points', p1.x+','+p1.y+' '+p2.x+','+p2.y+' '+p3.x+','+p3.y);
+  pol.classList.add('polygon');
+  
+  return pol;
+}
+
+
+function vectorDiff(p1, p2){
+  let p = {x:0,y:0,z:0};
+  p.x = p1.x - p2.x;
+  p.y = p1.y - p2.y;
+  p.z = p1.z - p2.z;
+  
+  return p;
+}
+
+
+
 
 /**
  * HSV to RGB color conversion
@@ -725,4 +990,5 @@ function hslToRgb(h, s, l){
 
     return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
+
 

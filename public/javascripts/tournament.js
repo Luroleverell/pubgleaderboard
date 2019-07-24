@@ -63,8 +63,10 @@ class Tournament {
     h.innerText = 'Leaderboard';
     divMain.appendChild(h);
     
+    let divTable = ce('div', 'tableDiv');
+    
     t = document.createElement('table');
-    t.classList.add('table');
+    t.classList.add('table','tableBg');
     
     h = t.createTHead();
     
@@ -147,7 +149,7 @@ class Tournament {
       div.classList.add('collapse', 'container', 'row'+team[1].teamId);
       
         t2 = document.createElement('table');
-        t2.className = 'table';
+        t2.classList.add('table','tableBg');
         
         h2 = t2.createTHead();
         
@@ -184,14 +186,15 @@ class Tournament {
       div.appendChild(t2);
       c.appendChild(div);
     });
-
-    divMain.appendChild(t);
+    
+    divTable.appendChild(t)
+    divMain.appendChild(divTable);
     return divMain;
   }
 
   get getPlayers(){
     let thPlayer = ['Rank', 'Player', 'Killpoints', 'Rankpoints', 'Total points', ''];
-    let thMatch = ['', 'Map', 'Team players','Kills', 'Match placement','',''];
+    let thMatch = ['', 'Map', 'Team players','Kills', 'Match placement',''];
     let t, h, r, c, t2, h2, r2, c2, t3, h3, r3, c3;
     
     let divMain = document.createElement('div');
@@ -199,8 +202,11 @@ class Tournament {
     h.innerText = 'Leaderboard';
     divMain.appendChild(h);
     
+    let divTable = ce('div', 'tableDiv');
+    
     t = document.createElement('table');
-    t.classList.add('table');
+    t.classList.add('table','tableBg');
+    
     h = t.createTHead();
     r = h.insertRow();
     r.className = 'thead-gold';
@@ -246,6 +252,8 @@ class Tournament {
       c.className = 'text-center';
       c.innerHTML = player[1].points;
       
+      c = r.insertCell();
+      
       r = t.insertRow();
       c = r.insertCell();
       c.setAttribute('colspan', '7');
@@ -255,7 +263,7 @@ class Tournament {
       div.classList.add('collapse', 'container', 'row'+player[0].replace('.',''));
       
         t2 = document.createElement('table');
-        t2.className = 'table';
+        t2.classList.add('table','tableBg');
         
         h2 = t2.createTHead();
         
@@ -312,13 +320,16 @@ class Tournament {
           c2 = r2.insertCell();
           c2.className = 'text-center';
           c2.innerText = team.rank;
+          
+          c2 = r2.insertCell();
         });
         
         div.appendChild(t2);
         c.appendChild(div);
     });
-
-    divMain.appendChild(t);
+  
+    divTable.appendChild(t);
+    divMain.appendChild(divTable);
     return divMain;
   }
   
@@ -332,8 +343,10 @@ class Tournament {
     h.innerText = 'Matches';
     divMain.appendChild(h);
     
+    let divTable = ce('div', 'tableDiv');
+    
     t3 = document.createElement('table');
-    t3.className = 'table';
+    t3.classList.add('table','tableBg');
     
     h3 = t3.createTHead();
     
@@ -450,7 +463,7 @@ class Tournament {
       div.classList.add('collapse', 'container', 'row'+m.matchId);
       
       t2 = document.createElement('table');
-      t2.className = 'table';
+      t2.classList.add('table','tableBg');
       
       h2 = t2.createTHead();
       r2 = h2.insertRow();
@@ -511,7 +524,8 @@ class Tournament {
       c.appendChild(div);
     }, this)
     
-    divMain.appendChild(t3);
+    divTable.appendChild(t3)
+    divMain.appendChild(divTable);
     return divMain;
   }
   

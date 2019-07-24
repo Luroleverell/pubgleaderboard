@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  .container-fluid.bgHeader
+  .container.bgHeader.pattern
     .container.headerText
       h1 #{title}
   .container.bgMain
@@ -17,7 +17,7 @@ block content
           input.form-control(name='eventName', type='text', placeholder='Name')
           input.btn.btn-info(type='submit', name='submit', value='Add event')
     if tournaments
-      table.table
+      table.table.tableBg
         thead.thead-gold
           tr
             th League

@@ -12,7 +12,7 @@ var {check, body, validationResult} = require('express-validator/check');
 
 /* GET users listing. */
 router.get('/register', function(req, res, next) {
-  res.render('register',{title: 'Register'});
+  res.render('register',{title: 'Register', buttonActive: 'Register'});
 });
 
 router.post('/register',[
@@ -50,7 +50,7 @@ router.post('/register',[
   });
 
 router.get('/login', function(req, res, next) {
-  res.render('login',{title: 'Login'});
+  res.render('login',{title: 'Login', buttonActive: 'Log in'});
 });
 
 router.post('/login',

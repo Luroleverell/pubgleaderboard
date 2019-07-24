@@ -50,6 +50,10 @@ class MatchInfo{
   }
 
   get rank(){
-    return this.rank_ +' of '+ this.lastPlace_;
+    return this.rank_;
+  }
+  
+  get playerCount(){
+    return this.lastPlace_;
   }
 }

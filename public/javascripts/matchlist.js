@@ -1,9 +1,11 @@
 class MatchList{
-  constructor(uplayerUsername){
+  constructor(playername){
     
   }
   
   render(parent){
     let 
   }
+  
+  
 }

@@ -8,7 +8,7 @@ var Gamer = require('../models/gamer');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   Tournament.getPublicTournaments().then(function(tournaments){
-    res.render('index', {tournaments: tournaments});
+    res.render('index', {tournaments: tournaments, buttonActive: 'Tournaments'});
   })
 });
 
@@ -17,7 +17,7 @@ router.get('/tournament/:event?', User.ensureAuthenticated,  function(req, res, 
     if(req.params.event){
       Event.getEventById(req.params.event).then(function(event){
         Tournament.getTournamentById(event.tournaments).then(function(tournaments){
-          res.render('tournament', { title: 'League', events: [], eventId: req.params.event, tournaments: tournaments});
+          res.render('tournament', { title: 'League', events: [], eventId: req.params.event, tournaments: tournaments, buttonActive: ''});
         });
       })
     }else{
@@ -55,7 +55,7 @@ router.get('/telemetry/:telemetryId', function(req, res){
 });
 
 router.get('/findMatch', function(req, res){
-  res.render('findMatch', {title : 'Find match'})
+  res.render('findMatch', {title : 'Find match', buttonActive: 'Find match'})
 });
 
 module.exports = router;

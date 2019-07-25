@@ -423,9 +423,10 @@ class ActionMap {
 
   chooseMap(){
     let mapName = this.match_.mapName();
+    console.log(mapName)
     let mapSize, mapUrl;
     switch (mapName) {
-      case 'Erangel_Main':
+      case 'Erangel_Main', 'Baltic_Main':
         mapSize = MAPSIZE_BIG;
         mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/Erangel_Main_High_Res.png';
         break;

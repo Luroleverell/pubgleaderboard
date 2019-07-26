@@ -370,8 +370,9 @@ break line - rgb(71,56,30)
 }
 .tableDiv th{
   background: var(--mainColor);
-  display: sticky;
+  position: sticky;
   top: 0;
+  z-index: 2;
 }
 
 .trSelectable:hover{

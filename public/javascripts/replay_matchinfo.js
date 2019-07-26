@@ -4,7 +4,10 @@ class MatchInfo{
     this.roster_ = [];
     this.team_ = [];
     this.rank_ = 0
-
+    this.attributes = match.data.attributes;
+    
+    //console.log(match)
+    
     match.included.some(function(item){
       if(item.type == 'participant'){
         if(item.attributes.stats.playerId == playerId) {

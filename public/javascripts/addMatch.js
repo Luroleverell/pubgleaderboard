@@ -40,11 +40,15 @@ function addNewMatch(tournamentId){
       });
       
       Promise.all(promises).then(function(res){
-        console.log(res);
         updateLeaderboard(tournamentId, 'matches');
       });
     });
+    div.appendChild(btnAdd);
   }else{
+    let btnSummary = ce('button', ['btn','btn-info','float-right']);
+    btnSummary.innerText = 'Show summary';
+    btnSummary.id = 'btnSummary';
+    
     btnAdd.innerText = 'Get replay data';
     btnAdd.addEventListener('click', function(){
       let matches = document.getElementsByName('apiMatches');
@@ -54,11 +58,11 @@ function addNewMatch(tournamentId){
         }
       });
     });
+    div.appendChild(btnAdd);
+    div.appendChild(btnSummary);
   }
 
-  div.appendChild(btnAdd);
   div.appendChild(divResult);
-  
   return div;
 }
 
@@ -79,13 +83,16 @@ function getMatches(playername, callback){
 function printList(res, parent){
   let platform_region_shard = 'steam';
   let wrapper = document.createElement('div');
+  let matches = new Map();
   wrapper.id = 'listOfMatches';
   
   let playerId = res.data[0].id;
   parent.innerHTML = '';
   parent.appendChild(wrapper);
-
-  //res.forEach(function(result){
+  
+  let promises = [];
+  
+  
   res.data[0].relationships.matches.data.forEach(function(el){
     let matchDiv = document.createElement('div');
 
@@ -93,19 +100,70 @@ function printList(res, parent){
     matchDiv.setAttribute('matchId', el.id);
     matchDiv.innerText = 'Loading match...';
     matchDiv.classList.add('row','py-2','pl-2','my-1','mapCard');
-    //matchDiv.style.boxShadow = '1px 1px 5px 1px #888';
     matchDiv.style.margin = '10px';
     matchDiv.addEventListener('click', function(){
       toggle(this, 'activeButton');
     });
-
+    
+    matches.set(el.id, {matchInfo: 0});
+    
     let url = '/tournaments/pubgAPI/match/'+el.id;
-    fetchData(url, function(res){
-      listItem(res, matchDiv, playerId);
+    let p = new Promise(function(resolve, reject){
+      fetchData(url, function(res){
+        let matchInfo = listItem(res, matchDiv, playerId);
+        matches.get(el.id).matchInfo = matchInfo;
+        resolve();
+      });
     });
+    
+    promises.push(p);
     wrapper.appendChild(matchDiv);
   });
-  //}); 
+  
+  
+  let sessionGroup = new Map();
+  let lastMatchTime = 0;
+  let lastTeam = [];
+  let s = 0;
+  let btnSummary = document.getElementById('btnSummary');
+  Promise.all(promises).then(function(){
+    let sessionGroup = new SessionGroup(matches);
+    btnSummary.addEventListener('click', function(){
+      wrapper.innerHTML = '';
+      sessionGroup.printList(wrapper);
+    });
+    
+    /*matches.forEach(function(match, key){
+      let newSession = false;
+      let matchTime = new Date(match.matchInfo.attributes.createdAt);
+      let team = match.matchInfo.team;
+
+      if(lastTeam.length !== team.length) newSession = true;
+      else{
+        let sameTeam = true;
+        for(let i=0; i<team.length; i++){
+          let playerFound = false;
+          for(let j=0; j<lastTeam.length; j++){
+            if(team[i].playerName == lastTeam[j].playerName) playerFound = true;
+          }
+          if(!playerFound) sameTeam = false;
+        }
+        if(!sameTeam) newSession = true;
+      }
+      if(lastMatchTime - matchTime > 3600000) newSession = true;
+
+      if(newSession){
+        s++;
+        sessionGroup.set(s, []);
+      }
+      sessionGroup.get(s).push(match);
+      
+      lastTeam = team;
+      lastMatchTime = matchTime;
+    });
+    
+    console.log(sessionGroup);*/
+  });
 }
 
 function listItem(match, parent, playerId){
@@ -214,6 +272,7 @@ function listItem(match, parent, playerId){
     c.innerHTML = res;
   })
   parent.appendChild(c);
+  return matchInfo;
 }
 
 function getTelemetry(res, callback){

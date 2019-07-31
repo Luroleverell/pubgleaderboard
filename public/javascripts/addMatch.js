@@ -96,10 +96,10 @@ function printList(res, parent){
   
   let promises = [];
   
+  let list = ce('div');
   
   res.data[0].relationships.matches.data.forEach(function(el){
     let matchDiv = document.createElement('div');
-
     matchDiv.setAttribute('name', 'apiMatches');
     matchDiv.setAttribute('matchId', el.id);
     matchDiv.innerText = 'Loading match...';
@@ -121,21 +121,34 @@ function printList(res, parent){
     });
     
     promises.push(p);
-    wrapper.appendChild(matchDiv);
+    list.appendChild(matchDiv);
   });
   
+  wrapper.appendChild(list);
   
   let sessionGroup = new Map();
   let lastMatchTime = 0;
   let lastTeam = [];
   let s = 0;
   let btnSummary = document.getElementById('btnSummary');
+  
   Promise.all(promises).then(function(){
+    let wrapperCopy = wrapper.cloneNode(true);
     let sessionGroup = new SessionGroup(matches);
-    btnSummary.addEventListener('click', function(){
+    btnSummary.addEventListener('click', function _summary(){
+      this.removeEventListener('click', _summary);
+      this.innerText = 'MatchList';
+      this.addEventListener('click', function _matchList(){
+        this.innerText = 'Show summary';
+        this.removeEventListener('click', _matchList);
+        this.addEventListener('click', _summary);
+        wrapper.innerHTML = '';
+        wrapper.appendChild(list);
+      });
       wrapper.innerHTML = '';
       sessionGroup.printList(wrapper);
     });
+    
     
     /*matches.forEach(function(match, key){
       let newSession = false;

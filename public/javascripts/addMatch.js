@@ -45,6 +45,8 @@ function addNewMatch(tournamentId){
     });
     div.appendChild(btnAdd);
   }else{
+    
+    let btnGroup = ce('div', ['btn-group', 'fr']);
     let btnSummary = ce('button', ['btn','btn-info','float-right']);
     btnSummary.innerText = 'Show summary';
     btnSummary.id = 'btnSummary';
@@ -58,8 +60,10 @@ function addNewMatch(tournamentId){
         }
       });
     });
-    div.appendChild(btnAdd);
-    div.appendChild(btnSummary);
+    
+    btnGroup.appendChild(btnSummary);
+    btnGroup.appendChild(btnAdd);
+    div.appendChild(btnGroup);
   }
 
   div.appendChild(divResult);
@@ -182,7 +186,13 @@ function listItem(match, parent, playerId){
   
   //===MAP ICON=====
   let mapIcon = ce('img', 'mapIcon');
-  mapIcon.src = 'https://raw.githubusercontent.com/pubg/api-assets/master/Assets/Icons/Map/' + match.data.attributes.mapName + '.png'
+  
+  let mapName = match.data.attributes.mapName;
+  let iconName;
+  if(mapName === 'Baltic_Main') iconName = 'Erangel_Main';
+  else iconName = mapName;
+  
+  mapIcon.src = 'https://raw.githubusercontent.com/pubg/api-assets/master/Assets/Icons/Map/' + iconName + '.png'
   let c = ce('div', ['col--auto','my-auto','p-3']);
   c.appendChild(mapIcon);
   parent.appendChild(c);

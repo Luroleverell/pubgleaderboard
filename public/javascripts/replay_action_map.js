@@ -423,7 +423,6 @@ class ActionMap {
 
   chooseMap(){
     let mapName = this.match_.mapName();
-    console.log(mapName)
     let mapSize, mapUrl;
     switch (mapName) {
       case 'Erangel_Main':

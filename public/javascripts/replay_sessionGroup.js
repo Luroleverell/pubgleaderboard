@@ -8,7 +8,8 @@ class SessionGroup{
     let lastTeam = [];
     let s = 0;
     
-    matches.forEach(function(match){
+    matches.forEach(function(match, key){
+      
       let newSession = false;
       let matchTime = new Date(match.matchInfo.attributes.createdAt);
       let team = match.matchInfo.team;
@@ -29,10 +30,9 @@ class SessionGroup{
 
       if(newSession){
         s++;
-        let newTeam = team;
-        newTeam.forEach(function(player){
-          player.kills = 0;
-          player.damage = 0;
+        let newTeam = [];
+        team.forEach(function(player){
+          newTeam.push({playerName:player.playerName, kills:0, damage:0});
         })
         this.sessionGroups.set(s, {team: newTeam, matches: []});
       }
@@ -42,12 +42,12 @@ class SessionGroup{
         let element = session.team.find(function(x){
           return x.playerName === player.playerName;
         });
-        
+
         element.kills += player.kills;
         element.damage += player.damage;
       });
       
-      lastTeam = team;
+      lastTeam = team.slice();
       lastMatchTime = matchTime;
     }, this);
   }
@@ -65,8 +65,9 @@ class SessionGroup{
     tableHeader.forEach(function(h){
       c = ce('th');
       c.innerText = h;
-      thead.appendChild(c);
+      r.appendChild(c);
     })
+    thead.appendChild(r);
     table.appendChild(thead);
     
     

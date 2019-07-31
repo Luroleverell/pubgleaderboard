@@ -56,10 +56,6 @@ function loadFunction(){
     });
   }
   
-  if(leaderboardLevel){
-    console.log('change detected') 
-  }
-  
   if(lookupMatch){
     let content = addNewMatch();
     lookupMatch.appendChild(content);
@@ -760,7 +756,7 @@ function generate(node){
     }
     cols++;
   }while(p.x < targetWidth + baseSize * 2)
-  console.log(targetWidth);
+
 
   for(let i = 1; i <= rows-2; i++){
     for(let j = 1; j <= cols-2; j++){

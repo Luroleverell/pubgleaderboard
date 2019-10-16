@@ -137,11 +137,13 @@ function updateLeaderboard(tournamentId, loadPage){
   let btnSettings = document.getElementById('btnSettings');
   let btnAddMatch = document.getElementById('btnAddMatch');
   
-  btnAddMatch.addEventListener('click',function(){
-    leaderboardWrapper.innerHTML = '';
-    let matchDiv = addNewMatch(tournamentId);
-    leaderboardWrapper.appendChild(matchDiv);
-  });
+  if(btnAddMatch){
+    btnAddMatch.addEventListener('click',function(){
+      leaderboardWrapper.innerHTML = '';
+      let matchDiv = addNewMatch(tournamentId);
+      leaderboardWrapper.appendChild(matchDiv);
+    });
+  }
   
   if(leaderboardWrapper){
     let url = '/tournaments/getTournament/'+tournamentId;

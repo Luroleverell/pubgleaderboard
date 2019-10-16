@@ -7,18 +7,20 @@ block content
       #tourId(style='display:none') #{tournament._id}
   .container.bgMain
     br
-    if(matches.length > 0)
-      .container#menu
-        .btn-group
+    .container#menu
+      .btn-group
+        if(matches.length > 0)
           .btn.btn-info#btnLeaderboard Leaderboard
           .btn.btn-info#btnMatches Matches
           .btn.btn-info#btnSettings Settings
-          if(user)
-            if(user.username==tournament.username)
-              .btn.btn-info#btnAddMatch(title='Add match') 
-                i.oi.oi-plus
-      br
-      .container#leaderboard Calculating leaderboard...
-      br
-    else
-      div There are no matches added to this tournament.
+        if(user)
+          if(user.username==tournament.username)
+            .btn.btn-info#btnAddMatch(title='Add match') 
+              i.oi.oi-plus
+    br
+    .container#leaderboard 
+      if(matches.length > 0)
+        div Calculating leaderboard...
+        br
+      else
+        div There are no matches added to this tournament.

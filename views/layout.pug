@@ -10,7 +10,7 @@ html(lang = 'en')
     - var w = 120
     - var h = 150
     mixin buttonBlock(buttonCaption, url)
-      a.button(href= url)(class= buttonCaption === buttonActive ? 'active' : '')
+      a.button(href= url, class= buttonCaption === buttonActive ? 'active' : '')
         svg.svg
           path.line(d='M'+-w/2+' '+-h/2+', L'+-w/2+' '+h/4+',0 '+(h/4+w/2)+','+w/2+' '+h/4+','+w/2+' '+-h/2+',0 '+-(h-w)/2+'Z')
         span.buttonText= buttonCaption

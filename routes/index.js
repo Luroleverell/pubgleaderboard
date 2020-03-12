@@ -73,7 +73,6 @@ router.get('/observerpack/:tournamentId?/:groupNumber?', function(req, res){
       Gamer.rounds(groups[gnr]).then(function(rounds){
         console.log(rounds);
         Gamer.round(rounds[0], res).then(function(){
-          res.render('observerpack');
         });
       });
     });

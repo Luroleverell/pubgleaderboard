@@ -77,13 +77,13 @@ module.exports.round = function(id, response){
     fetchDataGamer(url, function(res){
       
       count = 0;
-      let s = 'TeamNumber,TeamName,,ImageFileName,TeamColor\r';
+      let s = 'TeamNumber,TeamName,ImageFileName,TeamColor\r';
       let sc = ',';
       archive.append(null,{name: 'TeamIcon/'});
       res.response.participants.forEach(function(p){
         let image = p.team.image.replace('160x160', '300x300');
         count++;
-        s += count+sc+p.name+sc+sc+count+'.png'+sc+'\r';
+        s += count +sc+ p.name +sc+ p.team.abbreviation +sc+ count+'.png' +sc+ '\r';
         archive.append(request(image), {name: 'TeamIcon/'+count+'.png'});
       });
       archive.append(s, {name: 'TeamInfo.csv'});

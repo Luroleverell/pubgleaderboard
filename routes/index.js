@@ -4,6 +4,12 @@ var User = require('../models/user');
 var Tournament = require('../models/tournament');
 var Event = require('../models/event');
 var Gamer = require('../models/gamer');
+var multer = require('multer');
+var upload = multer();
+var fs = require('fs');
+var JSZip = require('jszip')
+var request = require('request');
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -46,6 +52,37 @@ router.get('/testBucket', function(req, res){
     //res.send('<img src="'+path+'" width=100 height=100>');*/
     res.send();
   //})
+});
+
+router.get('/observerpack/:tournamentId?/:groupNumber?', function(req, res){
+  let id = req.params.tournamentId;//'7229';
+  let gnr = req.params.groupNumber;
+  
+  console.log(id, gnr);
+  if(!id && !gnr){
+    res.render('observerpack');
+  }
+  else if(id && !gnr){
+    Gamer.division(id).then(function(groups){
+      res.render('observerpack', {id:id,groups:groups});
+    });
+  }
+  else if(id && gnr){
+    Gamer.division(id).then(function(groups){
+      console.log(groups[gnr].id);
+      Gamer.rounds(groups[gnr]).then(function(rounds){
+        console.log(rounds);
+        Gamer.round(rounds[0], res).then(function(){
+          res.render('observerpack');
+        });
+      });
+    });
+  }
+});
+
+router.post('/observerpack/', [upload.fields([])], function(req, res, next){
+  console.log(req.body)
+  res.redirect('/observerpack/'+req.body.tournamentId);
 });
 
 router.get('/telemetry/:telemetryId', function(req, res){

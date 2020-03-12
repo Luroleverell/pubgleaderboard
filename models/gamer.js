@@ -1,5 +1,10 @@
 const nconf = require('nconf');
 const Gamer_Tournament = require('../public/javascripts/gamer_tournament.js');
+var JSZip = require('jszip');
+var JSZipUtils = require('jszip-utils');
+var request = require('request');
+var fs = require('fs');
+var archiver = require('archiver');
 
 nconf.argv().env().file('keys.json');
 const gamerApiKey = nconf.get('gamerAPIKey');
@@ -22,6 +27,151 @@ module.exports.divisionStats = function(tournamentId, division){
     });
   });
 }
+
+module.exports.division = function(id){
+  let url = 'https://www.gamer.no/api/v1/tournaments/'+id;
+  let groups = [];
+  
+  return new Promise(function(resolve, reject){
+    fetchDataGamer(url, function(res){
+      res.response.divisions.forEach(function(div){
+        groups.push({id:div.id, name: div.name});
+      });
+      
+      groups.sort(function(a,b){return a.id - b.id})
+      
+      resolve(groups);
+    });
+  });
+}
+
+module.exports.rounds = function(group){
+  let url = 'https://www.gamer.no/api/v1/tournaments/'+group.id+'/rounds';
+  let rounds = [];
+  
+  return new Promise(function(resolve, reject){
+    fetchDataGamer(url, function(res){
+      res.response.forEach(function(round){
+        rounds.push(round.id);
+      });
+      
+      resolve(rounds);
+    });
+  });
+}
+
+
+module.exports.round = function(id, response){
+  console.log(id);
+  let url = 'https://www.gamer.no/api/v1/rounds/'+id;
+  let zip = new JSZip();
+  let output = [];
+  let teams = [];
+  
+  var outfile = fs.createWriteStream('public/observerpack/observerpack.zip');
+  var archive = archiver('zip',{zlib: {level: 9}});
+  
+  archive.pipe(outfile);
+
+  return new Promise(function(resolve, reject){
+    fetchDataGamer(url, function(res){
+      
+      count = 0;
+      let s = 'TeamNumber,TeamName,,ImageFileName,TeamColor\r';
+      let sc = ',';
+      archive.append(null,{name: 'TeamIcon/'});
+      res.response.participants.forEach(function(p){
+        let image = p.team.image.replace('160x160', '300x300');
+        count++;
+        s += count+sc+p.name+sc+sc+count+'.png'+sc+'\r';
+        archive.append(request(image), {name: 'TeamIcon/'+count+'.png'});
+      });
+      archive.append(s, {name: 'TeamInfo.csv'});
+      archive.pipe(response)
+      
+      archive.finalize().then(function(){
+        //outfile.end();
+        resolve();
+      });
+      
+      outfile.on('close', function(){
+      });
+
+      outfile.on('end', function(){
+      }); 
+    });
+  });
+}
+/*
+module.exports.group = function(id, gid){
+  let url = 'https://www.gamer.no/api/v1/tournaments/'+id+'/tables';
+  let grpTab = [];
+  let groups = new Map();
+  
+  return new Promise(function(resolve, reject){
+    fetchDataGamer(url, function(res){
+      res.response.forEach(function(team){
+        if(! groups.has(team.tournament.id)) groups.set(team.tournament.id, 1);
+      });
+      
+      let grpArr = [...groups.keys()].sort();
+           
+      res.response.forEach(function(team){
+        if(team.tournament.id == grpArr[gid-1]) grpTab.push({id:team.participant.teamId, group: team.tournament.id, groupName: team.tournament.name});
+      });
+      resolve(grpTab);
+    });
+  });
+}
+
+
+module.exports.observerpack = function(signupId, group, response){
+  let url = 'https://www.gamer.no/api/v1/tournaments/'+signupId+'/signups';
+  let zip = new JSZip();
+  let output = [];
+  let teams = [];
+  
+  var outfile = fs.createWriteStream('public/observerpack/observerpack.zip');
+  var archive = archiver('zip',{zlib: {level: 9}});
+  
+  archive.pipe(outfile);
+
+  return new Promise(function(resolve, reject){
+    fetchDataGamer(url, function(res){
+      output = res.response;
+      output.forEach(function(signup){
+        let team = signup.team;
+        let image = team.image.replace('160x160', '300x300');
+        group.forEach(function(g){
+          if(g.id == team.id) teams.push({id:team.id, name:team.name, image:image, group: g.groupName});
+        });
+      });
+      
+      count = 0;
+      let s = 'TeamNumber,TeamName,,ImageFileName,TeamColor\r';
+      let sc = ',';
+      archive.append(null,{name: 'TeamIcon/'});
+      teams.forEach(function(team){
+        count++;
+        s += count+sc+team.name+sc+sc+count+'.png'+sc+'\r';
+        archive.append(request(team.image), {name: 'TeamIcon/'+count+'.png'});
+      });
+      archive.append(s, {name: 'TeamInfo.csv'});
+      archive.pipe(response)
+      
+      archive.finalize().then(function(){
+        //outfile.end();
+        resolve();
+      });
+      
+      outfile.on('close', function(){
+      });
+
+      outfile.on('end', function(){
+      }); 
+    });
+  });
+}*/
 
 function fetchDataGamer(url, callback) {
   let request = new XMLHttpRequest();
@@ -46,7 +196,6 @@ function getPlayers(tournament, division){
       break;
     }
   }
-  
   
   let player = new Map();
   let results = new Map();

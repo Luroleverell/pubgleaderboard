@@ -293,7 +293,7 @@ module.exports.removeTourMatch = function(tournamentId, matchId, callback){
             if(m.matchId == matchId){
               let urlArr = m.telemetry.split('/');
               let name = urlArr[urlArr.length-1];
-              let file =  myBucket.file('telemetry/' + name + '.gz');
+              let file = myBucket.file('telemetry/' + name + '.gz');
               
               file.delete(function(err, apiResponse) {
                 Tournament.update(

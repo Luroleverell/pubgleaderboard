@@ -59,6 +59,9 @@ app.use(bodyParser.json());
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(express.static('public'))
+//app.use(express.static('./public'));
+
 //Handle sessions
 
 app.use(cookieParser('secret'));

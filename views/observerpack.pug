@@ -1,0 +1,19 @@
+doctype html
+html(lang = 'en')
+  head
+    title gamer.no observerpacks
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    .container.bgMain
+      br
+      br
+      form.form-inline(method='post', action='/observerpack/')
+        input.form-control(name='tournamentId', type='text', placeholder='Enter tournament id')
+        input.btn.btn-info.form-control(type='submit', name='submit', value='Hent observerpack')
+      br
+      if(groups)
+        each g,i in groups  
+          a.btn.btn-info(href=id+'/'+i) #{g.name}
+          br

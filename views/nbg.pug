@@ -8,41 +8,42 @@ html(lang = 'en')
   body#bodyNBG(onload="runShow('"+type+"')")
     .container.nbg.h-100
       each stats,i in lists
-        if stats.type == 'leaderboard'
-          .row.justify-content-center.align-items-center.h-100.hide
-            .container
-              .row
-                each item,j in stats.topList
-                  if j == 0 || j == 8
-                    .leaderboard.col-6
-                      div(class='top'+(8+j)).container
-                        .row
-                          .col.header.text-center Leaderboard
-                        each rowItem,k in stats.topList
-                          if k>=j && k<8+j
-                            .row
-                              .col.breakline 
-                            .row
-                              .col.name #{rowItem[1].name}
-                              .col-3.score.text-center #{rowItem[1].score}
-                        .row
-                          .col.breakline
-        else
-          .row.justify-content-center.align-items-center.h-100.hide
-            .container.stats
-              .row
+        if stats.type == type || type == 'all'
+          if stats.type == 'leaderboard'
+            .row.justify-content-center.align-items-center.h-100.hide
+              .container
+                .row
+                  each item,j in stats.topList
+                    if j == 0 || j == 8
+                      .leaderboard.col-6
+                        div(class='top'+(8+j)).container
+                          .row
+                            .col.header.text-center Leaderboard
+                          each rowItem,k in stats.topList
+                            if k>=j && k<8+j
+                              .row
+                                .col.breakline 
+                              .row
+                                .col.name #{rowItem[1].name}
+                                .col-3.score.text-center #{rowItem[1].score}
+                          .row
+                            .col.breakline
+          else
+            .row.justify-content-center.align-items-center.h-100.hide
+              .container.stats
+                .row
+                  if stats.topList.length > 1
+                    .col.header.text-center #{stats.text}
+                each item in stats.topList
+                  .row
+                    .col.breakline 
+                  .row
+                    .col.name
+                      .row 
+                        .col #{item[0]}
+                        .col-4.teamName.text-right.my-auto #{item[1].teamShort}
+                    .col-3.score.text-center #{item[1][stats.type]}
                 if stats.topList.length > 1
-                  .col.header.text-center #{stats.text}
-              each item in stats.topList
-                .row
-                  .col.breakline 
-                .row
-                  .col.name
-                    .row 
-                      .col #{item[0]}
-                      .col-4.teamName.text-right.my-auto #{item[1].teamShort}
-                  .col-3.score.text-center #{item[1][stats.type]}
-              if stats.topList.length > 1
-                .row
-                  .col.breakline
+                  .row
+                    .col.breakline
     script(src='/javascripts/script.js')

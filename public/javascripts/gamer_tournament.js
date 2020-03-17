@@ -22,7 +22,7 @@ module.exports = class Gamer_Tournament{
     var that = this;
     this.data_ = data;
     this.name_ = data.name;
-
+    //var flag = true;
     let promise = [];
     data.divisions.forEach(function(division,idx,array){
       this.divisions_.set(division.name, new Gamer_Division(division));
@@ -32,33 +32,41 @@ module.exports = class Gamer_Tournament{
       promise.push(new Promise(function(resolve, reject){
         let prom = [];
         that.fetchDataGamer(url, function(res){
-            console.log(res)
             res.response.forEach(function(round){
               let r = new Gamer_Round(round);
               that.rounds_.push(r);
               that.divisions_.get(division.name).addRound(r);
-
               let url = 'https://www.gamer.no/api/v1/rounds/'+r.id;
               prom.push(new Promise(function(reso, reje){
                 that.fetchDataGamer(url, function(res){
                   r.addResults(res.response.results);
-                  console.log(res);
-                  res.response.maps.forEach(function(match){
-                    if(match.finishTime){
-                      let m = new Gamer_Match(match);
-                      r.addMatch(m);
-                      m.addStats(match.stats);
-                      
-                      if(match.stats){
-                        match.stats.forEach(function(player){
-                          let p = new Gamer_Player(player);
-                          if (!that.players_.has(p.pubgName)) that.players_.set(p.pubgName, p);
-                          that.players_.get(p.pubgName).addMatch(player);
-                        });
+                  if(res.response.maps){
+                    res.response.maps.forEach(function(match){
+                      /*if(flag){
+                        console.log(match);
+                        flag = false;
+                      }*/
+                      if(match.finishTime){
+                        let m = new Gamer_Match(match);
+                        r.addMatch(m);
+                        m.addStats(match.stats);
+                        /*if(flag){
+                          console.log(m);
+                          flag = false;
+                        }*/
+                        if(match.stats){
+                          match.stats.forEach(function(player){
+                            let p = new Gamer_Player(player);
+                            if (!that.players_.has(p.pubgName)) that.players_.set(p.pubgName, p);
+                            that.players_.get(p.pubgName).addMatch(player);
+                          });
+                        }
                       }
-                    }
-                  });
-                  reso();
+                    });
+                    reso();
+                  }else{
+                    reso();
+                  }
                 });
               }))
             });

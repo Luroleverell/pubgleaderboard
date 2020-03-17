@@ -32,6 +32,7 @@ module.exports = class Gamer_Tournament{
       promise.push(new Promise(function(resolve, reject){
         let prom = [];
         that.fetchDataGamer(url, function(res){
+            console.log(res)
             res.response.forEach(function(round){
               let r = new Gamer_Round(round);
               that.rounds_.push(r);
@@ -41,6 +42,7 @@ module.exports = class Gamer_Tournament{
               prom.push(new Promise(function(reso, reje){
                 that.fetchDataGamer(url, function(res){
                   r.addResults(res.response.results);
+                  console.log(res);
                   res.response.maps.forEach(function(match){
                     if(match.finishTime){
                       let m = new Gamer_Match(match);

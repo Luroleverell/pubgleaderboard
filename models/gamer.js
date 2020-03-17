@@ -54,7 +54,6 @@ module.exports.rounds = function(group){
       res.response.forEach(function(round){
         rounds.push(round.id);
       });
-      
       resolve(rounds);
     });
   });
@@ -83,7 +82,7 @@ module.exports.round = function(id, response){
       res.response.participants.forEach(function(p){
         let image = p.team.image.replace('160x160', '300x300');
         count++;
-        s += count +sc+ p.name +sc+ p.team.abbreviation +sc+ count+'.png' +sc+ '\r';
+        s += count +sc+ p.team.name +sc+ p.team.abbreviation +sc+ count+'.png' +sc+ '\r';
         archive.append(request(image), {name: 'TeamIcon/'+count+'.png'});
       });
       archive.append(s, {name: 'TeamInfo.csv'});

@@ -64,14 +64,12 @@ router.get('/observerpack/:tournamentId?/:groupNumber?', function(req, res){
   }
   else if(id && !gnr){
     Gamer.division(id).then(function(groups){
-      res.render('observerpack', {id:id,groups:groups});
+      res.render('observerpack', {id:id, groups:groups});
     });
   }
   else if(id && gnr){
     Gamer.division(id).then(function(groups){
-      console.log(groups[gnr].id);
       Gamer.rounds(groups[gnr]).then(function(rounds){
-        console.log(rounds);
         Gamer.round(rounds[0], res).then(function(){
         });
       });

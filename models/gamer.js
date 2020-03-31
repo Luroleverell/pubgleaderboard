@@ -82,7 +82,10 @@ module.exports.round = function(id, response){
       res.response.participants.forEach(function(p){
         let image = p.team.image.replace('160x160', '300x300');
         count++;
-        s += count +sc+ p.team.name +sc+ p.team.abbreviation +sc+ count+'.png' +sc+ '\r';
+        let name = convertChar(p.team.name);
+        let shortName = convertChar(p.team.abbreviation);
+        console.log(name);
+        s += count +sc+ name +sc+ shortName +sc+ count+'.png' +sc+ '\r';
         archive.append(request(image), {name: 'TeamIcon/'+count+'.png'});
       });
       archive.append(s, {name: 'TeamInfo.csv'});
@@ -247,4 +250,16 @@ function getPlayers(tournament, division){
     {topList: topAssists, text: 'Top 5 assists', type:'assists'},
     {topList: topDamage, text: 'Top 5 damage', type:'damage'}
   ];
+}
+
+
+function convertChar(string){
+  string = string.replace("æ", "ae");
+  string = string.replace("ø", "oe");
+  string = string.replace("å", "aa");
+  string = string.replace("Æ", "AE");
+  string = string.replace("Ø", "OE");
+  string = string.replace("Å", "AA");
+  
+  return string;
 }

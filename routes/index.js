@@ -58,7 +58,7 @@ router.get('/observerpack/:tournamentId?/:groupNumber?', function(req, res){
   let id = req.params.tournamentId;//'7229';
   let gnr = req.params.groupNumber;
   
-  console.log(id, gnr);
+  //console.log(id, gnr);
   if(!id && !gnr){
     res.render('observerpack');
   }

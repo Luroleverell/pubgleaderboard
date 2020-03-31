@@ -38,8 +38,8 @@ module.exports.division = function(id){
         groups.push({id:div.id, name: div.name});
       });
       
-      groups.sort(function(a,b){return a.id - b.id})
-      
+      groups.sort(function(a,b){return a.name - b.name})
+      console.log(groups);
       resolve(groups);
     });
   });

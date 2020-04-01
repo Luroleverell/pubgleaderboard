@@ -254,12 +254,13 @@ function getPlayers(tournament, division){
 
 
 function convertChar(string){
-  string = string.replace("æ", "ae");
-  string = string.replace("ø", "o");
-  string = string.replace("å", "aa");
-  string = string.replace("Æ", "AE");
-  string = string.replace("Ø", "O");
-  string = string.replace("Å", "AA");
-  
+  if(string){
+    string = string.replace("æ", "ae");
+    string = string.replace("ø", "o");
+    string = string.replace("å", "aa");
+    string = string.replace("Æ", "AE");
+    string = string.replace("Ø", "O");
+    string = string.replace("Å", "AA");
+  }
   return string;
 }

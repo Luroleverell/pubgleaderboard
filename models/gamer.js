@@ -39,7 +39,7 @@ module.exports.division = function(id){
       });
       
       groups.sort(function(a,b){return a.name - b.name})
-      console.log(groups);
+      //console.log(groups);
       resolve(groups);
     });
   });
@@ -61,7 +61,7 @@ module.exports.rounds = function(group){
 
 
 module.exports.round = function(id, response){
-  console.log(id);
+  //console.log(id);
   let url = 'https://www.gamer.no/api/v1/rounds/'+id;
   let zip = new JSZip();
   let output = [];
@@ -84,7 +84,7 @@ module.exports.round = function(id, response){
         count++;
         let name = convertChar(p.team.name);
         let shortName = convertChar(p.team.abbreviation);
-        console.log(name);
+        //console.log(name);
         s += count +sc+ name +sc+ shortName +sc+ count+'.png' +sc+ '\r';
         archive.append(request(image), {name: 'TeamIcon/'+count+'.png'});
       });
@@ -255,12 +255,12 @@ function getPlayers(tournament, division){
 
 function convertChar(string){
   if(string){
-    string = string.replace("æ", "ae");
-    string = string.replace("ø", "o");
-    string = string.replace("å", "aa");
-    string = string.replace("Æ", "AE");
-    string = string.replace("Ø", "O");
-    string = string.replace("Å", "AA");
+    string = string.replace(/æ/g, "ae");
+    string = string.replace(/ø/g, "o");
+    string = string.replace(/å/g, "aa");
+    string = string.replace(/Æ/g, "AE");
+    string = string.replace(/Ø/g, "O");
+    string = string.replace(/Å/g, "AA");
   }
   return string;
 }

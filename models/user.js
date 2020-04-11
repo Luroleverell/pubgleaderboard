@@ -22,6 +22,15 @@ mongoose.connect(uri, { useNewUrlParser: true }).catch(function(err){
 
 var db = mongoose.connection;
 
+var GameConnectionSchema = mongoose.Schema({
+  game: {
+    type: String
+  },
+  username:{
+    type: String
+  }
+});
+
 //User Schema
 var UserSchema = mongoose.Schema({
   username: {
@@ -33,10 +42,12 @@ var UserSchema = mongoose.Schema({
   },
   email: {
     type: String
-  }
+  },
+  games: [GameConnectionSchema]
 });
 
 var User = module.exports = mongoose.model('User', UserSchema);
+var GameConnection = module.exports = mongoose.model('GameConnection', GameConnectionSchema);
 
 module.exports.getUserById = function(id, callback){
   User.findById(id).exec(callback);
@@ -49,6 +60,19 @@ module.exports.getUserByUsername = function(username, callback){
 module.exports.comparePassword = function(candidatePassword, hash, callback){
   bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
     callback(null, isMatch);
+  });
+}
+
+module.exports.addGameConnection = function(id, gameConnection, callback){
+  User.findOne({'games.game': gameConnection.game}).exec(function(err, doc){
+    if(doc)
+      callback({message: 'This record allready exists'})
+    else{
+      User.updateOne({_id:id}, {$push: {games: gameConnection}}).exec(function(err){
+        if (err) throw err;
+        callback();
+      });
+    }
   });
 }
 

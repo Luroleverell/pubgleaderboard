@@ -75,6 +75,7 @@ function loadFunction(){
     generate(node);
   });
   
+  
   let buttons = document.getElementsByClassName('line');
   Array.prototype.forEach.call(buttons, function(button, i){
   	button.style.zIndex = buttons.length - i;
@@ -729,6 +730,7 @@ function generate(node){
   //defs.appendChild(clip);  
   
   svg.appendChild(defs);
+  
   
   let baseSize = 50;
   let depth = 40;

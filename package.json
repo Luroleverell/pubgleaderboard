@@ -37,8 +37,10 @@
     "passport": "*",
     "passport-http": "*",
     "passport-local": "*",
+    "passport-steam": "^1.0.12",
     "pug": "*",
     "request": "^2.88.0",
+    "save": "^2.4.0",
     "xmlhttprequest": "^1.8.0"
   },
   "main": "app.js",

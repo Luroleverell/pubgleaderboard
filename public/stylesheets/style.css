@@ -669,6 +669,7 @@ input {
 }
 .pattern{
   r:11;
+  /*background: var(--mainColor);*/
 }
 .playerNameGroup{
   display:none;

@@ -78,7 +78,6 @@ router.get('/observerpack/:tournamentId?/:groupNumber?', function(req, res){
 });
 
 router.post('/observerpack/', [upload.fields([])], function(req, res, next){
-  console.log(req.body)
   res.redirect('/observerpack/'+req.body.tournamentId);
 });
 

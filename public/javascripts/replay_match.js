@@ -25,7 +25,7 @@ class Replay_Match {
         case 'LogMatchEnd':
           this.end_ = event;
           this.end_.data.characters.forEach(function(c){
-            this.playerByName_.get(c.name).addRank(c.ranking);
+            this.playerByName_.get(c.character.name).addRank(c.character.ranking);
           }, this)
           break;
         case 'LogItemPickup':

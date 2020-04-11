@@ -71,6 +71,10 @@ app.use(session({
   resave: false,
   store: new MongoStore({mongooseConnection: mongoose.connection}),
   unset: 'destroy'
+  /*,
+  cookie: {
+    sameSite: 'none'
+  }*/
 }));
 
 //Handle passport

@@ -3,12 +3,18 @@ var router = express.Router();
 var multer = require('multer');
 var upload = multer(); 
 var User = require('../models/user');
+var GameConnection = require('../models/user');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var LocalStrategy = require('passport-local').Strategy;
+var SteamStrategy = require('passport-steam').Strategy;
 var validation = require('../models/validation');
 var passport = require('passport');
 var {check, body, validationResult} = require('express-validator/check');
+var nconf = require('nconf');
+nconf.argv().env().file('keys.json');
+
+var steamKey = nconf.get('steamKey');
 
 /* GET users listing. */
 router.get('/register', function(req, res, next) {
@@ -56,9 +62,53 @@ router.get('/login', function(req, res, next) {
 router.post('/login',
   passport.authenticate('local', {failureRedirect: '/users/login', failureFlash: 'Invalid username or password'}),
   function(req, res) {
-      req.flash('success', 'You are now logged in');
-      res.redirect('/');
+    console.log('logged inn');
+    req.flash('success', 'You are now logged in');
+    res.redirect('/');
   });
+
+router.get('/logout', function(req, res) {
+  req.logout();
+  req.flash('alert', 'You are now logged out');
+  req.session = null;
+  res.redirect('/users/login');
+});
+
+router.get('/getUser', function(req, res){
+  res.json(req.user || '');
+})
+
+router.get('/profile', function(req, res){
+  res.location('/');
+  res.redirect('/');
+})
+
+router.get('/auth/steam', 
+  User.ensureAuthenticated,
+  passport.authenticate('steam'), 
+  function(req, res) {});
+
+router.get('/auth/steam/return',
+  function(req, res, next){
+    req.url = req.originalUrl;
+    //console.log(req)
+    next();
+  }, 
+  passport.authenticate('steam', { session: false, failureRedirect: '/login' }),
+  function(req, res) {
+    console.log(req.user._id);
+    User.getUserById(req.user._id, function(err, doc){
+      var gameConnection = new GameConnection({
+        game: 'steam',
+        username: ''
+      })
+      User.addGameConnection(req.user._id, gameConnection, function(err){
+        if(err) req.flash('alert', err.message);
+        res.redirect('/profile');
+      });
+    });
+  });
+
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
@@ -66,11 +116,26 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
   User.getUserById(id, function(err, user) {
-    done(err, user);
+    done(null, user);
   });
 });
 
- 
+
+passport.use(new SteamStrategy({
+  returnURL: 'http://localhost:3000/users/auth/steam/return',
+  realm: 'http://localhost:3000/',
+  apiKey: steamKey,
+  passReqToCallback: true
+  
+  },
+  function(req, identifier, profile, done){
+    process.nextTick(function(){
+      profile.identifier = identifier;
+      return done(null, req.user);
+    });
+  }
+));
+
 passport.use(new LocalStrategy(function(username, password, done){
   passReqToCallback: true,
   User.getUserByUsername(username, function(err, user){
@@ -89,18 +154,6 @@ passport.use(new LocalStrategy(function(username, password, done){
     });
   });
 }));
-
-router.get('/logout', function(req, res) {
-  req.logout();
-  req.flash('alert', 'You are now logged out');
-  req.session = null;
-  res.redirect('/users/login');
-});
-
-router.get('/getUser', function(req, res){
-  res.json(req.user || '');
-})
-
 
 function findUserByUsername(username){
   if(username){

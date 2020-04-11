@@ -296,7 +296,7 @@ module.exports.removeTourMatch = function(tournamentId, matchId, callback){
               let file = myBucket.file('telemetry/' + name + '.gz');
               
               file.delete(function(err, apiResponse) {
-                Tournament.update(
+                Tournament.updateOne(
                     {_id: tournamentId}, 
                     {$pull: {matches: {matchId: matchId}}}
                   ).exec(function(err){

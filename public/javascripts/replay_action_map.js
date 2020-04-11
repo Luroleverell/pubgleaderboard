@@ -6,6 +6,7 @@ const MAPSIZE_BIG = 819.200;
 const MAPSIZE_MEDIUM = 611.000//614.400;
 const MAPSIZE_SMAL = 408.000;//409.600
 const MAPSIZE_MINI = 204.000;
+//const MAPSIZE_MICRO = 204.000;
 const TRAILLENGTH = 100000; //NtS: make this a userinput
 const ZONEBORDER = 2.000;
 
@@ -413,7 +414,7 @@ class ActionMap {
     el.setAttributeNS(null, 'cy', this.checkNull(z.y));
     el.setAttributeNS(null, 'r', this.checkNull(z.r));
     el.setAttributeNS(null, 'stroke', z.color);
-    el.setAttributeNS(null, 'stroke-width', ZONEBORDER / MAPSIZE_BIG * this.mapSize * scale);
+    el.setAttributeNS(null, 'stroke-width', ZONEBORDER * scale); // 1/ MAPSIZE_BIG * this.mapSize 
   }
 
   checkNull(el){
@@ -448,6 +449,13 @@ class ActionMap {
       case 'DihorOtok_Main':
         mapSize = MAPSIZE_MEDIUM;
         mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/Vikendi_Main_High_Res.png';
+        break;
+      case 'Summerland_Main':
+        mapSize = MAPSIZE_MINI;
+        mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/Karakin_Main_High_Res.png';
+        break;
+      default:
+        console.log(mapName);
         break;
     }
     //mapUrl = 'https://github.com/pubg/api-assets/raw/master/Assets/Maps/' +mapName+ '_Low_Res.png';

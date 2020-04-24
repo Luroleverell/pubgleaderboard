@@ -106,29 +106,34 @@ break line - rgb(71,56,30)
 
 .nbg .header{
   border:1pt solid black;
-  background-color:rgb(169,137,51,var(--cell_opascity));
+  /*background-color:rgb(169,137,51,var(--cell_opascity));*/
+  background-color:rgb(13,13,13,var(--cell_opascity));
   margin:0pt 0pt;
   padding:6pt;
-  color:black;
+  /*color:black;*/
+  color:white;
 }
 .nbg .name{
   border:1pt solid black;
-  background-color:rgb(151,116,62,var(--cell_opascity));
+  /*background-color:rgb(151,116,62,var(--cell_opascity));*/
+  background-color:rgb(13,13,13,var(--cell_opascity));
   margin:0pt 0pt;
   padding:5pt;
   color:white;
 }
 .nbg .score{
   border:1pt solid black;
-  background-color:rgb(108,75,22,var(--cell_opascity));
+  /*background-color:rgb(108,75,22,var(--cell_opascity));*/
+  background-color:rgb(50,50,50,var(--cell_opascity));
   margin:0pt 0pt;
   padding:5pt;
   color:white;
 }
 .nbg .breakline{
-  background-color:rgb(71,56,30);
+  /*background-color:rgb(71,56,30);*/
+  background-color:rgb(247,118,19);
   margin:0pt 3pt;
-  height:4pt;
+  height:2pt;
 }
 
 .matchList{

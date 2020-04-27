@@ -107,16 +107,16 @@ break line - rgb(71,56,30)
 .nbg .header{
   border:1pt solid black;
   /*background-color:rgb(169,137,51,var(--cell_opascity));*/
-  background-color:rgb(13,13,13,var(--cell_opascity));
+  background-color:rgb(30,13,48,var(--cell_opascity));
   margin:0pt 0pt;
   padding:6pt;
   /*color:black;*/
   color:white;
 }
-.nbg .name{
+.nbg .name, .nbg .placement{
   border:1pt solid black;
   /*background-color:rgb(151,116,62,var(--cell_opascity));*/
-  background-color:rgb(13,13,13,var(--cell_opascity));
+  background-color:rgb(30,13,48,var(--cell_opascity));
   margin:0pt 0pt;
   padding:5pt;
   color:white;
@@ -131,7 +131,7 @@ break line - rgb(71,56,30)
 }
 .nbg .breakline{
   /*background-color:rgb(71,56,30);*/
-  background-color:rgb(247,118,19);
+  background-color:rgb(57,14,103,0%);
   margin:0pt 3pt;
   height:2pt;
 }

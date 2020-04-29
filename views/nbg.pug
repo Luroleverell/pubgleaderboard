@@ -24,7 +24,7 @@ html(lang = 'en')
                               .row
                                 .col.breakline 
                               .row
-                                .col-2.placement.text-center #{k+1+"."}
+                                .col-2.placement.text-center(class=rgbtable[k]) #{k+1+"."}
                                 .col.name #{rowItem[1].name}
                                 .col-3.score.text-center #{rowItem[1].score}
                           .row

@@ -113,13 +113,36 @@ break line - rgb(71,56,30)
   /*color:black;*/
   color:white;
 }
-.nbg .name, .nbg .placement{
+.nbg .name{
   border:1pt solid black;
   /*background-color:rgb(151,116,62,var(--cell_opascity));*/
   background-color:rgb(30,13,48,var(--cell_opascity));
   margin:0pt 0pt;
   padding:5pt;
   color:white;
+}
+.nbg .placement{
+  border:1pt solid black;
+  /*background-color:rgb(151,116,62,var(--cell_opascity));*/
+  background-color:rgb(30,13,48,var(--cell_opascity));
+  margin:0pt 0pt;
+  padding:5pt;
+  color:white;
+}
+.nbg .green{
+  background-color:rgb(26,145,43,var(--cell_opascity));
+}
+.nbg .blue{
+  background-color:rgb(34,75,184,var(--cell_opascity));
+}
+.nbg .neutral{
+  background-color:rgb(30,13,48,var(--cell_opascity));
+}
+.nbg .yellow{
+  background-color:rgb(243,162,41,var(--cell_opascity));
+}
+.nbg .red{
+  background-color:rgb(231,4,32,var(--cell_opascity));
 }
 .nbg .score{
   border:1pt solid black;

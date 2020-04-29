@@ -39,8 +39,19 @@ router.get('/tournament/:event?', User.ensureAuthenticated,  function(req, res, 
 router.get('/score/:nbg/:div?/:type?',function(req, res, next){
   if(req.params.div && req.params.nbg){
     let type = req.params.type || 'all';
+    let rgbtable = ['','','','','','','','','','','','','','','',''];
+    if(req.params.nbg == 6935){
+      if(req.params.div < 2){
+        rgbtable = ['green','green','green','green','green','green','green','green','neutral','yellow','yellow','yellow','yellow','red','red','red']
+      }else if(req.params.div < 4){
+        rgbtable =['green','green','green','blue','blue','blue','blue','neutral','neutral','neutral','neutral','yellow','yellow','red','red','red']
+      }else{
+        rgbtable = ['green','blue','blue','neutral','neutral','neutral','neutral','neutral','neutral','neutral','neutral','neutral','neutral','neutral','neutral','neutral']
+      }
+    }
+    
     Gamer.divisionStats(req.params.nbg, req.params.div).then(function(lists){
-      res.render('nbg', {title: 'NBG', lists: lists, type: type});
+      res.render('nbg', {title: 'NBG', lists: lists, type: type, rgbtable: rgbtable});
     });
   }else{
     res('Nothing to show')

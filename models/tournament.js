@@ -243,16 +243,16 @@ module.exports.addMatch = function(tournamentId, matchId, callback){
           }else{
             Tournament.updateOne({_id:tournamentId}, {$push: {matches: match}}).exec(function(err){
               if (err) throw err
-              fetchDataApi(match.telemetry, {gzip: true}, function(res){
-                let urlArr = match.telemetry.split('/')
-                let name = urlArr[urlArr.length-1];
-                let file = myBucket.file('telemetry/' + name + '.gz');
+              //fetchDataApi(match.telemetry, {gzip: true}, function(res){
+                //let urlArr = match.telemetry.split('/')
+                //let name = urlArr[urlArr.length-1];
+                //let file = myBucket.file('telemetry/' + name + '.gz');
 
-                res.pipe(file.createWriteStream())
-                  .on('finish', function(){
+                //res.pipe(file.createWriteStream())
+                  //.on('finish', function(){
                     callback();
-                  });
-              });
+                  //});
+              //});
             });
           }
         });
@@ -262,20 +262,24 @@ module.exports.addMatch = function(tournamentId, matchId, callback){
 }
 
 module.exports.getTelemetry = function(telemetryUrl, callback){
-  let url = 'telemetry/'+telemetryUrl+'.json.gz';
-  let file = myBucket.file(url);
+  /*let url = 'telemetry/'+telemetryUrl+'.json.gz';
+  let file = myBucket.file(url);*/
   let data = '';
   
-  file.createReadStream()
-    .pipe(zlib.createGunzip())
-    .on('data', function(chunk){
-      data += chunk;
-    })
-    .on('end', function(){
-      let json_string = data.toString('utf-8');
-      let json = JSON.parse(json_string);
-      callback(json);
-    });
+  if(file){
+    file.createReadStream()
+      .pipe(zlib.createGunzip())
+      .on('data', function(chunk){
+        data += chunk;
+      })
+      .on('end', function(){
+        let json_string = data.toString('utf-8');
+        let json = JSON.parse(json_string);
+        callback(json);
+      });
+  }else{
+    callback('Error');
+  }
 }
 
 
@@ -291,18 +295,18 @@ module.exports.removeTourMatch = function(tournamentId, matchId, callback){
         if (Array.isArray(tournament.matches)){
           tournament.matches.forEach(function(m){
             if(m.matchId == matchId){
-              let urlArr = m.telemetry.split('/');
-              let name = urlArr[urlArr.length-1];
-              let file = myBucket.file('telemetry/' + name + '.gz');
+              //let urlArr = m.telemetry.split('/');
+              //let name = urlArr[urlArr.length-1];
+              //let file = myBucket.file('telemetry/' + name + '.gz');
               
-              file.delete(function(err, apiResponse) {
+              //file.delete(function(err, apiResponse) {
                 Tournament.updateOne(
                     {_id: tournamentId}, 
                     {$pull: {matches: {matchId: matchId}}}
                   ).exec(function(err){
                     callback(err);
                   });
-              });
+              //});
             }
           });
         }          

@@ -132,23 +132,23 @@ function printList(res, parent){
   let s = 0;
   let btnSummary = document.getElementById('btnSummary');
   
-  Promise.all(promises).then(function(){
-    let wrapperCopy = wrapper.cloneNode(true);
-    let sessionGroup = new SessionGroup(matches);
-    btnSummary.addEventListener('click', function _summary(){
-      this.removeEventListener('click', _summary);
-      this.innerText = 'MatchList';
-      this.addEventListener('click', function _matchList(){
-        this.innerText = 'Show summary';
-        this.removeEventListener('click', _matchList);
-        this.addEventListener('click', _summary);
+  if(btnSummary){
+    Promise.all(promises).then(function(){
+      let wrapperCopy = wrapper.cloneNode(true);
+      let sessionGroup = new SessionGroup(matches);
+      btnSummary.addEventListener('click', function _summary(){
+        this.removeEventListener('click', _summary);
+        this.innerText = 'MatchList';
+        this.addEventListener('click', function _matchList(){
+          this.innerText = 'Show summary';
+          this.removeEventListener('click', _matchList);
+          this.addEventListener('click', _summary);
+          wrapper.innerHTML = '';
+          wrapper.appendChild(list);
+        });
         wrapper.innerHTML = '';
-        wrapper.appendChild(list);
-      });
-      wrapper.innerHTML = '';
-      sessionGroup.printList(wrapper);
-    });
-    
+        sessionGroup.printList(wrapper);
+      });  
     
     /*matches.forEach(function(match, key){
       let newSession = false;
@@ -180,7 +180,8 @@ function printList(res, parent){
     });
     
     console.log(sessionGroup);*/
-  });
+    });
+  }
 }
 
 function listItem(match, parent, playerId){

@@ -139,7 +139,7 @@ function updateLeaderboard(tournamentId, loadPage){
   let btnAddMatch = document.getElementById('btnAddMatch');
   
   if(btnAddMatch){
-    btnAddMatch.addEventListener('click',function(){
+    btnAddMatch.addEventListener('click', function(){
       leaderboardWrapper.innerHTML = '';
       let matchDiv = addNewMatch(tournamentId);
       leaderboardWrapper.appendChild(matchDiv);
@@ -151,40 +151,40 @@ function updateLeaderboard(tournamentId, loadPage){
     fetchData(url, function(tournament){
       let url = '/users/getUser';
       fetchData(url, function(user){
-        if(tournament.matches){
-          let tour = new Tournament(tournament, user.username);
-          
-          btnLeaderboard.addEventListener('click', function(){
-            leaderboardWrapper.innerHTML = '';
-            if(tournament.settings.leaderboardLevel == 'team'){
-              leaderboardWrapper.appendChild(tour.getTeams);
-            }else{
-              leaderboardWrapper.appendChild(tour.getPlayers);
+        //if(tournament.matches){
+          //if(tournament.matches.length > 0){
+            let tour = new Tournament(tournament, user.username);
+            
+            btnLeaderboard.addEventListener('click', function(){
+              leaderboardWrapper.innerHTML = '';
+              if(tournament.settings.leaderboardLevel == 'team'){
+                leaderboardWrapper.appendChild(tour.getTeams);
+              }else{
+                leaderboardWrapper.appendChild(tour.getPlayers);
+              }
+            });
+            
+            btnMatches.addEventListener('click', function(){
+              leaderboardWrapper.innerHTML = '';
+              leaderboardWrapper.appendChild(tour.getMatches);
+            });
+            
+            btnSettings.addEventListener('click', function(){
+              leaderboardWrapper.innerHTML = '';
+              leaderboardWrapper.appendChild(tour.getSettings);
+            });
+            
+            switch (loadPage){
+              case 'matches':
+                btnMatches.click();
+                break;
+              case 'settings':
+                break;
+              default:
+                btnLeaderboard.click();
             }
-          });
-          
-          btnMatches.addEventListener('click', function(){
-            leaderboardWrapper.innerHTML = '';
-            leaderboardWrapper.appendChild(tour.getMatches);
-          });
-          
-          btnSettings.addEventListener('click', function(){
-            leaderboardWrapper.innerHTML = '';
-            leaderboardWrapper.appendChild(tour.getSettings);
-          });
-          
-
-          switch (loadPage){
-            case 'matches':
-              btnMatches.click();
-              break;
-            case 'settings':
-              break;
-            default:
-              
-              btnLeaderboard.click();
-          }
-        }
+          //}
+        //}
       });
     });
   }

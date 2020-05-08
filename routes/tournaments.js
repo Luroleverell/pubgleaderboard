@@ -162,9 +162,11 @@ router.post('/remove/:tourId/:matchId?', upload.fields([]), function(req, res, n
         Tournament.removeTourMatch(req.params.tourId, req.params.matchId, function(err){
           if (err) throw err;
           if(req.params.matchId){
-            //req.flash('success', 'You have successfully removed the match');
-            //res.location('/tournaments/edit/'+req.params.tourId);
-            //res.redirect('/tournaments/edit/'+req.params.tourId);
+            if(doc.matches.length == 1){
+              //req.flash('success', 'You have successfully removed the match');
+              //res.location('/tournaments/edit/'+req.params.tourId);
+              //res.redirect('/tournaments/edit/'+req.params.tourId);
+            }
             res.send('done')
           }else{
             req.flash('success', 'You have successfully removed the tournament');

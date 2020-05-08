@@ -94,7 +94,8 @@ router.post('/observerpack/', [upload.fields([])], function(req, res, next){
 
 router.get('/telemetry/:telemetryId', function(req, res){
   Tournament.getTelemetry(req.params.telemetryId, function(telemetryData){
-    res.json(telemetryData);
+    if(telemetryData == 'Error') res.send()
+    else res.json(telemetryData);
   });
 });
 

@@ -370,7 +370,12 @@ class Tournament {
       //div.classList.add('1border','rounded', 'btn-secondary2', 'px-2', 'py-3');
       div.classList.add('px-2', 'py-3');
       let img = document.createElement('img');
-      img.src = 'https://github.com/pubg/api-assets/raw/master/Assets/Icons/Map/'+m.mapName+'.png';
+      let iconName = '';
+      
+      if(m.mapName === 'Baltic_Main') iconName = 'Erangel_Main';
+      else iconName = m.mapName;
+      
+      img.src = 'https://github.com/pubg/api-assets/raw/master/Assets/Icons/Map/'+iconName+'.png';
       img.style.filter = 'brightness(50%)';
       div.appendChild(img);
       c.appendChild(div);
@@ -408,7 +413,7 @@ class Tournament {
         let url = '/telemetry/'+telemetry[telemetry.length-1].split('.')[0];
         getReplay(url, divReplay);
       }, {once:true});
-      div.appendChild(but);
+      //div.appendChild(but);
       
       but = document.createElement('button');
       but.classList.add('btn', 'btn-info');

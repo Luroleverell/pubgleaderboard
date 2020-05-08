@@ -14,7 +14,7 @@ class Team{
     this.matches_.push(match);
     this.teamKills_ += team.teamKills;
     this.killPoints_ += team.teamKills * killScore;
-    this.rankPoints_ += rankScore[team.rank - 1] || 0;
+    this.rankPoints_ += rankScore[team.rank] || 0;
     this.teamPoints_ = this.killPoints_ + this.rankPoints_;
   }
   

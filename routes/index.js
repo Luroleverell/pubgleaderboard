@@ -36,17 +36,36 @@ router.get('/tournament/:event?', User.ensureAuthenticated,  function(req, res, 
   });  
 });
 
-router.get('/score/:nbg/:div?/:type?',function(req, res, next){
+router.get('/score/:nbg/:div?/:type?/:colorCode?',function(req, res, next){
   if(req.params.div && req.params.nbg){
     let type = req.params.type || 'all';
-    let rgbtable = ['','','','','','','','','','','','','','','',''];
-    if(req.params.nbg == 6935){
-      if(req.params.div < 2){
-        rgbtable = ['green','green','green','green','green','green','green','green','neutral','yellow','yellow','yellow','yellow','red','red','red']
-      }else if(req.params.div < 4){
-        rgbtable =['green','green','green','blue','blue','blue','blue','neutral','neutral','neutral','neutral','yellow','yellow','red','red','red']
-      }else{
-        rgbtable = ['green','blue','blue','neutral','neutral','neutral','neutral','neutral','neutral','neutral','neutral','neutral','neutral','neutral','neutral','neutral']
+    let rgbtable = ['','','','','','','','','','','','','','','','','','','',''];
+    
+    let code = req.params.colorCode
+    if(code){
+      let aryColor = code.split('');
+      for(let i=0;i<=aryColor.length-1;i++){
+        let color = '';
+        switch(aryColor[i].toLowerCase()){
+          case 'g':
+            color = 'green';
+            break;
+          case 'b':
+            color = 'blue';
+            break;
+          case 'n':
+            color = 'neutral';
+            break;
+          case 'y':
+            color = 'yellow';
+            break;
+          case 'r':
+            color = 'red';
+            break;
+          default:
+            color = 'neutral'
+        }
+        rgbtable[i] = color;
       }
     }
     

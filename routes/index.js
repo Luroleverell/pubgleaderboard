@@ -62,6 +62,15 @@ router.get('/score/:nbg/:div?/:type?/:colorCode?',function(req, res, next){
           case 'r':
             color = 'red';
             break;
+          case '1':
+            color = 'gold';
+            break;
+          case '2':
+            color = 'silver';
+            break;
+          case '3':
+            color = 'bronze';
+            break;
           default:
             color = 'neutral'
         }

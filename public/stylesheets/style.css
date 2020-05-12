@@ -144,6 +144,27 @@ break line - rgb(71,56,30)
 .nbg .red{
   background-color:rgb(231,4,32,var(--cell_opascity));
 }
+.nbg .gold{
+  background-image:
+      linear-gradient(to top right, rgb(188,125,13,var(--cell_opascity)), 
+        rgb(245,240,100,var(--cell_opascity)) 40%, 
+        rgb(245,240,100,var(--cell_opascity)) 60%, 
+        rgb(188,125,13,var(--cell_opascity)));
+}
+.nbg .silver{
+  background-image:
+      linear-gradient(to top right, rgb(122,122,122,var(--cell_opascity)), 
+        rgb(216,216,216,var(--cell_opascity)) 40%, 
+        rgb(216,216,216,var(--cell_opascity)) 60%, 
+        rgb(122,122,122,var(--cell_opascity)));
+}
+.nbg .bronze{
+  background-image:
+    linear-gradient(to top right, rgb(161,71,36,var(--cell_opascity)), 
+      rgb(213,151,98,var(--cell_opascity)) 40%, 
+      rgb(213,151,98,var(--cell_opascity)) 60%, 
+      rgb(161,71,36,var(--cell_opascity)));
+}
 .nbg .score{
   border:1pt solid black;
   /*background-color:rgb(108,75,22,var(--cell_opascity));*/

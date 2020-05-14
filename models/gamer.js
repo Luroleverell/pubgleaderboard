@@ -218,7 +218,7 @@ function getPlayers(tournament, division){
     });
     
     div[1].rounds_[j].results_.forEach(function(r){
-      if(!results.has(r.signup.teamId)) results.set(r.signup.teamId,{name: r.signup.name, score: 0, kills: 0});
+      if(!results.has(r.signup.teamId)) results.set(r.signup.teamId,{name: r.signup.name, score: 0, kills: 0, placement: 0});
       results.get(r.signup.teamId).score += r.score;
       results.get(r.signup.teamId).kills += r.kills;
     });
@@ -244,6 +244,17 @@ function getPlayers(tournament, division){
     return b[1].score - a[1].score || b[1].kills - a[1].kills || (a[1].name < b[1].name ? -1 : 1);
   });
   
+  for(let i=0; i<=leaderboard.length-1; i++){
+    if(i>0){ 
+      if(leaderboard[i][1].score == leaderboard[i-1][1].score && leaderboard[i][1].kills == leaderboard[i-1][1].kills) {
+        leaderboard[i][1].placement = leaderboard[i-1][1].placement;
+      }else{
+        leaderboard[i][1].placement = i+1;
+      }
+    }else{
+      leaderboard[0][1].placement = 1
+    };
+  }
   
   return [
     {topList: leaderboard, text: 'Leaderboard', type:'leaderboard'},

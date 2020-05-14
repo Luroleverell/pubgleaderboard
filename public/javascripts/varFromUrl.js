@@ -1,0 +1,3 @@
+var damageCauserList = new getJsonFromUrl('https://raw.githubusercontent.com/pubg/api-assets/master/dictionaries/telemetry/damageCauserName.json');
+var itemNameList = new getJsonFromUrl('https://raw.githubusercontent.com/pubg/api-assets/master/dictionaries/telemetry/item/itemId.json');
+var damageReasonList = new getJsonFromUrl('https://raw.githubusercontent.com/pubg/api-assets/master/enums/telemetry/damageReason.json');

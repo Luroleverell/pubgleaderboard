@@ -113,14 +113,6 @@ break line - rgb(71,56,30)
   /*color:black;*/
   color:white;
 }
-.nbg .name{
-  border:1pt solid black;
-  /*background-color:rgb(151,116,62,var(--cell_opascity));*/
-  background-color:rgb(30,13,48,var(--cell_opascity));
-  margin:0pt 0pt;
-  padding:5pt;
-  color:white;
-}
 .nbg .placement{
   border:1pt solid black;
   /*background-color:rgb(151,116,62,var(--cell_opascity));*/
@@ -165,8 +157,31 @@ break line - rgb(71,56,30)
       rgb(213,151,98,var(--cell_opascity)) 60%, 
       rgb(161,71,36,var(--cell_opascity)));
 }
+.nbg .name{
+  border-style:solid;
+  border-width:1pt 0pt 1pt 1pt;
+  border-color:black;
+  /*background-color:rgb(151,116,62,var(--cell_opascity));*/
+  background-color:rgb(30,13,48,var(--cell_opascity));
+  margin:0pt 0pt;
+  padding:5pt;
+  color:white;
+}
+.nbg .kills{
+  border-style:solid;
+  border-width:1pt 1pt 1pt 0pt;
+  border-color:black;
+  /*background-color:rgb(151,116,62,var(--cell_opascity));*/
+  background-color:rgb(30,13,48,var(--cell_opascity));
+  margin:0pt 0pt;
+  padding:10pt 5pt 5pt 5pt;
+  color:white;
+  font-size:10pt;
+}
 .nbg .score{
-  border:1pt solid black;
+  border-style:solid;
+  border-width:1pt 1pt 1pt 1pt;
+  border-color:black;
   /*background-color:rgb(108,75,22,var(--cell_opascity));*/
   background-color:rgb(50,50,50,var(--cell_opascity));
   margin:0pt 0pt;

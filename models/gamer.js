@@ -218,8 +218,9 @@ function getPlayers(tournament, division){
     });
     
     div[1].rounds_[j].results_.forEach(function(r){
-      if(!results.has(r.signup.teamId)) results.set(r.signup.teamId,{name: r.signup.name, score: 0});
+      if(!results.has(r.signup.teamId)) results.set(r.signup.teamId,{name: r.signup.name, score: 0, kills: 0});
       results.get(r.signup.teamId).score += r.score;
+      results.get(r.signup.teamId).kills += r.kills;
     });
   }
 
@@ -240,7 +241,7 @@ function getPlayers(tournament, division){
   }).slice(0,5);
   
   let leaderboard = [...results.entries()].sort(function(a, b){
-    return b[1].score - a[1].score;
+    return b[1].score - a[1].score || b[1].kills - a[1].kills || (a[1].name < b[1].name ? -1 : 1);
   });
   
   

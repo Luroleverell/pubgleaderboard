@@ -1,6 +1,3 @@
-var damageCauserList = new getJsonFromUrl('https://raw.githubusercontent.com/pubg/api-assets/master/dictionaries/telemetry/damageCauserName.json');
-var itemNameList = new getJsonFromUrl('https://raw.githubusercontent.com/pubg/api-assets/master/dictionaries/telemetry/item/itemId.json');
-var damageReasonList = new getJsonFromUrl('https://raw.githubusercontent.com/pubg/api-assets/master/enums/telemetry/damageReason.json');
 var speed = 100;
 var pubgColor = ['#0042a1', '#15931a', '#e16209', '#2096d1', '#4a148c', '#9f2b14', '#486a00', '#c51a56', '#9c6622', '#820045', 
                   '#d5b115', '#4ab3af', '#6b828d', '#f39700', '#37474f', '#e0648e', '#00736d', '#8a4803', '#7fb017', '#854ba1', 

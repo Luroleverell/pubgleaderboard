@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/user');
+var Item = require('../models/item');
 var Tournament = require('../models/tournament');
 var Event = require('../models/event');
 var Gamer = require('../models/gamer');
@@ -9,6 +10,7 @@ var upload = multer();
 var fs = require('fs');
 var JSZip = require('jszip')
 var request = require('request');
+var fetch = require('node-fetch');
 
 
 /* GET home page. */
@@ -120,6 +122,30 @@ router.post('/observerpack/', [upload.fields([])], function(req, res, next){
   res.redirect('/observerpack/'+req.body.tournamentId);
 });
 
+router.get('/forsent/:tournamentId?', function(req, res){
+  let id = req.params.tournamentId;
+  
+  if(!id){
+    res.render('forsent');
+  }else{
+    res.render('forsent', {id:id});
+  }
+})
+
+router.post('/forsent/', [upload.fields([])], function(req, res, next){
+  res.redirect('/forsent/'+req.body.tournamentId);
+});
+
+router.post('/gamer/forsent/', [upload.fields([])], function(req, res){
+  let id = req.body.tournamentId;
+  let date = req.body.date;
+
+  Gamer.tables(id, date).then(function(lateJoins){
+    res.render('forsent', {id:id, date:date, lateJoins:lateJoins});
+  });
+});
+
+
 router.get('/telemetry/:telemetryId', function(req, res){
   Tournament.getTelemetry(req.params.telemetryId, function(telemetryData){
     if(telemetryData == 'Error') res.send()
@@ -129,6 +155,43 @@ router.get('/telemetry/:telemetryId', function(req, res){
 
 router.get('/findMatch', function(req, res){
   res.render('findMatch', {title : 'Find match', buttonActive: 'Find match'})
+});
+
+router.get('/item', function(req, res){
+  res.render('item');
+});
+
+router.get('/items/:filter', function(req, res){
+  let code = req.query.code;
+  if(code){
+    
+  }
+  let filter = req.params.filter;
+  Item.getItems(filter, function(err, items){
+    res.json(items);
+  });
+});
+
+router.post('/item', [upload.fields([])], function(req, res){
+  let id = req.body.id;
+  let name = req.body.name;
+  let drop = req.body.drop;
+  let slot = req.body.slot;
+  
+  console.log(id);
+  
+  var newItem = new Item({
+    id:id,
+    name:name,
+    drop:drop,
+    slot:slot
+  });
+  
+  Item.add(newItem, function(){
+    Item.getItems(function(err, items){
+      res.render('item',{items:items});
+    });
+  });
 });
 
 module.exports = router;

@@ -1,4 +1,6 @@
 'use strict';
+
+const Gamer_Team_2 = require('./gamer_team_2.js');
 module.exports = class Gamer_Division{
   constructor(data){
     this.data_ = data;
@@ -6,8 +8,7 @@ module.exports = class Gamer_Division{
     this.stats_ = [];
     this.name_ = data.name;
     this.id_ = data.id;
-    
-    //this.addRounds();
+    this.teams_ = [];
   }
   
   get id(){
@@ -43,4 +44,10 @@ module.exports = class Gamer_Division{
       });
     });
   }*/
+  
+  addTeam(team){
+    let newTeam = new Gamer_Team_2(team);
+    this.teams_.push(newTeam);
+    return newTeam;
+  }
 }

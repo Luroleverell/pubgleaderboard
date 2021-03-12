@@ -5,13 +5,14 @@ const nconf = require('nconf');
 
 nconf.argv().env().file('keys.json');
 
-const user = nconf.get('mongoUser');
+const mongoUser = nconf.get('mongoUser');
 const pass = nconf.get('mongoPass');
 const host = nconf.get('mongoHost');
 const port = nconf.get('mongoPort');
 const dbname = nconf.get('mongoDbname');
 
-let uri = `mongodb://${user}:${pass}@${host}:${port}/${dbname}`;
+//let uri = `mongodb://${user}:${pass}@${host}:${port}/${dbname}`;
+let uri = 'mongodb+srv://${mongoUser}:${pass}@${host}/${dbname}?retryWrites=true&w=majority';
 
 mongoose.connect(uri);
 

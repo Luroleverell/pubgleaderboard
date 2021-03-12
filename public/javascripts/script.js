@@ -16,6 +16,7 @@ function loadFunction(){
   let keepTeamId = document.getElementById('keepTeamId');
   let leaderboardLevel = document.getElementById('leaderboardLevel');
   let lookupMatch = document.getElementById('lookupMatch');
+  let filter = document.getElementById('filter');
   
   mainColor = getComputedStyle(document.documentElement).getPropertyValue('--mainColor');
   mainColorLight = getComputedStyle(document.documentElement).getPropertyValue('--mainColorLight');
@@ -59,6 +60,7 @@ function loadFunction(){
   }
   
   updateLeaderboard(tournamentId);
+  updateItemlist();
   
   let flash = document.getElementById('flash');
   if(flash){
@@ -71,7 +73,6 @@ function loadFunction(){
   Array.prototype.forEach.call(nodes, function(node){
     generate(node);
   });
-  
   
   let buttons = document.getElementsByClassName('line');
   Array.prototype.forEach.call(buttons, function(button, i){
@@ -97,7 +98,61 @@ function loadFunction(){
       });
     }
   });
+  
+  if(filter){
+    filter.addEventListener('input', function(e){
+      console.log("--CHANGE--");
+      updateItemlist(e.target.value);
+    });
+  }
+  /*
+  const fragment = new URLSearchParams(window.location.hash.slice(1));
+  
+  if (fragment.has("access_token")) {
+    const accessToken = fragment.get("access_token");
+    const tokenType = fragment.get("token_type");
+
+    fetch('https://discord.com/api/v6', {
+      headers: {
+        authorization: `${tokenType} ${accessToken}`
+      }
+    })
+      .then(res => res.json())
+      .then(response => {
+        const { username, discriminator } = response;
+        console.log(username +' '+ discriminator);
+      })
+      .catch(console.error);
+
+  }else{
+    console.log('--FAILED--');
+  }*/
 }
+
+/*
+API_ENDPOINT = 'https://discord.com/api/v6'
+CLIENT_ID = '332269999912132097'
+CLIENT_SECRET = '937it3ow87i4ery69876wqire'
+REDIRECT_URI = 'https://nicememe.website'
+
+def exchange_code(code):
+  data = {
+    'client_id': CLIENT_ID,
+    'client_secret': CLIENT_SECRET,
+    'grant_type': 'authorization_code',
+    'code': code,
+    'redirect_uri': REDIRECT_URI,
+    'scope': 'identify email connections'
+  }
+  headers = {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
+  r = requests.post('%s/oauth2/token' % API_ENDPOINT, data=data, headers=headers)
+  r.raise_for_status()
+  return r.json()
+
+
+*/
 
 function changeTeamName(tournamentId, matchId, teamIndex, teamName, teamId){
   let url = '/tournaments/changeTeamName/'+tournamentId+'/'+matchId+'/'+teamIndex+'/'+teamId+'/'+teamName;
@@ -990,4 +1045,51 @@ function hslToRgb(h, s, l){
     return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
+function updateItemlist(filter){
+  if(!filter) filter='null';
+  let url = '/items/'+filter;
+  fetchData(url, function(items){
+    printItemList(items)
+  });
+}
 
+function printItemList(items){
+  let res = document.getElementById('items');
+  res.innerHTML='';
+  let list = ce('div',['container','bgMain']);
+  items.forEach(function(item){
+    let row = ce('div','row');
+    let cell = ce('div', 'col-4');
+    let a = ce('a')
+    a.href = 'https://classic.wowhead.com/item='+item.id;
+    //data-wowhead='domain=classic&item=21702', data-entity='item', data-entity-has-icon='true')
+    a.setAttribute('data-wowhead','domain=classic&item='+item.id);
+    a.setAttribute('data-entity', 'item');
+    a.setAttribute('data-entity-has-icon','true');
+    //let img = ce('img')
+    //img.src = 'https://classic.wowhead.com/item='+item.id;
+    //a.appendChild(img);
+    a.innerText = item.name;
+    cell.appendChild(a);
+    row.appendChild(cell);
+    
+    cell = ce('div', 'col');
+    cell.innerText = item.slot;
+    row.appendChild(cell);
+    
+    cell = ce('div', 'col');
+    cell.innerText = item.drop;
+    row.appendChild(cell);
+    
+    cell = ce('div', 'col');
+    cell.innerText = item.zone;
+    row.appendChild(cell);
+    
+    list.appendChild(row);
+  });
+  res.appendChild(list);
+  $WowheadPower.refreshLinks();
+  /*let script = ce('script')
+  script.src = 'https://wow.zamimg.com/widgets/power.js';
+  res.appendChild(script);*/
+}

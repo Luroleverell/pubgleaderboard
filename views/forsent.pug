@@ -1,0 +1,41 @@
+doctype html
+html(lang = 'en')
+  head
+    title gamer.no observerpacks
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    .container.bgMain
+      br
+      br
+      if(date)
+        form.form-inline(method='post', action='/gamer/forsent/')
+          input.form-control(name='tournamentId', type='text', value=id)
+          input.form-control(name='date' type='datetime-local', id='date', value=date)
+          input.btn.btn-info.form-control(type='submit', name='submit', value='Hent innmeldinger etter denne datoen')
+        .container
+          table.table
+            th
+              tr
+                td Divisjon
+                td Spiller
+                td Lag
+                td Innmeldt
+            tbody  
+              each p in lateJoins
+                tr
+                  td #{p.division}
+                  td #{p.player.pubgName}
+                  td #{p.team}
+                  td #{p.player.joinDate}
+      else if(id)
+        form.form-inline(method='post', action='/gamer/forsent/')
+          input.form-control(name='tournamentId', type='text', value=id)
+          input.form-control(name='date' type='datetime-local', id='date')
+          input.btn.btn-info.form-control(type='submit', name='submit', value='Hent innmeldinger etter denne datoen')
+      else
+        form.form-inline(method='post', action='/forsent/')
+          input.form-control(name='tournamentId', type='text', placeholder='Enter tournament id')
+          input.btn.btn-info.form-control(type='submit', name='submit', value='Velg')
+        

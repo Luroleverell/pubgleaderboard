@@ -1,5 +1,6 @@
 const nconf = require('nconf');
 const Gamer_Tournament = require('../public/javascripts/gamer_tournament.js');
+const GamerTournament = require('../public/javascripts/gamer_tournament.js');
 var JSZip = require('jszip');
 var JSZipUtils = require('jszip-utils');
 var request = require('request');
@@ -45,6 +46,25 @@ module.exports.division = function(id){
   });
 }
 
+module.exports.tables = function(id, date){
+  let url = 'https://www.gamer.no/api/v1/tournaments/'+id+'/tables';
+  let groups = [];
+  let tournament = '';
+  return new Promise(function(resolve, reject){
+    fetchDataGamer(url, function(res){
+      new Promise(function(rs, rj){
+        let tables = Object.values(res.response)
+        tournament = new GamerTournament();
+        tournament.init(tables, date, function(){
+          rs();
+        });
+      }).then(function(){
+        resolve(tournament.lateJoins_);
+      });;
+    });
+  })
+}
+
 module.exports.rounds = function(group){
   let url = 'https://www.gamer.no/api/v1/tournaments/'+group.id+'/rounds';
   let rounds = [];
@@ -71,7 +91,9 @@ module.exports.round = function(id, response){
   var archive = archiver('zip',{zlib: {level: 9}});
   
   archive.pipe(outfile);
-
+  
+  //console.log(response);
+  
   return new Promise(function(resolve, reject){
     fetchDataGamer(url, function(res){
       

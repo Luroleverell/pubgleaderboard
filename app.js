@@ -38,7 +38,9 @@ const host = nconf.get('mongoHost');
 const port = nconf.get('mongoPort');
 const dbname = nconf.get('mongoDbname');
 
-let uri = 'mongodb://'+user+':'+pass+'@'+host+':'+port+'/'+dbname;
+//let uri = 'mongodb://'+user+':'+pass+'@'+host+':'+port+'/'+dbname;
+let uri = 'mongodb+srv://'+user+':'+pass+'@'+host+'/'+dbname+'?retryWrites=true&w=majority';
+//mongodb+srv://lirion:<password>@pubg.mbefo.mongodb.net/pubg?retryWrites=true&w=majority
 
 mongoose.connect(uri, { useNewUrlParser: true }).catch(function(err){
   if (err) throw err;

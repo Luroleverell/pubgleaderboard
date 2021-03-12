@@ -21,7 +21,8 @@ const port = nconf.get('mongoPort');
 const API_KEY = nconf.get('apiKey');
 const dbname = nconf.get('mongoDbname');
 
-let uri = 'mongodb://'+mongoUser+':'+pass+'@'+host+':'+port+'/'+dbname;
+//let uri = 'mongodb://'+mongoUser+':'+pass+'@'+host+':'+port+'/'+dbname;
+let uri = 'mongodb+srv://'+mongoUser+':'+pass+'@'+host+'/'+dbname+'?retryWrites=true&w=majority';
 
 mongoose.connect(uri, { useNewUrlParser: true }).catch(function(err){
   if (err) throw err;

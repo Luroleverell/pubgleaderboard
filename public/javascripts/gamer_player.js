@@ -2,9 +2,10 @@
 module.exports = class Gamer_Player{
   constructor(data){
     this.data_ = data;
-    this.gamerName_ = data.user_name;
-    this.teamName_ = data.team_name;
-    this.pubgName_ = data.pubg_account_name;
+    this.gamerName_ = data.user_name || data.name;
+    this.teamName_ = data.team_name || '';
+    this.pubgName_ = data.pubg_account_name || data.pubgAccountName;
+    this.joinDate_ = data.joinDate || '';
     this.matches_ = [];
     this.kills_ = 0;
     this.deaths_ = 0;

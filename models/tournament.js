@@ -31,7 +31,8 @@ const myBucket = storage.bucket('pubgleague');
 const fs = require('fs');
 
 
-let uri = 'mongodb://'+mongoUser+':'+pass+'@'+host+':'+port+'/'+dbname;
+//let uri = 'mongodb://'+mongoUser+':'+pass+'@'+host+':'+port+'/'+dbname;
+let uri = 'mongodb+srv://'+mongoUser+':'+pass+'@'+host+'/'+dbname+'?retryWrites=true&w=majority';
 
 mongoose.connect(uri, { useNewUrlParser: true }).catch(function(err){
   if (err) throw err;

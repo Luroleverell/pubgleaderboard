@@ -33,7 +33,7 @@ module.exports.divisionStats = function(tournamentId, division){
 }
 
 module.exports.test = function(){
-  let url = `https://www.gamer.no/api/paradise/v2/competition/9539`;  // Overordnet object for turneringen; navn, påmeldingsfrist osv
+  //let url = `https://www.gamer.no/api/paradise/v2/competition/9539`;  // Overordnet object for turneringen; navn, påmeldingsfrist osv
   //let url = 'https://www.gamer.no/api/paradise/v2/competition/9539/stats //?round_number=4'; // Oversikt over alle spillere; kills, damage, lag osv
   //let url = 'https://www.gamer.no/api/paradise/v2/competition/9539/signups'; // Oversikt over alle spillere; kills, damage, lag osv
   //let url = 'https://www.gamer.no/api/paradise/v2/competition/9539/divisions'; // Oversikt over divisjonene; id, navn og rekkefølge -=> Divisjons id
@@ -43,7 +43,7 @@ module.exports.test = function(){
   //let url = 'https://www.gamer.no/api/paradise/v2/division/9907/signups'; // info om lagene i angitt divisjon, her kommer også plassering osv med -=> Team id
   //let url = 'https://www.gamer.no/api/paradise/v2/division/9907/heats'; //?round_number=4';// Info om hver runde; id, maps osv heat = runde  -=> Heat id
   
-  //let url = 'https://www.gamer.no/api/paradise/v2/team/105066'; //team info; id, logo, navn og forkortelse
+  let url = 'https://www.gamer.no/api/paradise/v2/team/105066'; //team info; id, logo, navn og forkortelse
   //let url = 'https://www.gamer.no/api/paradise/v2/team/105066/players'; //team info; id, logo, navn og forkortelse -=> user id
     
   //let url = 'https://www.gamer.no/api/paradise/v2/user/3557'; //overordnet info om spillere

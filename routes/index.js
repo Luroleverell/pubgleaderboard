@@ -117,7 +117,6 @@ router.get('/observerpack/:tournamentId?/:groupNumber?', function(req, res){
   }
   else if(id && gnr){
     Gamer.division(id).then(function(groups){
-      console.log(groups);
       Gamer.signup(groups[gnr], res).then(function(signup){
         
       });

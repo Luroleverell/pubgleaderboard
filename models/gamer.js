@@ -71,7 +71,6 @@ module.exports.division = function(id){
       });
       
       groups.sort(function(a,b){return a.order - b.order})
-      console.log(groups)
       resolve(groups);
     });
   });
@@ -136,10 +135,8 @@ module.exports.signup = function(group, response){
         let shortName = convertChar(p.team.abbreviation);
         //console.log(name);
         s += count +sc+ name +sc+ shortName +sc+ count+'.png' +sc+ '\r';
-        console.log(image)
         archive.append(request(image), {name: 'TeamIcon/'+count+'.png'});
       });
-      console.log(s)
       archive.append(s, {name: 'TeamInfo.csv'}); 
       archive.pipe(response)
       

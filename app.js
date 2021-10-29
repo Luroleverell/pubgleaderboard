@@ -55,7 +55,7 @@ var db = mongoose.connection;
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(expressValidator());
+//app.use(expressValidator());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
@@ -107,7 +107,7 @@ app.use(function(req, res, next) {
 
 
 //Validator
-app.use(expressValidator({
+/*app.use(expressValidator({
   errorFormatter: function(param, msg, value){
     var namespace = param.split('.')
     , root = namespace.shift()
@@ -123,6 +123,7 @@ app.use(expressValidator({
     };
   }
 }));
+*/
 
 // error handler
 app.use(function(err, req, res, next) {

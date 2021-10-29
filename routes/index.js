@@ -10,7 +10,7 @@ var upload = multer();
 var fs = require('fs');
 var JSZip = require('jszip')
 var request = require('request');
-var fetch = require('node-fetch');
+//import fetch from 'node-fetch';
 
 
 /* GET home page. */

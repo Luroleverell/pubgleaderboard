@@ -279,7 +279,7 @@ module.exports.observerpack = function(signupId, group, response){
 function fetchDataGamer(url, callback) {
   let request = new XMLHttpRequest();
   request.open('GET', url);
-  request.responseType = 'json';
+  //request.responseType = 'json';
   request.setRequestHeader('Authorization', 'Bearer ' + gamerApiKey);
   request.setRequestHeader('Content-Type', 'application/json');
   request.setRequestHeader('Accept', 'application/json');

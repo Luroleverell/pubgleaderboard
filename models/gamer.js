@@ -6,6 +6,7 @@ var JSZipUtils = require('jszip-utils');
 var request = require('request');
 var fs = require('fs');
 var archiver = require('archiver');
+const got = require('got');
 
 nconf.argv().env().file('keys.json');
 const gamerApiKey = nconf.get('gamerAPIKey');
@@ -51,11 +52,13 @@ module.exports.test = function(){
   //let url = 'https://www.gamer.no/api/paradise/v2/heat/2162?map_number=1'; //overordnet info om runden
   //let url = 'https://www.gamer.no/api/paradise/v2/heat/2162/stats';//?map_number=1 //overordnet info om runden
   
-  return new Promise(function(resolve, reject){
+  return gamerApi(url);
+  
+  /*return new Promise(function(resolve, reject){
     fetchDataGamer(url, function(res){
       resolve(res);
     });
-  });
+  });*/
 }
 
 
@@ -276,7 +279,7 @@ module.exports.observerpack = function(signupId, group, response){
   });
 }*/
 
-function fetchDataGamer(url, callback) {
+async function fetchDataGamer(url, callback) {
   let request = new XMLHttpRequest();
   request.open('GET', url);
   //request.responseType = 'json';
@@ -291,7 +294,20 @@ function fetchDataGamer(url, callback) {
       callback(JSON.parse(request.responseText)) //JSON.parse(request.responseText))
     }
   }
+  
 }
+
+const gamerApi = async function(path){
+   const response = await got(path, {
+       responseType: 'json',
+       headers: {
+           'Authorization': 'Bearer ' + gamerApiKey
+       }
+   });
+   return response.body;
+}
+
+
 
 function getPlayers(tournament, division){
   let div = [...tournament.divisions_.entries()][division];

@@ -23,6 +23,7 @@
     "express-session": "*",
     "express-validator": "^6.13.0",
     "fs": "0.0.1-security",
+    "got": "^11.8.2",
     "http-errors": "^1.8.0",
     "jszip": "^3.7.1",
     "jszip-utils": "^0.1.0",

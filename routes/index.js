@@ -38,6 +38,13 @@ router.get('/tournament/:event?', User.ensureAuthenticated,  function(req, res, 
   });  
 });
 
+router.get('/testApi', function(req, res){
+  Gamer.test().then(function(data){
+    res.render('test', {data: data});
+  });
+});
+
+
 router.get('/score/:nbg/:div?/:type?/:colorCode?',function(req, res, next){
   if(req.params.div && req.params.nbg){
     let type = req.params.type || 'all';
@@ -110,10 +117,14 @@ router.get('/observerpack/:tournamentId?/:groupNumber?', function(req, res){
   }
   else if(id && gnr){
     Gamer.division(id).then(function(groups){
-      Gamer.rounds(groups[gnr]).then(function(rounds){
+      console.log(groups);
+      Gamer.signup(groups[gnr], res).then(function(signup){
+        
+      });
+      /*Gamer.rounds(groups[gnr]).then(function(rounds){
         Gamer.round(rounds[0], res).then(function(){
         });
-      });
+      });*/
     });
   }
 });

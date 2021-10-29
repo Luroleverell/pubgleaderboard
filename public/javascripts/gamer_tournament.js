@@ -25,6 +25,7 @@ module.exports = class Gamer_Tournament{
     this.name_ = data.name;
     //var flag = true;
     let promise = [];
+    
     data.divisions.forEach(function(division,idx,array){
       this.divisions_.set(division.name, new Gamer_Division(division));
 
@@ -272,7 +273,7 @@ module.exports = class GamerTournament{
     let request = new XMLHttpRequest();
     request.open("GET", url);
     request.responseType = "json";
-    request.setRequestHeader('Authorization', gamerApiKey);
+    request.setRequestHeader('Authorization', 'Bearer ' + gamerApiKey);
     request.onreadystatechange = function() {
       if (request.readyState == 4) {
         callback(JSON.parse(request.responseText));

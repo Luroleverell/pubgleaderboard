@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
-var MongoStore = require('connect-mongo')(session);
+var MongoStore = require('connect-mongo');
 var expressValidator = require('express-validator');
 var bodyParser = require('body-parser');
 var multer = require('multer');
@@ -71,7 +71,7 @@ app.use(session({
   secret: 'that secret',
   saveUninitialized: false,
   resave: false,
-  store: new MongoStore({mongooseConnection: mongoose.connection}),
+  store: MongoStore.create({mongoUrl: uri}),
   unset: 'destroy'
   /*,
   cookie: {

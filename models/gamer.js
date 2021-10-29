@@ -10,6 +10,8 @@ var archiver = require('archiver');
 nconf.argv().env().file('keys.json');
 const gamerApiKey = nconf.get('gamerAPIKey');
 var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+//process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 
 module.exports.divisionStats = function(tournamentId, division){
   let tournament = '';
@@ -29,18 +31,47 @@ module.exports.divisionStats = function(tournamentId, division){
   });
 }
 
+module.exports.test = function(){
+  //let url = `https://www.gamer.no/api/paradise/v2/competition/9539`;  // Overordnet object for turneringen; navn, påmeldingsfrist osv
+  //let url = 'https://www.gamer.no/api/paradise/v2/competition/9539/stats //?round_number=4'; // Oversikt over alle spillere; kills, damage, lag osv
+  //let url = 'https://www.gamer.no/api/paradise/v2/competition/9539/signups'; // Oversikt over alle spillere; kills, damage, lag osv
+  //let url = 'https://www.gamer.no/api/paradise/v2/competition/9539/divisions'; // Oversikt over divisjonene; id, navn og rekkefølge -=> Divisjons id
+  
+  //let url = 'https://www.gamer.no/api/paradise/v2/division/9907'; // Overordnet object for hver valgt divisjon. === Virker overflødig ===
+  //let url = 'https://www.gamer.no/api/paradise/v2/division/9907/stats'; //?round_number=4';// Player basert statestikk for valgte divisjon: samme objecter som competitions/id/stats
+  let url = 'https://www.gamer.no/api/paradise/v2/division/9907/signups'; // info om lagene i angitt divisjon, her kommer også plassering osv med -=> Team id
+  //let url = 'https://www.gamer.no/api/paradise/v2/division/9907/heats'; //?round_number=4';// Info om hver runde; id, maps osv heat = runde  -=> Heat id
+  
+  //let url = 'https://www.gamer.no/api/paradise/v2/team/105066'; //team info; id, logo, navn og forkortelse
+  //let url = 'https://www.gamer.no/api/paradise/v2/team/105066/players'; //team info; id, logo, navn og forkortelse -=> user id
+    
+  //let url = 'https://www.gamer.no/api/paradise/v2/user/3557'; //overordnet info om spillere
+  //let url = 'https://www.gamer.no/api/paradise/v2/user/3557/stats/pubg'; //samlet stats over alle turnering på gamer.no plattformen
+  
+  //let url = 'https://www.gamer.no/api/paradise/v2/heat/2162?map_number=1'; //overordnet info om runden
+  //let url = 'https://www.gamer.no/api/paradise/v2/heat/2162/stats';//?map_number=1 //overordnet info om runden
+  
+  return new Promise(function(resolve, reject){
+    fetchDataGamer(url, function(res){
+      resolve(res);
+    });
+  });
+}
+
+
 module.exports.division = function(id){
-  let url = 'https://www.gamer.no/api/v1/tournaments/'+id;
+  //let url = 'https://www.gamer.no/api/v1/tournaments/'+id;
+  let url = `https://www.gamer.no/api/paradise/v2/competition/${id}/divisions`;
   let groups = [];
   
   return new Promise(function(resolve, reject){
     fetchDataGamer(url, function(res){
-      res.response.divisions.forEach(function(div){
-        groups.push({id:div.id, name: div.name});
+      res.forEach(function(div){
+        groups.push({id:div.id, name: div.name, order: div.order});
       });
       
-      groups.sort(function(a,b){return a.name - b.name})
-      //console.log(groups);
+      groups.sort(function(a,b){return a.order - b.order})
+      console.log(groups)
       resolve(groups);
     });
   });
@@ -80,10 +111,61 @@ module.exports.rounds = function(group){
 }
 
 
+module.exports.signup = function(group, response){
+  let url = `https://www.gamer.no/api/paradise/v2/division/${group.id}/signups`;
+  let output = [];
+  let teams = [];
+  
+  var outfile = fs.createWriteStream('public/observerpack/observerpack.zip');
+  var archive = archiver('zip',{zlib: {level: 9}});
+  
+  archive.pipe(outfile);
+  
+  //console.log(response);
+  
+  return new Promise(function(resolve, reject){
+    fetchDataGamer(url, function(res){
+      count = 0;
+      let s = 'TeamNumber,TeamName,ImageFileName,TeamColor\r';
+      let sc = ',';
+      archive.append(null,{name: 'TeamIcon/'});
+      res.forEach(function(p){
+        let image = p.team.logo.url + '?c=1&h=300&w=300&format=png';//replace('160x160', '300x300');
+        count++;
+        let name = convertChar(p.team.name);
+        let shortName = convertChar(p.team.abbreviation);
+        //console.log(name);
+        s += count +sc+ name +sc+ shortName +sc+ count+'.png' +sc+ '\r';
+        console.log(image)
+        archive.append(request(image), {name: 'TeamIcon/'+count+'.png'});
+      });
+      console.log(s)
+      archive.append(s, {name: 'TeamInfo.csv'}); 
+      archive.pipe(response)
+      
+      archive.on('error', function(err){
+        throw err;
+      });
+      
+      archive.finalize().then(function(){
+        //outfile.end();
+        resolve();
+      });
+      
+      outfile.on('close', function(){
+      });
+
+      outfile.on('end', function(){
+      }); 
+    });
+  });
+}
+
+
+
 module.exports.round = function(id, response){
   //console.log(id);
   let url = 'https://www.gamer.no/api/v1/rounds/'+id;
-  let zip = new JSZip();
   let output = [];
   let teams = [];
   
@@ -201,7 +283,7 @@ function fetchDataGamer(url, callback) {
   let request = new XMLHttpRequest();
   request.open("GET", url);
   request.responseType = "json";
-  request.setRequestHeader('Authorization', gamerApiKey);
+  request.setRequestHeader('Authorization', 'Bearer ' + gamerApiKey);
   request.onreadystatechange = function() {
     if (request.readyState == 4) {
       callback(JSON.parse(request.responseText));

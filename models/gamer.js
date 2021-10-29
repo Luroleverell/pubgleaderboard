@@ -53,7 +53,6 @@ module.exports.test = function(){
   
   return new Promise(function(resolve, reject){
     fetchDataGamer(url, function(res){
-      console.log(res);
       resolve(res);
     });
   });
@@ -282,12 +281,13 @@ function fetchDataGamer(url, callback) {
   request.open('GET', url);
   request.responseType = 'json';
   request.setRequestHeader('Authorization', 'Bearer ' + gamerApiKey);
+  request.setRequestHeader('Content-Type', 'application/json');
   
   request.send();
   
   request.onreadystatechange = function(){
     if(request.readyState == 4){
-      callback(JSON.parse(request.responseText))
+      callback(request.responseText) //JSON.parse(request.responseText))
     }
   }
 }

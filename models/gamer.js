@@ -52,7 +52,17 @@ module.exports.test = function(){
   //let url = 'https://www.gamer.no/api/paradise/v2/heat/2162?map_number=1'; //overordnet info om runden
   //let url = 'https://www.gamer.no/api/paradise/v2/heat/2162/stats';//?map_number=1 //overordnet info om runden
   
-  return gamerApi(url);
+  
+  return got.get(url, {
+    responseType: 'json',
+    headers: {
+      'Authorization': 'Bearer ' + gamerApiKey
+    }
+  }).then(function(res){
+    console.log(res.body)
+    return res.body;
+  })
+  //return gamerApi(url);
   
   /*return new Promise(function(resolve, reject){
     fetchDataGamer(url, function(res){

@@ -282,12 +282,13 @@ function fetchDataGamer(url, callback) {
   request.responseType = 'json';
   request.setRequestHeader('Authorization', 'Bearer ' + gamerApiKey);
   request.setRequestHeader('Content-Type', 'application/json');
+  request.setRequestHeader('Accept', 'application/json');
   
   request.send();
   
   request.onreadystatechange = function(){
     if(request.readyState == 4){
-      callback(request.responseText) //JSON.parse(request.responseText))
+      callback(JSON.parse(request.responseText)) //JSON.parse(request.responseText))
     }
   }
 }

@@ -32,14 +32,14 @@ module.exports.divisionStats = function(tournamentId, division){
 }
 
 module.exports.test = function(){
-  //let url = `https://www.gamer.no/api/paradise/v2/competition/9539`;  // Overordnet object for turneringen; navn, påmeldingsfrist osv
+  let url = `https://www.gamer.no/api/paradise/v2/competition/9539`;  // Overordnet object for turneringen; navn, påmeldingsfrist osv
   //let url = 'https://www.gamer.no/api/paradise/v2/competition/9539/stats //?round_number=4'; // Oversikt over alle spillere; kills, damage, lag osv
   //let url = 'https://www.gamer.no/api/paradise/v2/competition/9539/signups'; // Oversikt over alle spillere; kills, damage, lag osv
   //let url = 'https://www.gamer.no/api/paradise/v2/competition/9539/divisions'; // Oversikt over divisjonene; id, navn og rekkefølge -=> Divisjons id
   
   //let url = 'https://www.gamer.no/api/paradise/v2/division/9907'; // Overordnet object for hver valgt divisjon. === Virker overflødig ===
   //let url = 'https://www.gamer.no/api/paradise/v2/division/9907/stats'; //?round_number=4';// Player basert statestikk for valgte divisjon: samme objecter som competitions/id/stats
-  let url = 'https://www.gamer.no/api/paradise/v2/division/9907/signups'; // info om lagene i angitt divisjon, her kommer også plassering osv med -=> Team id
+  //let url = 'https://www.gamer.no/api/paradise/v2/division/9907/signups'; // info om lagene i angitt divisjon, her kommer også plassering osv med -=> Team id
   //let url = 'https://www.gamer.no/api/paradise/v2/division/9907/heats'; //?round_number=4';// Info om hver runde; id, maps osv heat = runde  -=> Heat id
   
   //let url = 'https://www.gamer.no/api/paradise/v2/team/105066'; //team info; id, logo, navn og forkortelse
@@ -53,6 +53,7 @@ module.exports.test = function(){
   
   return new Promise(function(resolve, reject){
     fetchDataGamer(url, function(res){
+      console.log(res);
       resolve(res);
     });
   });
@@ -278,15 +279,17 @@ module.exports.observerpack = function(signupId, group, response){
 
 function fetchDataGamer(url, callback) {
   let request = new XMLHttpRequest();
-  request.open("GET", url);
-  request.responseType = "json";
+  request.open('GET', url);
+  request.responseType = 'json';
   request.setRequestHeader('Authorization', 'Bearer ' + gamerApiKey);
-  request.onreadystatechange = function() {
-    if (request.readyState == 4) {
-      callback(JSON.parse(request.responseText));
+  
+  request.send();
+  
+  request.onreadystatechange = function(){
+    if(request.readyState == 4){
+      callback(JSON.parse(request.responseText))
     }
   }
-  request.send();
 }
 
 function getPlayers(tournament, division){

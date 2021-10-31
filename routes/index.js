@@ -150,9 +150,14 @@ router.post('/gamer/forsent/', [upload.fields([])], function(req, res){
   let id = req.body.tournamentId;
   let date = req.body.date;
 
-  Gamer.tables(id, date).then(function(lateJoins){
-    res.render('forsent', {id:id, date:date, lateJoins:lateJoins});
+
+  Gamer.late(id, date).then(function(lateJoins){
+    res.render('forsent', {id:id, date:date, lateJoins: lateJoins})
   });
+
+  /*Gamer.tables(id, date).then(function(lateJoins){
+    res.render('forsent', {id:id, date:date, lateJoins:lateJoins});
+  });*/
 });
 
 

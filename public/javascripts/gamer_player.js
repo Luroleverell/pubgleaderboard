@@ -50,3 +50,24 @@ module.exports = class Gamer_Player{
     this.deaths_ += parseInt(matchStats.deaths, 10);
   }
 }
+
+module.exports = class Player{
+  constructor(player){
+    this.id_ = player.id;
+    this.gamerName_ = player.user.user_name;
+    let account = player.user.accounts.find(function(obj, index){
+        if(obj.provider == 'PUBG') return true;
+      });
+    if(account) 
+      this.pubgName_ = account.nickname;
+    else  this.pubgName_ =  '';
+    this.joined_ = player.joined_at || '';
+  }
+  
+  get joined(){
+    return this.joined_;
+  }
+  get pubgName(){
+    return this.pubgName_;
+  }
+}

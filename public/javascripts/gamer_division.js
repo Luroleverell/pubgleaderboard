@@ -1,6 +1,7 @@
 'use strict';
 
 const Gamer_Team_2 = require('./gamer_team_2.js');
+const Team = require('./gamer_team_2.js');
 module.exports = class Gamer_Division{
   constructor(data){
     this.data_ = data;
@@ -49,5 +50,29 @@ module.exports = class Gamer_Division{
     let newTeam = new Gamer_Team_2(team);
     this.teams_.push(newTeam);
     return newTeam;
+  }
+}
+
+module.exports = class Division{
+  constructor(data){
+    this.name_ = data.name;
+    this.id_ = data.id;
+    this.teams_ = [];
+  }
+  
+  addTeams(signups){
+    signups.forEach(function(signup){
+      this.teams_.push(new Team(signup.team));
+    }, this)
+  }
+  
+  get teams(){
+    return this.teams_;
+  }
+  get id(){
+    return this.id_;
+  }
+  get name(){
+    return this.name_;
   }
 }

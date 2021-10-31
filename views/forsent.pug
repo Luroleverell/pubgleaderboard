@@ -28,7 +28,7 @@ html(lang = 'en')
                   td #{p.division}
                   td #{p.player.pubgName}
                   td #{p.team}
-                  td #{p.player.joinDate}
+                  td #{p.player.joined}
       else if(id)
         form.form-inline(method='post', action='/gamer/forsent/')
           input.form-control(name='tournamentId', type='text', value=id)

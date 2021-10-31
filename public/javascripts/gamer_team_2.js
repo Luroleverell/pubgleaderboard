@@ -1,5 +1,7 @@
 
 const Gamer_Player = require('./gamer_player.js');
+const Player = require('./gamer_player.js');
+
 module.exports = class Gamer_Team_2{
   constructor(data){
     this.name_ = data.name;
@@ -29,5 +31,27 @@ module.exports = class Gamer_Team_2{
 
   addMatch(match){
     this.matches_.push(match)
+  }
+}
+
+module.exports = class Team{
+  constructor(team){
+    this.name_ = team.name;
+    this.id_ = team.id;
+    this.players_ = [];
+  }
+  
+  addPlayer(player){
+    this.players_.push(new Player(player));
+  }
+  
+  get id(){
+    return this.id_;
+  }
+  get name(){
+    return this.name_;
+  }
+  get players(){
+    return this.players_;
   }
 }

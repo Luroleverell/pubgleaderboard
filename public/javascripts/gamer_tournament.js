@@ -1,9 +1,11 @@
 'use strict';
 const Gamer_Division = require('./gamer_division.js');
+const Division = require('./gamer_division.js');
 const Gamer_Round = require('./gamer_round.js');
 const Gamer_Match = require('./gamer_match.js');
 const Gamer_Player = require('./gamer_player.js');
 const Gamer_Team_2 = require('./gamer_team_2.js');
+const Team = require('./gamer_team_2.js');
 const nconf = require('nconf');
 const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 nconf.argv().env().file('keys.json');
@@ -280,6 +282,43 @@ module.exports = class GamerTournament{
       }
     }
     request.send();
+  }
+  
+  get lateJoins(){
+    return this.lateJoins_;
+  }
+}
+
+module.exports = class Competition{
+  constructor(date){
+    this.divisions_ = new Map();
+    this.lateJoins_ = [];
+    //this.date_ = new Date(date);
+  }
+  
+  addDivisions(divisions){
+    divisions.forEach(function(division){
+      this.divisions_.set(division.id, new Division(division));
+    }, this)
+  }
+  get divisions(){
+    return this.divisions_;
+  }
+  
+  check24HourRule(date){
+    this.divisions_.forEach(function(division){
+      division.teams.forEach(function(t){
+        t.players.forEach(function(p){
+          if(new Date(p.joined) > new Date(date)){
+            this.lateJoins_.push({
+              division: division.name,
+              team: t.name,
+              player: p
+            });
+          }
+        }, this);
+      }, this);
+    }, this);
   }
   
   get lateJoins(){

@@ -22,11 +22,11 @@ module.exports.test = function(){
   
   //let url = 'https://www.gamer.no/api/paradise/v2/division/9907'; // Overordnet object for hver valgt divisjon. === Virker overflødig ===
   //let url = 'https://www.gamer.no/api/paradise/v2/division/9907/stats'; //?round_number=4';// Player basert statestikk for valgte divisjon: samme objecter som competitions/id/stats
-  //let url = 'https://www.gamer.no/api/paradise/v2/division/9909/signups'; // info om lagene i angitt divisjon, her kommer også plassering osv med -=> Team id
+  let url = 'https://www.gamer.no/api/paradise/v2/division/9909/signups'; // info om lagene i angitt divisjon, her kommer også plassering osv med -=> Team id
   //let url = 'https://www.gamer.no/api/paradise/v2/division/9907/heats'; //?round_number=4';// Info om hver runde; id, maps osv heat = runde  -=> Heat id
   
   //let url = 'https://www.gamer.no/api/paradise/v2/team/206662'; //team info; id, logo, navn og forkortelse
-  let url = 'https://www.gamer.no/api/paradise/v2/team/105066/players'; //team info; id, logo, navn og forkortelse -=> user id
+  //let url = 'https://www.gamer.no/api/paradise/v2/team/105066/players'; //team info; id, logo, navn og forkortelse -=> user id
     
   //let url = 'https://www.gamer.no/api/paradise/v2/user/3557'; //overordnet info om spillere
   //let url = 'https://www.gamer.no/api/paradise/v2/user/3557/stats/pubg'; //samlet stats over alle turnering på gamer.no plattformen
@@ -41,7 +41,6 @@ module.exports.test = function(){
       'Authorization': 'Bearer ' + gamerApiKey
     }
   }).then(function(res){
-    console.log(res.body)
     return res.body;
   })
   //return gamerApi(url);
@@ -178,18 +177,24 @@ module.exports.signup = function(group, response){
   
   return new Promise(function(resolve, reject){
     fetchDataGamer(url, function(res){
-      count = 0;
+      //count = 0;
       let s = 'TeamNumber,TeamName,ImageFileName,TeamColor\r';
       let sc = ',';
       archive.append(null,{name: 'TeamIcon/'});
+      
+      let sorted = res.sort(function(a,b){
+        if(a.seed < b.seed) return -1;
+      })
+      
       res.forEach(function(p){
         let image = p.team.logo.url + '?c=1&h=300&w=300&format=png';
-        count++;
+        let seed = p.seed;
         let name = convertChar(p.team.name);
         let shortName = convertChar(p.team.abbreviation);
         //console.log(name);
-        s += count +sc+ name +sc+ shortName +sc+ count+'.png' +sc+ '\r';
-        archive.append(request(image), {name: 'TeamIcon/'+count+'.png'});
+        s += seed +sc+ name +sc+ shortName +sc+ seed+'.png' +sc+ '\r';
+
+        archive.append(request(image), {name: 'TeamIcon/'+seed+'.png'});
       });
       archive.append(s, {name: 'TeamInfo.csv'}); 
       archive.pipe(response)

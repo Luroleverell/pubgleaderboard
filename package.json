@@ -16,7 +16,7 @@
     "cookie-parser": "*",
     "debug": "^4.3.2",
     "dotenv": "*",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-flash": "*",
     "express-flash-messages": "^0.1.1",
     "express-messages": "*",
